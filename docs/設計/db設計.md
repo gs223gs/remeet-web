@@ -11,7 +11,7 @@
 | created_at     | timestamptz | NOT NULL / `DEFAULT now()`       |
 | updated_at     | timestamptz | NOT NULL / トリガー更新          |
 
-## persons
+## contacts
 
 | カラム名     | 型          | 制約・備考                           |
 | ------------ | ----------- | ------------------------------------ |
@@ -41,12 +41,12 @@
 | created_at   | timestamptz | NOT NULL / `DEFAULT now()`       |
 | updated_at   | timestamptz | NOT NULL / トリガー更新          |
 
-## person_meetups
+## contact_meetups
 
 | カラム名   | 型          | 制約・備考                        |
 | ---------- | ----------- | --------------------------------- |
 | id         | uuid        | PK / `DEFAULT gen_random_uuid()`  |
-| person_id  | uuid        | NOT NULL / FK → `persons.id`      |
+| contact_id | uuid        | NOT NULL / FK → `contacts.id`     |
 | meetup_id  | uuid        | NOT NULL / FK → `meetups.id`      |
 | created_at | timestamptz | NOT NULL / `DEFAULT now()`        |
 | updated_at | timestamptz | NOT NULL / トリガー更新           |
@@ -61,17 +61,17 @@
 | created_at | timestamptz | NOT NULL / `DEFAULT now()`       |
 | updated_at | timestamptz | NOT NULL / トリガー更新          |
 
-## person_tags
+## contact_tags
 
 | カラム名   | 型          | 制約・備考                       |
 | ---------- | ----------- | -------------------------------- |
 | id         | uuid        | PK / `DEFAULT gen_random_uuid()` |
-| person_id  | uuid        | NOT NULL / FK → `persons.id`     |
+| contact_id | uuid        | NOT NULL / FK → `contacts.id`    |
 | tag_id     | uuid        | NOT NULL / FK → `tags.id`        |
 | created_at | timestamptz | NOT NULL / `DEFAULT now()`       |
 | updated_at | timestamptz | NOT NULL / トリガー更新          |
 
-## user_profiles
+## profiles
 
 | カラム名     | 型          | 制約・備考                 |
 | ------------ | ----------- | -------------------------- |
@@ -91,14 +91,14 @@
 
 ```mermaid
 erDiagram
-    users ||--o{ persons : registers
+    users ||--o{ contacts : registers
     users ||--o{ tags : creates
-    users ||--|| user_profiles : has
+    users ||--|| profiles : has
     users ||--o{ meetups : owns
-    meetups ||--o{ person_meetups : includes
-    persons ||--o{ person_meetups : attends
-    persons ||--o{ person_tags : tagged
-    tags ||--o{ person_tags : labels
+    meetups ||--o{ contact_meetups : includes
+    contacts ||--o{ contact_meetups : attends
+    contacts ||--o{ contact_tags : tagged
+    tags ||--o{ contact_tags : labels
 
     users {
         uuid id PK
@@ -118,7 +118,7 @@ erDiagram
         timestamptz updated_at
     }
 
-    persons {
+    contacts {
         uuid id PK
         uuid user_id FK
         text name
@@ -135,9 +135,9 @@ erDiagram
         timestamptz updated_at
     }
 
-    person_meetups {
+    contact_meetups {
         uuid id PK
-        uuid person_id FK
+        uuid contact_id FK
         uuid meetup_id FK
         timestamptz created_at
         timestamptz updated_at
@@ -151,15 +151,15 @@ erDiagram
         timestamptz updated_at
     }
 
-    person_tags {
+    contact_tags {
         uuid id PK
-        uuid person_id FK
+        uuid contact_id FK
         uuid tag_id FK
         timestamptz created_at
         timestamptz updated_at
     }
 
-    user_profiles {
+    profiles {
         uuid user_id PK
         text name
         text job
