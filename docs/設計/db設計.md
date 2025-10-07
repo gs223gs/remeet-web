@@ -43,13 +43,13 @@
 
 ## contact_meetups
 
-| カラム名   | 型          | 制約・備考                        |
-| ---------- | ----------- | --------------------------------- |
-| id         | uuid        | PK / `DEFAULT gen_random_uuid()`  |
-| contact_id | uuid        | NOT NULL / FK → `contacts.id`     |
-| meetup_id  | uuid        | NOT NULL / FK → `meetups.id`      |
-| created_at | timestamptz | NOT NULL / `DEFAULT now()`        |
-| updated_at | timestamptz | NOT NULL / トリガー更新           |
+| カラム名   | 型          | 制約・備考                       |
+| ---------- | ----------- | -------------------------------- |
+| id         | uuid        | PK / `DEFAULT gen_random_uuid()` |
+| contact_id | uuid        | NOT NULL / FK → `contacts.id`    |
+| meetup_id  | uuid        | NOT NULL / FK → `meetups.id`     |
+| created_at | timestamptz | NOT NULL / `DEFAULT now()`       |
+| updated_at | timestamptz | NOT NULL / トリガー更新          |
 
 ## tags
 
