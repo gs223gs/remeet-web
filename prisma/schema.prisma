@@ -1,0 +1,160 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LinkType {
+  GITHUB
+  TWITTER
+  WEBSITE
+  PRODUCT
+  OTHER
+}
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  profile  Profile?
+  contacts Contact[]
+  meetups  Meetup[]
+  tags     Tag[]
+}
+
+model Profile {
+  userId      String   @id @db.Uuid
+  name        String
+  job         String?
+  role        String?
+  company     String?
+  description String?
+  githubUrl   String?
+  twitterId   String?
+  profileUrl  String?
+  productName String?
+  productUrl  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Contact {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  name        String
+  company     String?
+  role        String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  links   ContactLink[]
+  meetups ContactMeetup[]
+  tags    ContactTag[]
+
+  @@index([userId])
+}
+
+model ContactLink {
+  id        String   @id @default(uuid()) @db.Uuid
+  contactId String   @db.Uuid
+  type      LinkType
+  label     String?
+  url       String
+  handle    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+  @@index([type])
+}
+
+model Meetup {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  name        String
+  scheduledAt DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contacts ContactMeetup[]
+
+  @@index([userId])
+}
+
+model ContactMeetup {
+  id        String   @id @default(uuid()) @db.Uuid
+  contactId String   @db.Uuid
+  meetupId  String   @db.Uuid
+  // Context fields
+  note      String?
+  rating    Int?
+  metAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  meetup  Meetup  @relation(fields: [meetupId], references: [id], onDelete: Cascade)
+
+  @@unique([contactId, meetupId])
+  @@index([meetupId])
+  @@index([contactId])
+}
+
+model Tag {
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @db.Uuid
+  name      String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  // Relations
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contacts ContactTag[]
+
+  @@index([userId])
+  @@unique([userId, name])
+}
+
+model ContactTag {
+  id        String   @id @default(uuid()) @db.Uuid
+  contactId String   @db.Uuid
+  tagId     String   @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([contactId, tagId])
+  @@index([tagId])
+  @@index([contactId])
+}
