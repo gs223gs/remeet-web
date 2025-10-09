@@ -1,4 +1,4 @@
-import { PrismaClient, LinkType } from "../lib/generated/prisma";
+import { PrismaClient, LinkType } from "@prisma/client";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
