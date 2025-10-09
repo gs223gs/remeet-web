@@ -7,6 +7,7 @@
 | id             | uuid        | PK / `DEFAULT gen_random_uuid()` |
 | name           | text        | NOT NULL                         |
 | email          | text        | NOT NULL / UNIQUE                |
+| password_hash  | text        | NULL 可（OAuth中心のため任意。bcryptで保存） |
 | email_verified | boolean     | NOT NULL / `DEFAULT false`       |
 | created_at     | timestamptz | NOT NULL / `DEFAULT now()`       |
 | updated_at     | timestamptz | NOT NULL / トリガー更新          |
@@ -109,6 +110,7 @@ erDiagram
         uuid id PK
         text name
         text email
+        text password_hash
         boolean email_verified
         timestamptz created_at
         timestamptz updated_at
