@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import GitHub from "next-auth/providers/github";
 export const authConfig = {
   pages: {
     signIn: "/login",
@@ -16,5 +17,5 @@ export const authConfig = {
       return true;
     },
   },
-  providers: [],
+  providers: [GitHub],
 } satisfies NextAuthConfig;
