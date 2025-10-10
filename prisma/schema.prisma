@@ -32,7 +32,7 @@ model User {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Profile   Profile[]
+  profile   Profile?
   Contact   Contact[]
   Meetup    Meetup[]
   Tag       Tag[]
@@ -67,6 +67,7 @@ model Session {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  @@index([userId])
 }
 
 model Profile {

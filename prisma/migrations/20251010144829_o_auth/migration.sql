@@ -3,11 +3,11 @@ CREATE TYPE "LinkType" AS ENUM ('GITHUB', 'TWITTER', 'WEBSITE', 'PRODUCT', 'OTHE
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" UUID NOT NULL,
-    "name" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
+    "name" TEXT,
     "email" TEXT NOT NULL,
-    "passwordHash" TEXT,
-    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "emailVerified" TIMESTAMP(3),
+    "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -15,8 +15,36 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "Account" (
+    "userId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "providerAccountId" TEXT NOT NULL,
+    "refresh_token" TEXT,
+    "access_token" TEXT,
+    "expires_at" INTEGER,
+    "token_type" TEXT,
+    "scope" TEXT,
+    "id_token" TEXT,
+    "session_state" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Account_pkey" PRIMARY KEY ("provider","providerAccountId")
+);
+
+-- CreateTable
+CREATE TABLE "Session" (
+    "sessionToken" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "expires" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "Profile" (
-    "userId" UUID NOT NULL,
+    "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "job" TEXT,
     "role" TEXT,
@@ -35,8 +63,8 @@ CREATE TABLE "Profile" (
 
 -- CreateTable
 CREATE TABLE "Contact" (
-    "id" UUID NOT NULL,
-    "userId" UUID NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "company" TEXT,
     "role" TEXT,
@@ -49,8 +77,8 @@ CREATE TABLE "Contact" (
 
 -- CreateTable
 CREATE TABLE "ContactLink" (
-    "id" UUID NOT NULL,
-    "contactId" UUID NOT NULL,
+    "id" TEXT NOT NULL,
+    "contactId" TEXT NOT NULL,
     "type" "LinkType" NOT NULL,
     "label" TEXT,
     "url" TEXT NOT NULL,
@@ -63,8 +91,8 @@ CREATE TABLE "ContactLink" (
 
 -- CreateTable
 CREATE TABLE "Meetup" (
-    "id" UUID NOT NULL,
-    "userId" UUID NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "scheduledAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -75,9 +103,9 @@ CREATE TABLE "Meetup" (
 
 -- CreateTable
 CREATE TABLE "ContactMeetup" (
-    "id" UUID NOT NULL,
-    "contactId" UUID NOT NULL,
-    "meetupId" UUID NOT NULL,
+    "id" TEXT NOT NULL,
+    "contactId" TEXT NOT NULL,
+    "meetupId" TEXT NOT NULL,
     "note" TEXT,
     "rating" INTEGER,
     "metAt" TIMESTAMP(3),
@@ -89,8 +117,8 @@ CREATE TABLE "ContactMeetup" (
 
 -- CreateTable
 CREATE TABLE "Tag" (
-    "id" UUID NOT NULL,
-    "userId" UUID NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -100,9 +128,9 @@ CREATE TABLE "Tag" (
 
 -- CreateTable
 CREATE TABLE "ContactTag" (
-    "id" UUID NOT NULL,
-    "contactId" UUID NOT NULL,
-    "tagId" UUID NOT NULL,
+    "id" TEXT NOT NULL,
+    "contactId" TEXT NOT NULL,
+    "tagId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -111,6 +139,12 @@ CREATE TABLE "ContactTag" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
+
+-- CreateIndex
+CREATE INDEX "Session_userId_idx" ON "Session"("userId");
 
 -- CreateIndex
 CREATE INDEX "Contact_userId_idx" ON "Contact"("userId");
@@ -147,6 +181,12 @@ CREATE INDEX "ContactTag_contactId_idx" ON "ContactTag"("contactId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ContactTag_contactId_tagId_key" ON "ContactTag"("contactId", "tagId");
+
+-- AddForeignKey
+ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
