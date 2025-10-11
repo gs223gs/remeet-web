@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../lib/generated/prisma"
 }
 
 datasource db {
@@ -23,23 +22,58 @@ enum LinkType {
 }
 
 model User {
-  id            String   @id @default(uuid()) @db.Uuid
-  name          String
-  email         String   @unique
-  passwordHash  String?
-  emailVerified Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
 
-  // Relations
-  profile  Profile?
-  contacts Contact[]
-  meetups  Meetup[]
-  tags     Tag[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  profile   Profile?
+  Contact   Contact[]
+  Meetup    Meetup[]
+  Tag       Tag[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Profile {
-  userId      String   @id @db.Uuid
+  userId      String   @id
   name        String
   job         String?
   role        String?
@@ -58,8 +92,8 @@ model Profile {
 }
 
 model Contact {
-  id          String   @id @default(uuid()) @db.Uuid
-  userId      String   @db.Uuid
+  id          String   @id @default(cuid())
+  userId      String
   name        String
   company     String?
   role        String?
@@ -68,7 +102,7 @@ model Contact {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   links   ContactLink[]
   meetups ContactMeetup[]
   tags    ContactTag[]
@@ -77,8 +111,8 @@ model Contact {
 }
 
 model ContactLink {
-  id        String   @id @default(uuid()) @db.Uuid
-  contactId String   @db.Uuid
+  id        String   @id @default(cuid())
+  contactId String
   type      LinkType
   label     String?
   url       String
@@ -94,24 +128,24 @@ model ContactLink {
 }
 
 model Meetup {
-  id          String   @id @default(uuid()) @db.Uuid
-  userId      String   @db.Uuid
+  id          String   @id @default(cuid())
+  userId      String
   name        String
   scheduledAt DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
-  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   contacts ContactMeetup[]
 
   @@index([userId])
 }
 
 model ContactMeetup {
-  id        String   @id @default(uuid()) @db.Uuid
-  contactId String   @db.Uuid
-  meetupId  String   @db.Uuid
+  id        String    @id @default(cuid())
+  contactId String
+  meetupId  String
   // Context fields
   note      String?
   rating    Int?
@@ -130,24 +164,24 @@ model ContactMeetup {
 }
 
 model Tag {
-  id        String       @id @default(uuid()) @db.Uuid
-  userId    String       @db.Uuid
+  id        String   @id @default(cuid())
+  userId    String
   name      String
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   contacts ContactTag[]
 
-  @@index([userId])
   @@unique([userId, name])
+  @@index([userId])
 }
 
 model ContactTag {
-  id        String   @id @default(uuid()) @db.Uuid
-  contactId String   @db.Uuid
-  tagId     String   @db.Uuid
+  id        String   @id @default(cuid())
+  contactId String
+  tagId     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
