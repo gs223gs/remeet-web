@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/auth";
 import { Contact } from "@prisma/client";
+import { DashboardSummary, ContactDTO } from "@/type/private/dashboard";
 /**
  * @description
  *
@@ -11,14 +12,14 @@ import { Contact } from "@prisma/client";
 export const getRecentlyContacts = async (
   userId: string,
 ): Promise<Contact[]> => {
-  const user = await getUser();
   const contacts = await prisma.contact.findMany({});
   return contacts;
 };
 
 //contacts の中からランダムに表示
-export const getRandomContacts = async (userId: string): Promise<Contact[]> => {
-  const user = await getUser();
+export const getRandomContacts = async (
+  userId: string,
+): Promise<ContactDTO[]> => {
   const contacts = await prisma.contact.findMany({});
   return contacts;
 };
@@ -26,7 +27,6 @@ export const getRandomContacts = async (userId: string): Promise<Contact[]> => {
 
 //今年出会った人
 export const getThisYearContacts = async (userId: string): Promise<number> => {
-  const user = await getUser();
   const contacts = await prisma.contact.count({});
   return contacts;
 };
@@ -34,8 +34,7 @@ export const getThisYearContacts = async (userId: string): Promise<number> => {
 //前回のmeetup 出会った人を表示
 export const getLastMeetupContacts = async (
   userId: string,
-): Promise<Contact[]> => {
-  const user = await getUser();
+): Promise<ContactDTO[]> => {
   const contacts = await prisma.contact.findMany({});
   return contacts;
 };
@@ -46,7 +45,7 @@ export const getMeetupCount = async (userId: string): Promise<number> => {
   return meetupCount;
 };
 
-export const getUserDashboardSummary = async () => {
+export const getUserDashboardSummary = async (): Promise<DashboardSummary> => {
   const user = await getUser();
   if (!user?.id) return false;
   const summary = {
