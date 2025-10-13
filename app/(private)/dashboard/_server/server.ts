@@ -27,7 +27,17 @@ export const getRandomContacts = async (
 
 //今年出会った人
 export const getThisYearContacts = async (userId: string): Promise<number> => {
-  const contacts = await prisma.contact.count({});
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+  const contacts = await prisma.contact.count({
+    where: {
+      userId: userId,
+      createdAt: {
+        gte: startOfYear,
+      },
+    },
+  });
   return contacts;
 };
 
