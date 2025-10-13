@@ -1,6 +1,6 @@
 import { Contact } from "@prisma/client";
 import { DateTime } from "next-auth/providers/kakao";
-
+import { Result } from "../error/error";
 //dashboard ページのための型
 export type DashboardSummary = {
   randomContact?: ContactDTO;
@@ -15,3 +15,5 @@ export type ContactDTO = {
   meetupScheduledAt: DateTime;
   name: string;
 };
+
+export type DashboardResult = Result<DashboardSummary>;

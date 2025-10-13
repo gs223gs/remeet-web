@@ -2,7 +2,12 @@
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/auth";
 import { Contact } from "@prisma/client";
-import { DashboardSummary, ContactDTO } from "@/type/private/dashboard";
+import {
+  DashboardResult,
+  ContactDTO,
+  DashboardSummary,
+} from "@/type/private/dashboard";
+import { Result, AppError } from "@/type/error/error";
 /**
  * @description
  *
@@ -11,7 +16,7 @@ import { DashboardSummary, ContactDTO } from "@/type/private/dashboard";
 //最近あった人を取得する
 export const getRecentlyContacts = async (
   userId: string,
-): Promise<Contact[]> => {
+): Promise<ContactDTO[]> => {
   const contacts = await prisma.contact.findMany({});
   return contacts;
 };
@@ -26,6 +31,7 @@ export const getRandomContacts = async (
 //クイック登録 これ迷い中
 
 //今年出会った人
+//TODO error handring
 export const getThisYearContacts = async (userId: string): Promise<number> => {
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
@@ -51,19 +57,30 @@ export const getLastMeetupContacts = async (
 
 //meetup の数を表示
 export const getMeetupCount = async (userId: string): Promise<number> => {
-  const meetupCount = await prisma.meetup.count({});
+  const meetupCount = await prisma.meetup.count({
+    where: {
+      userId: userId,
+    },
+  });
   return meetupCount;
 };
-
-export const getUserDashboardSummary = async (): Promise<DashboardSummary> => {
+//TODO return 後で変更しなければいけない
+export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
   const user = await getUser();
-  if (!user?.id) return false;
-  const summary = {
+  if (!user?.id)
+    return {
+      ok: false,
+      error: { code: "authorization", message: "" },
+    };
+  const summary: DashboardSummary = {
     recentlyContacts: await getRecentlyContacts(user.id),
     randomContacts: await getRandomContacts(user.id),
     thisYearContacts: await getThisYearContacts(user.id),
     lastMeetupContacts: await getLastMeetupContacts(user.id),
     meetupCount: await getMeetupCount(user.id),
   };
-  return summary;
+  return {
+    ok: true,
+    data: summary,
+  };
 };
