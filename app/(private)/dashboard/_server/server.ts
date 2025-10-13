@@ -1,15 +1,60 @@
 "server-only";
+import { prisma } from "@/lib/prisma";
+import { getUser } from "@/auth";
+import { Contact } from "@prisma/client";
 /**
  * @description
  *
  */
 
 //最近あった人を取得する
+export const getRecentlyContacts = async (
+  userId: string,
+): Promise<Contact[]> => {
+  const user = await getUser();
+  const contacts = await prisma.contact.findMany({});
+  return contacts;
+};
 
 //contacts の中からランダムに表示
-
-//クイック登録
+export const getRandomContacts = async (userId: string): Promise<Contact[]> => {
+  const user = await getUser();
+  const contacts = await prisma.contact.findMany({});
+  return contacts;
+};
+//クイック登録 これ迷い中
 
 //今年出会った人
+export const getThisYearContacts = async (userId: string): Promise<number> => {
+  const user = await getUser();
+  const contacts = await prisma.contact.count({});
+  return contacts;
+};
 
 //前回のmeetup 出会った人を表示
+export const getLastMeetupContacts = async (
+  userId: string,
+): Promise<Contact[]> => {
+  const user = await getUser();
+  const contacts = await prisma.contact.findMany({});
+  return contacts;
+};
+
+//meetup の数を表示
+export const getMeetupCount = async (userId: string): Promise<number> => {
+  const meetupCount = await prisma.meetup.count({});
+  return meetupCount;
+};
+
+export const getUserDashboardSummary = async () => {
+  const user = await getUser();
+  if (!user?.id) return false;
+  const summary = {
+    recentlyContacts: await getRecentlyContacts(user.id),
+    randomContacts: await getRandomContacts(user.id),
+    thisYearContacts: await getThisYearContacts(user.id),
+    lastMeetupContacts: await getLastMeetupContacts(user.id),
+    meetupCount: await getMeetupCount(user.id),
+  };
+  return summary;
+};
