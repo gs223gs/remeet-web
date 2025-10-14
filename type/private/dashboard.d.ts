@@ -1,5 +1,3 @@
-import { Contact } from "@prisma/client";
-import { DateTime } from "next-auth/providers/kakao";
 import { Result } from "../error/error";
 //dashboard ページのための型
 export type DashboardSummary = {
@@ -11,9 +9,11 @@ export type DashboardSummary = {
 };
 
 export type ContactDTO = {
+  meetupId: string;
   meetupName: string;
-  meetupScheduledAt: DateTime;
-  name: string;
+  meetupScheduledAt: Date;
+  contactId: string;
+  contactName: string;
 };
 
 export type DashboardResult = Result<DashboardSummary>;
