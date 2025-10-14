@@ -21,48 +21,62 @@ export const getThisYearContacts = async (userId: string): Promise<number> => {
 export const getLastMeetupContacts = async (
   userId: string,
 ): Promise<ContactDTO[]> => {
-  const latest = await prisma.meetup.findFirst({
-    where: { userId },
-    orderBy: { scheduledAt: "desc" },
-    include: {
-      contacts: {
-        include: {
-          contact: {
-            select: { name: true },
+  try {
+    const latest = await prisma.meetup.findFirst({
+      where: { userId },
+      orderBy: { scheduledAt: "desc" },
+      include: {
+        contacts: {
+          include: {
+            contact: {
+              select: { name: true },
+            },
           },
         },
       },
-    },
-  });
+    });
 
-  if (!latest) return [];
+    if (!latest) return [];
 
-  return latest.contacts.map((cm) => ({
-    meetupId: cm.meetupId,
-    meetupName: latest.name,
-    meetupScheduledAt: latest.scheduledAt,
-    contactId: cm.contactId,
-    contactName: cm.contact.name,
-  }));
+    return latest.contacts.map((cm) => ({
+      meetupId: cm.meetupId,
+      meetupName: latest.name,
+      meetupScheduledAt: latest.scheduledAt,
+      contactId: cm.contactId,
+      contactName: cm.contact.name,
+    }));
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 };
 
 export const getMeetupCount = async (userId: string): Promise<number> => {
-  const meetupCount = await prisma.meetup.count({
-    where: {
-      userId: userId,
-    },
-  });
-  return meetupCount;
+  try {
+    const meetupCount = await prisma.meetup.count({
+      where: {
+        userId: userId,
+      },
+    });
+    return meetupCount;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
 };
 
 export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
-  const user = await getUser();
-  if (!user?.id)
-    return {
-      ok: false,
-      error: { code: "unauthenticated", message: "" },
-    };
   try {
+    const user = await getUser();
+    if (!user?.id)
+      return {
+        ok: false,
+        error: {
+          code: "unauthenticated",
+          message: "情報取得に失敗しましたこのこの",
+        },
+      };
+
     const [thisYearContactCount, lastMeetupContacts, meetupCount] =
       await Promise.all([
         getThisYearContacts(user.id),
@@ -79,9 +93,10 @@ export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
       },
     };
   } catch (error) {
+    console.error(error);
     return {
       ok: false,
-      error: { code: "unknown", message: "" },
+      error: { code: "db_error", message: "情報取得に失敗しました" },
     };
   }
 };
