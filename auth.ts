@@ -9,8 +9,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
 });
 
-//TODO 絶対間違っているから後でやる
 export const getUser = async () => {
   const session = await auth();
-  return session?.user;
+
+  if (!session?.user?.email) return null;
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user?.email },
+  });
+
+  if (!user) return null;
+
+  return user;
 };
