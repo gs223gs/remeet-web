@@ -68,12 +68,13 @@ export const getMeetupCount = async (userId: string): Promise<number> => {
 export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
   try {
     const user = await getUser();
-    if (!user?.id)
+
+    if (!user)
       return {
         ok: false,
         error: {
           code: "unauthenticated",
-          message: "情報取得に失敗しましたこのこの",
+          message: "情報取得に失敗しました",
         },
       };
 
