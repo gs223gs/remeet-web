@@ -21,13 +21,6 @@ export const getRecentlyContacts = async (
   return contacts;
 };
 
-// contacts の中からランダムに表示
-export const getRandomContacts = async (
-  userId: string,
-): Promise<ContactDTO[]> => {
-  const random = await prisma.contact.findMany({});
-  return;
-};
 //クイック登録 これ迷い中
 
 // 今年出会った人
@@ -96,13 +89,11 @@ export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
   try {
     const [
       recentlyContacts,
-      randomContacts,
       thisYearContactCount,
       lastMeetupContacts,
       meetupCount,
     ] = await Promise.all([
       getRecentlyContacts(user.id),
-      getRandomContacts(user.id),
       getThisYearContacts(user.id),
       getLastMeetupContacts(user.id),
       getMeetupCount(user.id),
@@ -112,7 +103,6 @@ export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
       ok: true,
       data: {
         recentlyContacts,
-        randomContacts,
         thisYearContactCount,
         lastMeetupContacts,
         meetupCount,
