@@ -7,7 +7,7 @@ export type DashboardSummary = {
   recentlyContacts?: ContactDTO[];
   lastMeetupContacts?: ContactDTO[];
   thisYearContactCount?: number;
-  meetupConut?: number;
+  meetupCount?: number;
 };
 
 export type ContactDTO = {
