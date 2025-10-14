@@ -1,30 +1,8 @@
 "server-only";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/auth";
-import { Contact } from "@prisma/client";
-import {
-  DashboardResult,
-  ContactDTO,
-  DashboardSummary,
-} from "@/type/private/dashboard";
-import { Result, AppError } from "@/type/error/error";
-/**
- * @description
- *
- */
+import { DashboardResult, ContactDTO } from "@/type/private/dashboard";
 
-// 最近会った人を取得する
-export const getRecentlyContacts = async (
-  userId: string,
-): Promise<ContactDTO[]> => {
-  const contacts = await prisma.contact.findMany({});
-  return contacts;
-};
-
-//クイック登録 これ迷い中
-
-// 今年出会った人
-// TODO error handling
 export const getThisYearContacts = async (userId: string): Promise<number> => {
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
@@ -40,7 +18,6 @@ export const getThisYearContacts = async (userId: string): Promise<number> => {
   return contacts;
 };
 
-//前回のmeetup 出会った人を表示
 export const getLastMeetupContacts = async (
   userId: string,
 ): Promise<ContactDTO[]> => {
@@ -69,7 +46,6 @@ export const getLastMeetupContacts = async (
   }));
 };
 
-//meetup の数を表示
 export const getMeetupCount = async (userId: string): Promise<number> => {
   const meetupCount = await prisma.meetup.count({
     where: {
@@ -78,7 +54,7 @@ export const getMeetupCount = async (userId: string): Promise<number> => {
   });
   return meetupCount;
 };
-//TODO return 後で変更しなければいけない
+
 export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
   const user = await getUser();
   if (!user?.id)
