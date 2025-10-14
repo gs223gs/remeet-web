@@ -25,8 +25,8 @@ export const getRecentlyContacts = async (
 export const getRandomContacts = async (
   userId: string,
 ): Promise<ContactDTO[]> => {
-  const contacts = await prisma.contact.findMany({});
-  return contacts;
+  const random = await prisma.contact.findMany({});
+  return;
 };
 //クイック登録 これ迷い中
 
@@ -51,8 +51,29 @@ export const getThisYearContacts = async (userId: string): Promise<number> => {
 export const getLastMeetupContacts = async (
   userId: string,
 ): Promise<ContactDTO[]> => {
-  const contacts = await prisma.contact.findMany({});
-  return contacts;
+  const latest = await prisma.meetup.findFirst({
+    where: { userId },
+    orderBy: { scheduledAt: "desc" },
+    include: {
+      contacts: {
+        include: {
+          contact: {
+            select: { name: true },
+          },
+        },
+      },
+    },
+  });
+
+  if (!latest) return [];
+
+  return latest.contacts.map((cm) => ({
+    meetupId: cm.meetupId,
+    meetupName: latest.name,
+    meetupScheduledAt: latest.scheduledAt,
+    contactId: cm.contactId,
+    contactName: cm.contact.name,
+  }));
 };
 
 //meetup の数を表示
