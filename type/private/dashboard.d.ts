@@ -1,7 +1,6 @@
 import { Result } from "../error/error";
 //dashboard ページのための型
 export type DashboardSummary = {
-  recentlyContacts: ContactDTO[];
   lastMeetupContacts: ContactDTO[];
   thisYearContactCount: number;
   meetupCount: number;

@@ -87,22 +87,16 @@ export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
       error: { code: "unauthenticated", message: "" },
     };
   try {
-    const [
-      recentlyContacts,
-      thisYearContactCount,
-      lastMeetupContacts,
-      meetupCount,
-    ] = await Promise.all([
-      getRecentlyContacts(user.id),
-      getThisYearContacts(user.id),
-      getLastMeetupContacts(user.id),
-      getMeetupCount(user.id),
-    ]);
+    const [thisYearContactCount, lastMeetupContacts, meetupCount] =
+      await Promise.all([
+        getThisYearContacts(user.id),
+        getLastMeetupContacts(user.id),
+        getMeetupCount(user.id),
+      ]);
 
     return {
       ok: true,
       data: {
-        recentlyContacts,
         thisYearContactCount,
         lastMeetupContacts,
         meetupCount,
