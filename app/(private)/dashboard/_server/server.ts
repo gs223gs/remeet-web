@@ -13,7 +13,7 @@ import { Result, AppError } from "@/type/error/error";
  *
  */
 
-//最近あった人を取得する
+// 最近会った人を取得する
 export const getRecentlyContacts = async (
   userId: string,
 ): Promise<ContactDTO[]> => {
@@ -21,7 +21,7 @@ export const getRecentlyContacts = async (
   return contacts;
 };
 
-//contacts の中からランダムに表示
+// contacts の中からランダムに表示
 export const getRandomContacts = async (
   userId: string,
 ): Promise<ContactDTO[]> => {
@@ -30,8 +30,8 @@ export const getRandomContacts = async (
 };
 //クイック登録 これ迷い中
 
-//今年出会った人
-//TODO error handring
+// 今年出会った人
+// TODO error handling
 export const getThisYearContacts = async (userId: string): Promise<number> => {
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
@@ -70,17 +70,37 @@ export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
   if (!user?.id)
     return {
       ok: false,
-      error: { code: "authorization", message: "" },
+      error: { code: "unauthenticated", message: "" },
     };
-  const summary: DashboardSummary = {
-    recentlyContacts: await getRecentlyContacts(user.id),
-    randomContacts: await getRandomContacts(user.id),
-    thisYearContacts: await getThisYearContacts(user.id),
-    lastMeetupContacts: await getLastMeetupContacts(user.id),
-    meetupCount: await getMeetupCount(user.id),
-  };
-  return {
-    ok: true,
-    data: summary,
-  };
+  try {
+    const [
+      recentlyContacts,
+      randomContacts,
+      thisYearContactCount,
+      lastMeetupContacts,
+      meetupCount,
+    ] = await Promise.all([
+      getRecentlyContacts(user.id),
+      getRandomContacts(user.id),
+      getThisYearContacts(user.id),
+      getLastMeetupContacts(user.id),
+      getMeetupCount(user.id),
+    ]);
+
+    return {
+      ok: true,
+      data: {
+        recentlyContacts,
+        randomContacts,
+        thisYearContactCount,
+        lastMeetupContacts,
+        meetupCount,
+      },
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error: { code: "unknown", message: "" },
+    };
+  }
 };
