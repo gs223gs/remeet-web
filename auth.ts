@@ -8,3 +8,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [GitHub],
   session: { strategy: "jwt" },
 });
+
+export const getUser = async () => {
+  const session = await auth();
+
+  if (!session?.user?.email) return null;
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user?.email },
+  });
+
+  if (!user) return null;
+
+  return user;
+};
