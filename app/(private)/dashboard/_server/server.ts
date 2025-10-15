@@ -5,7 +5,7 @@ import { DashboardResult, ContactDTO } from "@/type/private/dashboard";
 
 export const getThisYearContacts = async (userId: string): Promise<number> => {
   const now = new Date();
-  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const startOfYear = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
 
   const contacts = await prisma.contact.count({
     where: {
