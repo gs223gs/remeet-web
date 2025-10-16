@@ -74,7 +74,7 @@ export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
         ok: false,
         error: {
           code: "unauthenticated",
-          message: "情報取得に失敗しました",
+          message: ["情報取得に失敗しました"],
         },
       };
 
@@ -97,7 +97,14 @@ export const getUserDashboardSummary = async (): Promise<DashboardResult> => {
     console.error(error);
     return {
       ok: false,
-      error: { code: "db_error", message: "情報取得に失敗しました" },
+      error: { code: "db_error", message: ["情報取得に失敗しました"] },
     };
   }
 };
+
+// - ヘルパー
+// - requireUserResult(): Promise<{ ok: true; user: User } | { ok: false; error: { code: 'unauthenticated'; message: string } }>
+// - 使い方
+// - const r = await requireUserResult(); if (!r.ok) return r; const user = r.user;
+// - イメージ
+// - unauthenticatedの文面やコードはヘルパー内で固定し統一できる。

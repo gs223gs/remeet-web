@@ -9,7 +9,7 @@ type ErrorCode =
 
 export type AppError = {
   code: ErrorCode;
-  message: string; // UIに出せる安全な文言
+  message: string[]; // UIに出せる安全な文言
   details?: unknown; // 内部用の追加情報（ログ用）
 };
 
