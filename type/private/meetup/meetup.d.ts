@@ -20,9 +20,13 @@ export type MeetupDetailContact = {
   tags: string[];
 };
 
-export type MeetupDetailSummary = {
+export type MeetupDetailWithContacts = {
   detail: MeetupDetail;
   contacts: MeetupDetailContact[];
+};
+export type MeetupDetailSummary = {
+  detailWithContacts: MeetupDetailWithContacts;
+  contactCount: number;
 };
 
 export type MeetupDetailResult = Result<MeetupDetailSummary>;
