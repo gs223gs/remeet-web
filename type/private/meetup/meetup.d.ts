@@ -14,6 +14,7 @@ export type MeetupDetail = {
 };
 
 export type MeetupDetailContact = {
+  id: string;
   name: string;
   company?: string;
   role?: string;
