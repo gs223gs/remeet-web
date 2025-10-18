@@ -12,7 +12,10 @@ import {
 /**
  * @returns number
  */
-const getMeetupContactsCount = async (): Promise<number> => {
+const getMeetupContactsCount = async (
+  meetupId: string,
+  userId: string,
+): Promise<number> => {
   return 1;
 };
 
@@ -21,20 +24,35 @@ const getMeetupContactsCount = async (): Promise<number> => {
 /**
  * @returns MeetupDetail
  */
-const getMeetupDetailWithContacts =
-  async (): Promise<MeetupDetailWithContacts> => {
-    const date = new Date();
-    return {
-      detail: { id: "", name: "", scheduledAt: date },
-      contacts: [{ name: "", tags: [] }],
-    };
+const getMeetupDetailWithContacts = async (
+  meetupId: string,
+  userId: string,
+): Promise<MeetupDetailWithContacts> => {
+  const date = new Date();
+  return {
+    detail: { id: "", name: "", scheduledAt: date },
+    contacts: [{ name: "", tags: [] }],
   };
+};
 
 // 最終的に全てをまとめて返す
-export const getMeetupDetailSummary = async (): Promise<MeetupDetailResult> => {
+export const getMeetupDetailSummary = async (
+  meetupId: string,
+): Promise<MeetupDetailResult> => {
+  const user = await getUser();
+
+  if (!user)
+    return {
+      ok: false,
+      error: {
+        code: "unauthenticated",
+        message: ["情報取得に失敗しました"],
+      },
+    };
+
   const [contactsCount, meetupDetailWithContacts] = await Promise.all([
-    getMeetupContactsCount(),
-    getMeetupDetailWithContacts(),
+    getMeetupContactsCount(meetupId, user.id),
+    getMeetupDetailWithContacts(meetupId, user.id),
   ]);
   return {
     ok: true,
