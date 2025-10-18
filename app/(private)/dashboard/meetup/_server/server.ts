@@ -7,17 +7,6 @@ import {
   MeetupDetailWithContacts,
   MeetupDetailResult,
 } from "@/type/private/meetup/meetup";
-// meetupで出会った人の数
-
-/**
- * @returns number
- */
-const getMeetupContactsCount = async (
-  meetupId: string,
-  userId: string,
-): Promise<number> => {
-  return 1;
-};
 
 // meetupの詳細情報
 // contactsの簡易情報
@@ -50,14 +39,15 @@ export const getMeetupDetailSummary = async (
       },
     };
 
-  const [contactsCount, meetupDetailWithContacts] = await Promise.all([
-    getMeetupContactsCount(meetupId, user.id),
-    getMeetupDetailWithContacts(meetupId, user.id),
-  ]);
+  const meetupDetailWithContacts = await getMeetupDetailWithContacts(
+    meetupId,
+    user.id,
+  );
+
   return {
     ok: true,
     data: {
-      contactCount: contactsCount,
+      contactCount: meetupDetailWithContacts.contacts.length,
       detailWithContacts: meetupDetailWithContacts,
     },
   };
