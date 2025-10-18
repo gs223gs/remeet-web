@@ -1,7 +1,7 @@
 "server-only";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/auth";
-import { DashboardResult, ContactDTO } from "@/type/private/dashboard";
+import { DashboardResult, DashboardContactDTO } from "@/type/private/dashboard";
 
 export const getThisYearContacts = async (userId: string): Promise<number> => {
   const now = new Date();
@@ -20,7 +20,7 @@ export const getThisYearContacts = async (userId: string): Promise<number> => {
 
 export const getLastMeetupContacts = async (
   userId: string,
-): Promise<ContactDTO[]> => {
+): Promise<DashboardContactDTO[]> => {
   try {
     const latest = await prisma.meetup.findFirst({
       where: { userId },
