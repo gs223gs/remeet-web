@@ -3,10 +3,10 @@ import { getMeetupDetailSummary } from "../_server/server";
 export default async function MeetupDetail({
   params,
 }: {
-  params: { id: string };
+  params: { meetupId: string };
 }) {
-  const { id } = await params;
-  const detail = await getMeetupDetailSummary(id);
+  const { meetupId } = await params;
+  const detail = await getMeetupDetailSummary(meetupId);
   if (!detail.ok) return <div>error</div>;
   return (
     <div>
