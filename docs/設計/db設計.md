@@ -1,23 +1,23 @@
 # DB 設計
 
-## users
+## users（OAuthのみ / cuid）
 
-| カラム名       | 型          | 制約・備考                       |
-| -------------- | ----------- | -------------------------------- |
-| id             | uuid        | PK / `DEFAULT gen_random_uuid()` |
-| name           | text        | NOT NULL                         |
-| email          | text        | NOT NULL / UNIQUE                |
-| password_hash  | text        | NULL 可（OAuth中心のため任意。bcryptで保存） |
-| email_verified | boolean     | NOT NULL / `DEFAULT false`       |
-| created_at     | timestamptz | NOT NULL / `DEFAULT now()`       |
-| updated_at     | timestamptz | NOT NULL / トリガー更新          |
+| カラム名       | 型          | 制約・備考                              |
+| -------------- | ----------- | --------------------------------------- |
+| id             | text        | PK / cuid（`DEFAULT cuid()` 相当）      |
+| name           | text        | NULL 可                                 |
+| email          | text        | NOT NULL / UNIQUE                       |
+| email_verified | timestamptz | NULL 可（Auth.jsの `emailVerified` 準拠） |
+| image          | text        | NULL 可                                 |
+| created_at     | timestamptz | NOT NULL / `DEFAULT now()`              |
+| updated_at     | timestamptz | NOT NULL / トリガー更新                 |
 
-## contacts
+## contacts（cuid）
 
 | カラム名    | 型          | 制約・備考                           |
 | ----------- | ----------- | ------------------------------------ |
-| id          | uuid        | PK / `DEFAULT gen_random_uuid()`     |
-| user_id     | uuid        | NOT NULL / FK → `users.id`（所有者） |
+| id          | text        | PK / cuid                            |
+| user_id     | text        | NOT NULL / FK → `users.id`（所有者） |
 | name        | text        | NOT NULL                             |
 | job         | text        | NULL 可                              |
 | role        | text        | NULL 可                              |
@@ -28,24 +28,24 @@
 
 ※ 外部リンク等の可変情報は `contact_links` へ分離
 
-## meetups
+## meetups（cuid）
 
 | カラム名     | 型          | 制約・備考                       |
 | ------------ | ----------- | -------------------------------- |
-| id           | uuid        | PK / `DEFAULT gen_random_uuid()` |
-| user_id      | uuid        | NOT NULL / FK → `users.id`       |
+| id           | text        | PK / cuid                        |
+| user_id      | text        | NOT NULL / FK → `users.id`       |
 | name         | text        | NOT NULL                         |
 | scheduled_at | timestamptz | NOT NULL（開催/参加日時）        |
 | created_at   | timestamptz | NOT NULL / `DEFAULT now()`       |
 | updated_at   | timestamptz | NOT NULL / トリガー更新          |
 
-## contact_meetups
+## contact_meetups（cuid）
 
 | カラム名   | 型          | 制約・備考                                    |
 | ---------- | ----------- | --------------------------------------------- |
-| id         | uuid        | PK / `DEFAULT gen_random_uuid()`              |
-| contact_id | uuid        | NOT NULL / FK → `contacts.id`                 |
-| meetup_id  | uuid        | NOT NULL / FK → `meetups.id`                  |
+| id         | text        | PK / cuid                                     |
+| contact_id | text        | NOT NULL / FK → `contacts.id`                 |
+| meetup_id  | text        | NOT NULL / FK → `meetups.id`                  |
 | note       | text        | NULL 可（その出会いでのメモ）                |
 | rating     | int         | NULL 可（評価など任意スコア）                |
 | met_at     | timestamptz | NULL 可（当日の上書き用など）                |
@@ -54,33 +54,33 @@
 
 一意制約: `(contact_id, meetup_id)` を推奨（同一組合せは一意）
 
-## tags
+## tags（cuid）
 
 | カラム名   | 型          | 制約・備考                       |
 | ---------- | ----------- | -------------------------------- |
-| id         | uuid        | PK / `DEFAULT gen_random_uuid()` |
-| user_id    | uuid        | NOT NULL / FK → `users.id`       |
+| id         | text        | PK / cuid                        |
+| user_id    | text        | NOT NULL / FK → `users.id`       |
 | name       | text        | NOT NULL                         |
 | created_at | timestamptz | NOT NULL / `DEFAULT now()`       |
 | updated_at | timestamptz | NOT NULL / トリガー更新          |
 
 一意制約（推奨）: `(user_id, name)` の複合一意
 
-## contact_tags
+## contact_tags（cuid）
 
 | カラム名   | 型          | 制約・備考                       |
 | ---------- | ----------- | -------------------------------- |
-| id         | uuid        | PK / `DEFAULT gen_random_uuid()` |
-| contact_id | uuid        | NOT NULL / FK → `contacts.id`    |
-| tag_id     | uuid        | NOT NULL / FK → `tags.id`        |
+| id         | text        | PK / cuid                        |
+| contact_id | text        | NOT NULL / FK → `contacts.id`    |
+| tag_id     | text        | NOT NULL / FK → `tags.id`        |
 | created_at | timestamptz | NOT NULL / `DEFAULT now()`       |
 | updated_at | timestamptz | NOT NULL / トリガー更新          |
 
-## profiles
+## profiles（cuid）
 
 | カラム名     | 型          | 制約・備考                 |
 | ------------ | ----------- | -------------------------- |
-| user_id      | uuid        | PK / FK → `users.id`       |
+| user_id      | text        | PK / FK → `users.id`       |
 | name         | text        | NOT NULL                   |
 | job          | text        | NULL 可                    |
 | role         | text        | NULL 可                    |
@@ -94,105 +94,189 @@
 | created_at   | timestamptz | NOT NULL / `DEFAULT now()` |
 | updated_at   | timestamptz | NOT NULL / トリガー更新    |
 
+## contact_links（cuid）
+
+| カラム名    | 型          | 制約・備考                        |
+| ----------- | ----------- | --------------------------------- |
+| id          | text        | PK / cuid                         |
+| contact_id  | text        | NOT NULL / FK → `contacts.id`     |
+| type        | text        | NOT NULL（`LinkType` 想定の文字列）|
+| label       | text        | NULL 可                           |
+| url         | text        | NOT NULL                          |
+| handle      | text        | NULL 可                           |
+| created_at  | timestamptz | NOT NULL / `DEFAULT now()`        |
+| updated_at  | timestamptz | NOT NULL / トリガー更新           |
+
+## categories（cuid）
+
+| カラム名    | 型          | 制約・備考                                  |
+| ----------- | ----------- | ------------------------------------------- |
+| id          | text        | PK / cuid                                   |
+| user_id     | text        | NOT NULL / FK → `users.id`（所有者）        |
+| name        | text        | NOT NULL                                     |
+| slug        | text        | NOT NULL / ユーザー内で一意推奨              |
+| parent_id   | text        | NULL 可 / FK → `categories.id`（自己参照）   |
+| sort_order  | int         | NULL 可                                     |
+| created_at  | timestamptz | NOT NULL / `DEFAULT now()`                   |
+| updated_at  | timestamptz | NOT NULL / トリガー更新                      |
+
+
+## contact_categories（cuid）
+
+| カラム名     | 型          | 制約・備考                             |
+| ------------ | ----------- | -------------------------------------- |
+| id           | text        | PK / cuid                              |
+| contact_id   | text        | NOT NULL / FK → `contacts.id`          |
+| category_id  | text        | NOT NULL / FK → `categories.id`        |
+| created_at   | timestamptz | NOT NULL / `DEFAULT now()`             |
+| updated_at   | timestamptz | NOT NULL / トリガー更新                |
+
+
+## accounts（Auth.js / Prisma Adapter, cuid）
+
+| カラム名              | 型          | 制約・備考                                       |
+| --------------------- | ----------- | ------------------------------------------------ |
+| user_id               | text        | NOT NULL / FK → `users.id`                       |
+| type                  | text        | NOT NULL                                         |
+| provider              | text        | NOT NULL                                         |
+| provider_account_id   | text        | NOT NULL                                         |
+| refresh_token         | text        | NULL 可                                          |
+| access_token          | text        | NULL 可                                          |
+| expires_at            | int         | NULL 可                                          |
+| token_type            | text        | NULL 可                                          |
+| scope                 | text        | NULL 可                                          |
+| id_token              | text        | NULL 可                                          |
+| session_state         | text        | NULL 可                                          |
+| created_at            | timestamptz | NOT NULL / `DEFAULT now()`                       |
+| updated_at            | timestamptz | NOT NULL / トリガー更新                          |
+
+主キー: `(provider, provider_account_id)` の複合主キー
+
+## sessions（Auth.js / Prisma Adapter, cuid）
+
+| カラム名       | 型          | 制約・備考                              |
+| -------------- | ----------- | --------------------------------------- |
+| session_token  | text        | UNIQUE                                   |
+| user_id        | text        | NOT NULL / FK → `users.id`               |
+| expires        | timestamptz | NOT NULL                                  |
+| created_at     | timestamptz | NOT NULL / `DEFAULT now()`                |
+| updated_at     | timestamptz | NOT NULL / トリガー更新                   |
+
 ```mermaid
 erDiagram
-    users ||--o{ contacts : registers
-    users ||--o{ tags : creates
-    users ||--|| profiles : has
-    users ||--o{ meetups : owns
-    meetups ||--o{ contact_meetups : includes
-    contacts ||--o{ contact_meetups : attends
-    contacts ||--o{ contact_tags : tagged
-    contacts ||--o{ contact_links : links
-    tags ||--o{ contact_tags : labels
+    User ||--o{ Account : has
+    User ||--o{ Session : has
+    User ||--|| Profile : has
+    User ||--o{ Contact : owns
+    User ||--o{ Meetup : hosts
+    User ||--o{ Tag : creates
 
-    users {
-        uuid id PK
-        text name
-        text email
-        text password_hash
-        boolean email_verified
-        timestamptz created_at
-        timestamptz updated_at
+    Contact ||--o{ ContactLink : contains
+    Contact ||--o{ ContactMeetup : participates
+    Contact ||--o{ ContactTag : tagged
+
+    Meetup ||--o{ ContactMeetup : includes
+    Tag ||--o{ ContactTag : labels
+
+    User {
+        string id
+        string name
+        string email
+        datetime emailVerified
+        string image
+        datetime createdAt
+        datetime updatedAt
     }
 
-    meetups {
-        uuid id PK
-        uuid user_id FK
-        text name
-        timestamptz scheduled_at
-        timestamptz created_at
-        timestamptz updated_at
+    Account {
+        string id
+        string userId
+        string provider
+        string providerAccountId
+        datetime createdAt
+        datetime updatedAt
     }
 
-    contacts {
-        uuid id PK
-        uuid user_id FK
-        text name
-        text job
-        text role
-        text company
-        text description
-        timestamptz created_at
-        timestamptz updated_at
+    Session {
+        string id
+        string userId
+        string sessionToken
+        datetime expires
+        datetime createdAt
+        datetime updatedAt
     }
 
-    contact_meetups {
-        uuid id PK
-        uuid contact_id FK
-        uuid meetup_id FK
-        text note
+    Profile {
+        string userId
+        string name
+        string job
+        string role
+        string company
+        string description
+        string githubUrl
+        string twitterId
+        string profileUrl
+        string productName
+        string productUrl
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Contact {
+        string id
+        string userId
+        string name
+        string company
+        string role
+        string description
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    ContactLink {
+        string id
+        string contactId
+        string type
+        string label
+        string url
+        string handle
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Meetup {
+        string id
+        string userId
+        string name
+        datetime scheduledAt
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    ContactMeetup {
+        string id
+        string contactId
+        string meetupId
+        string note
         int rating
-        timestamptz met_at
-        timestamptz created_at
-        timestamptz updated_at
+        datetime metAt
+        datetime createdAt
+        datetime updatedAt
     }
 
-    tags {
-        uuid id PK
-        uuid user_id FK
-        text name
-        timestamptz created_at
-        timestamptz updated_at
+    Tag {
+        string id
+        string userId
+        string name
+        datetime createdAt
+        datetime updatedAt
     }
 
-    contact_tags {
-        uuid id PK
-        uuid contact_id FK
-        uuid tag_id FK
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    contact_links {
-        uuid id PK
-        uuid contact_id FK
-        text type
-        text label
-        text url
-        text handle
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    profiles {
-        uuid user_id PK
-        text name
-        text job
-        text role
-        text company
-        text description
-        text github_url
-        text twitter_id
-        text profile_url
-        text product_name
-        text product_url
-        timestamptz created_at
-        timestamptz updated_at
+    ContactTag {
+        string id
+        string contactId
+        string tagId
+        datetime createdAt
+        datetime updatedAt
     }
 ```
-
-補足
-- `contacts` は恒久的な人物情報に限定し、外部リンクは `contact_links` に分離
-- 出会いの文脈（メモ/評価/会った日時など）は `contact_meetups` に保持
-- `tags` はユーザーごとに名前を一意にする運用を推奨
