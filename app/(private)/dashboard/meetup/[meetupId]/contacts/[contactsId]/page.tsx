@@ -41,8 +41,8 @@ export default async function ContactsDetail({
       </div>
       <div className="m-1 outline">
         タグ:
-        {(d.tags ?? []).map((t, idx) => (
-          <div key={"tag-" + idx} className="m-1 outline">
+        {(d.tags ?? []).map((t) => (
+          <div key={t.tagsId} className="m-1 outline">
             {t.name}
           </div>
         ))}
