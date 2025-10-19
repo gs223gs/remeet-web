@@ -1,12 +1,12 @@
-import { Result } from "../error/error";
+import { Result } from "@/type/error/error";
 //dashboard ページのための型
 export type DashboardSummary = {
-  lastMeetupContacts: ContactDTO[];
+  lastMeetupContacts: DashboardContactDTO[];
   thisYearContactCount: number;
   meetupCount: number;
 };
 
-export type ContactDTO = {
+export type DashboardContactDTO = {
   meetupId: string;
   meetupName: string;
   meetupScheduledAt: Date;
