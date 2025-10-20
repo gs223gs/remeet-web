@@ -8,7 +8,7 @@ export default async function Meetup() {
   }
 
   const list = res.data;
-
+  //TODO あとでなおす
   return (
     <div>
       <div>Meetups</div>
