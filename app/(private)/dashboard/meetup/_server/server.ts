@@ -142,7 +142,7 @@ export const getMeetup = async (): Promise<MeetupResult> => {
       },
     });
     //TODO あとで正しくする
-    if (!meetups) {
+    if (meetups.length === 0) {
       const date = new Date();
       return {
         ok: true,
