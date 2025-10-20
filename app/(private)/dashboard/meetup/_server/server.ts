@@ -178,7 +178,7 @@ export const getMeetup = async (): Promise<MeetupResult> => {
     return {
       ok: false,
       error: {
-        code: "unauthenticated",
+        code: "db_error",
         message: ["情報取得に失敗しました"],
       },
     };
