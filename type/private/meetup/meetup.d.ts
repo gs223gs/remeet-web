@@ -31,3 +31,9 @@ export type MeetupDetailSummary = {
 };
 
 export type MeetupDetailResult = Result<MeetupDetailSummary>;
+
+type MeetupSummary = {
+  meetup: MeetupDetail;
+  contactsCount: number;
+};
+export type MeetupResult = Result<MeetupSummary[]>;
