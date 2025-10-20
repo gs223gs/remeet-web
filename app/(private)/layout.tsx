@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/theme-provider";
 import "../globals.css";
 export const metadata = {
   title: "Next.js",
@@ -10,8 +11,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
-      <body>{children}</body>
+    <html lang="ja" suppressHydrationWarning>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
