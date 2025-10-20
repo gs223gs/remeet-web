@@ -6,6 +6,7 @@ import { getUser } from "@/auth";
 import {
   MeetupDetailResult,
   MeetupDetailSummary,
+  MeetupResult,
 } from "@/type/private/meetup/meetup";
 
 // meetupの詳細情報
@@ -112,4 +113,74 @@ export const getMeetupDetailSummary = async (
     ok: true,
     data: meetupDetailWithContacts,
   };
+};
+
+export const getMeetup = async (): Promise<MeetupResult> => {
+  const user = await getUser();
+
+  if (!user)
+    return {
+      ok: false,
+      error: {
+        code: "unauthenticated",
+        message: ["情報取得に失敗しました"],
+      },
+    };
+
+  try {
+    const meetups = await prisma.meetup.findMany({
+      where: { userId: user.id },
+      select: {
+        id: true,
+        name: true,
+        scheduledAt: true,
+        _count: {
+          select: {
+            contacts: true,
+          },
+        },
+      },
+    });
+    //TODO あとで正しくする
+    if (!meetups) {
+      const date = new Date();
+      return {
+        ok: true,
+        data: [
+          {
+            meetup: {
+              id: "",
+              name: "",
+              scheduledAt: date,
+            },
+            contactsCount: 0,
+          },
+        ],
+      };
+    }
+
+    return {
+      ok: true,
+      data: meetups.map((m) => {
+        return {
+          meetup: {
+            id: m.id,
+            name: m.name,
+            scheduledAt: m.scheduledAt,
+          },
+          contactsCount: m._count.contacts,
+        };
+      }),
+    };
+  } catch (error) {
+    console.error(error);
+    //TODO あとで正しくする
+    return {
+      ok: false,
+      error: {
+        code: "unauthenticated",
+        message: ["情報取得に失敗しました"],
+      },
+    };
+  }
 };
