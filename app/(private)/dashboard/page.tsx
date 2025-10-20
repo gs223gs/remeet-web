@@ -1,10 +1,13 @@
+import Link from "next/link";
 import { getUserDashboardSummary } from "./_server/server";
+
+export const dynamic = "force-dynamic";
 
 export default async function page() {
   const summary = await getUserDashboardSummary();
 
   if (!summary.ok) return <div>何かしらのエラーです</div>;
-
+  const id = "cmgqkfhg0000g6qqbc571th9w";
   return (
     <div>
       <div>{summary.data.meetupCount}</div>
@@ -20,6 +23,10 @@ export default async function page() {
           );
         })}
       </div>
+
+      <Link href={"dashboard/meetup/new"}>new</Link>
+      <Link href={`/dashboard/meetup/${id}`}>詳細へ</Link>
+      <Link href={"dashboard/meetup/"}>meetup</Link>
     </div>
   );
 }
