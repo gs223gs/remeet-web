@@ -13,7 +13,7 @@ export default async function Meetup() {
     <div>
       <div>Meetups</div>
       <div className="m-2 flex  gap-4">
-        {list.length === 0 ? (
+        {list.length === 0 || (list.length === 1 && !list[0].meetup.id) ? (
           <div>データがありません</div>
         ) : (
           list.map((m) => (
