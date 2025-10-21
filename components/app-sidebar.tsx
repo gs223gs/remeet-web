@@ -5,7 +5,7 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Home } from "lucide-react";
+import { Building, CircleUserRound, Home, Tag, Users } from "lucide-react";
 import Link from "next/link";
 
 export function AppSidebar() {
@@ -16,22 +16,45 @@ export function AppSidebar() {
         <SidebarGroup>
           <Link href={"/dashboard/"}>
             <span className=" flex  gap-2">
+              {/**あとでコンポーネント化する */}
               <Home />
               HOME
             </span>
           </Link>
         </SidebarGroup>
         <SidebarGroup>
-          <Link href={"/dashboard/meetup"}>meetup</Link>
+          <Link href={"/dashboard/meetup"}>
+            <span className=" flex  gap-2">
+              <Building />
+              MEETUPS
+            </span>
+          </Link>
         </SidebarGroup>
         <SidebarGroup>
-          <Link href={"/dashboard/contscts"}>contacts</Link>
+          <Link href={"/dashboard/contscts"}>
+            <span className=" flex  gap-2">
+              <Users />
+              CONTACTS
+            </span>
+          </Link>
         </SidebarGroup>
         <SidebarGroup>
-          <Link href={"/dashboard/tag"}>tag</Link>
+          <Link href={"/dashboard/tag"}>
+            <span className=" flex  gap-2">
+              <Tag />
+              TAGS
+            </span>
+          </Link>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <Link href={"/dashboard/porofile"}>
+          <span className=" flex  gap-2">
+            <CircleUserRound />
+            PROFILE
+          </span>
+        </Link>
+      </SidebarFooter>
     </Sidebar>
   );
 }
