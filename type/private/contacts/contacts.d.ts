@@ -1,7 +1,7 @@
 import { Result } from "@/type/error/error";
 import { LinkType } from "@prisma/client";
 type Tag = {
-  tagsId: string;
+  tagId: string;
   name: string;
 };
 
@@ -20,6 +20,13 @@ type ContactsDetailDTO = {
   description?: string;
   links?: ContactLink[];
   tags?: Tag[];
+};
+
+export type ContactsErrors = {
+  name?: string[];
+  scheduledAt?: string[];
+  auth?: "認証に失敗しました"; //TODO これ汎用性高くしたい
+  server?: "server error";
 };
 
 export type ContactsDetailResult = Result<ContactsDetailDTO>;
