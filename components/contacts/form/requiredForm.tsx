@@ -94,7 +94,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
         </span>
         <span>
           id:
-          <input type="text" name="github" />
+          <input type="text" name="githubId" />
         </span>
       </div>
       <div>
@@ -104,7 +104,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
         </span>
         <span>
           id:
-          <input type="text" name="twitter" />
+          <input type="text" name="twitterId" />
         </span>
       </div>
       <div>
@@ -114,7 +114,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
         </span>
         <span>
           id:
-          <input type="text" name="website" />
+          <input type="text" name="websiteUrl" />
         </span>
       </div>
       <div>
@@ -124,7 +124,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
         </span>
         <span>
           id:
-          <input type="text" name="product" />
+          <input type="text" name="productUrl" />
         </span>
       </div>
       <div>
