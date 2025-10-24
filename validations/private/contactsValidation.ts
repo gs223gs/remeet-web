@@ -1,9 +1,5 @@
 import z from "zod";
 
-const tagSchema = z.object({
-  id: z.string().min(1),
-});
-
 //TODO メッセージを後で考える
 export const createContactsSchema = z
   .object({
@@ -12,8 +8,8 @@ export const createContactsSchema = z
     role: z.string().optional(),
     description: z.string().optional(),
     tags: z
-      .array(tagSchema)
-      .refine((tags) => new Set(tags.map((t) => t.id)).size === tags.length, {
+      .array(z.string().min(1))
+      .refine((tags) => new Set(tags).size === tags.length, {
         message: "タグが重複しています",
       })
       .length(5)

@@ -10,6 +10,14 @@ describe("createContactsSchema", () => {
     expect(res.success).toBe(true);
   });
 
+  it("name が空文字だと失敗する", () => {
+    const input = {
+      name: "",
+    };
+    const res = createContactsSchema.safeParse(input);
+    expect(res.success).toBe(false);
+  });
+
   it("各ハンドルと対応ID(またはURL)が両方あれば成功する", () => {
     const input = {
       name: "Alice",
@@ -86,25 +94,19 @@ describe("createContactsSchema", () => {
     }
   });
 
-  it("tags に同一 id が含まれると失敗する", () => {
+  it("tags に同一タグ文字列が含まれると失敗する", () => {
     const input = {
       name: "Alice",
-      tags: [{ id: "t1" }, { id: "t1" }], // 別オブジェクトだが id が同じ
+      tags: ["t1", "t1"],
     };
     const res = createContactsSchema.safeParse(input);
     expect(res.success).toBe(false);
   });
 
-  it("tags の id がすべて異なり件数が仕様どおりなら成功する", () => {
+  it("tags が全て異なり件数が仕様どおりなら成功する", () => {
     const input = {
       name: "Alice",
-      tags: [
-        { id: "t1" },
-        { id: "t2" },
-        { id: "t3" },
-        { id: "t4" },
-        { id: "t5" },
-      ],
+      tags: ["t1", "t2", "t3", "t4", "t5"],
     };
     const res = createContactsSchema.safeParse(input);
     expect(res.success).toBe(true);
@@ -125,6 +127,25 @@ describe("createContactsSchema", () => {
     };
     const res = createContactsSchema.safeParse(input);
     expect(res.success).toBe(false);
+  });
+
+  it("tags の要素に空文字が含まれると失敗する", () => {
+    const input = {
+      name: "Alice",
+      tags: ["t1", ""],
+    };
+    const res = createContactsSchema.safeParse(input);
+    expect(res.success).toBe(false);
+  });
+
+  it("tags の件数が5以外なら失敗する", () => {
+    const input4 = { name: "Alice", tags: ["t1", "t2", "t3", "t4"] };
+    const input6 = {
+      name: "Alice",
+      tags: ["t1", "t2", "t3", "t4", "t5", "t6"],
+    };
+    expect(createContactsSchema.safeParse(input4).success).toBe(false);
+    expect(createContactsSchema.safeParse(input6).success).toBe(false);
   });
 
   it("productHandle のみ指定でも成功する（依存関係なし）", () => {
