@@ -120,31 +120,22 @@ describe("createContactsSchema", () => {
     expect(res.success).toBe(true);
   });
 
-  it("tags が空配列の場合は失敗する（長さ要件）", () => {
+  it("tags が空配列でも成功する（最大5件のため）", () => {
     const input = {
       name: "Alice",
       tags: [],
     };
     const res = createContactsSchema.safeParse(input);
-    expect(res.success).toBe(false);
+    expect(res.success).toBe(true);
   });
 
-  it("tags の要素に空文字が含まれると失敗する", () => {
-    const input = {
-      name: "Alice",
-      tags: ["t1", ""],
-    };
-    const res = createContactsSchema.safeParse(input);
-    expect(res.success).toBe(false);
-  });
-
-  it("tags の件数が5以外なら失敗する", () => {
+  it("tags の件数が6以上なら失敗する（最大5件）", () => {
     const input4 = { name: "Alice", tags: ["t1", "t2", "t3", "t4"] };
     const input6 = {
       name: "Alice",
       tags: ["t1", "t2", "t3", "t4", "t5", "t6"],
     };
-    expect(createContactsSchema.safeParse(input4).success).toBe(false);
+    expect(createContactsSchema.safeParse(input4).success).toBe(true);
     expect(createContactsSchema.safeParse(input6).success).toBe(false);
   });
 

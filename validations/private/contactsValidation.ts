@@ -8,11 +8,11 @@ export const createContactsSchema = z
     role: z.string().optional(),
     description: z.string().optional(),
     tags: z
-      .array(z.string().min(1))
+      .array(z.string())
       .refine((tags) => new Set(tags).size === tags.length, {
         message: "タグが重複しています",
       })
-      .length(5)
+      .max(5)
       .optional(),
     githubHandle: z.string().optional(),
     githubId: z.string().optional(),
