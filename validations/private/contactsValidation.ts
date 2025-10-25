@@ -1,7 +1,7 @@
 import z from "zod";
-
+import { coerceFormValue } from "@conform-to/zod/v4/future";
 //TODO メッセージを後で考える
-export const createContactsSchema = z
+export const createContactsFrontSchema = z
   .object({
     name: z.string().min(1),
     company: z.string().optional(),
@@ -65,5 +65,7 @@ export const createContactsSchema = z
       path: ["other"],
     },
   );
-
-export type CreateContactsSchema = z.infer<typeof createContactsSchema>;
+export const createContactsActionSchema = coerceFormValue(
+  createContactsFrontSchema,
+);
+export type CreateContactsSchema = z.infer<typeof createContactsFrontSchema>;

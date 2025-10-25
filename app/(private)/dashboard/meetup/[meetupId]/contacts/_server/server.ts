@@ -74,7 +74,7 @@ export const getContactDetail = async (
         }),
         tags: detail.tags.map((t) => {
           return {
-            tagsId: t.id,
+            tagId: t.id,
             name: t.tag.name,
           };
         }),

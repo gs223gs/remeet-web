@@ -16,7 +16,7 @@ import {
   getUserDashboardSummary,
   getLastMeetupContacts,
   getMeetupCount,
-} from "../app/(private)/dashboard/_server/server";
+} from "@/app/(private)/dashboard/_server/server";
 
 describe("ダッシュボードのサーバー関数", () => {
   beforeEach(() => {

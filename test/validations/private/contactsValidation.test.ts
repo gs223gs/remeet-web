@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { createContactsSchema } from "@/validations/private/contactsValidation";
+import { createContactsFrontSchema } from "@/validations/private/contactsValidation";
 
 describe("createContactsSchema", () => {
   it("必須最小項目のみで成功する", () => {
     const input = {
       name: "Alice",
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(true);
   });
 
@@ -14,7 +14,7 @@ describe("createContactsSchema", () => {
     const input = {
       name: "",
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(false);
   });
 
@@ -32,7 +32,7 @@ describe("createContactsSchema", () => {
       otherHandle: "otherh",
       other: "othervalue",
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(true);
   });
 
@@ -41,7 +41,7 @@ describe("createContactsSchema", () => {
       name: "Alice",
       githubHandle: "alice",
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(false);
     if (!res.success) {
       const issue = res.error.issues.find(
@@ -56,7 +56,7 @@ describe("createContactsSchema", () => {
       name: "Alice",
       twitterHandle: "alice",
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(false);
     if (!res.success) {
       const issue = res.error.issues.find(
@@ -71,7 +71,7 @@ describe("createContactsSchema", () => {
       name: "Alice",
       websiteHandle: "site",
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(false);
     if (!res.success) {
       const issue = res.error.issues.find(
@@ -86,7 +86,7 @@ describe("createContactsSchema", () => {
       name: "Alice",
       otherHandle: "oh",
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(false);
     if (!res.success) {
       const issue = res.error.issues.find((i) => i.path.join(".") === "other");
@@ -99,7 +99,7 @@ describe("createContactsSchema", () => {
       name: "Alice",
       tags: ["t1", "t1"],
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(false);
   });
 
@@ -108,7 +108,7 @@ describe("createContactsSchema", () => {
       name: "Alice",
       tags: ["t1", "t2", "t3", "t4", "t5"],
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(true);
   });
 
@@ -116,7 +116,7 @@ describe("createContactsSchema", () => {
     const input = {
       name: "Alice",
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(true);
   });
 
@@ -125,7 +125,7 @@ describe("createContactsSchema", () => {
       name: "Alice",
       tags: [],
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(true);
   });
 
@@ -135,8 +135,8 @@ describe("createContactsSchema", () => {
       name: "Alice",
       tags: ["t1", "t2", "t3", "t4", "t5", "t6"],
     };
-    expect(createContactsSchema.safeParse(input4).success).toBe(true);
-    expect(createContactsSchema.safeParse(input6).success).toBe(false);
+    expect(createContactsFrontSchema.safeParse(input4).success).toBe(true);
+    expect(createContactsFrontSchema.safeParse(input6).success).toBe(false);
   });
 
   it("productHandle のみ指定でも成功する（依存関係なし）", () => {
@@ -144,7 +144,7 @@ describe("createContactsSchema", () => {
       name: "Alice",
       productHandle: "p",
     };
-    const res = createContactsSchema.safeParse(input);
+    const res = createContactsFrontSchema.safeParse(input);
     expect(res.success).toBe(true);
   });
 });
