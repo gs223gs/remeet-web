@@ -63,15 +63,18 @@ export const createContacts = async (
           auth: "認証に失敗しました",
         },
       };
-
-    //TODO transaction でやるよね
-    //TODO contact へのinsert
-    //TODO contactTag へのinsert バルクinsert
-    //TODO prismaで同時に行けるか調べる => いけた
-    //TODO TAG の存在確認 findMany
-    //TODO linkの作成 バルクinsert
-    const isVerifyTags = await verifyTags(validatedFields.data?.tags);
-
+    //TODO リファクタリング対象
+    //ちょっと不愉快
+    const tags = validatedFields.data.tags;
+    if (tags?.length) {
+      const isVerifyTags = await verifyTags(tags, user.id);
+      if (!isVerifyTags) {
+        return {
+          success: false,
+          errors: { auth: "認証に失敗しました" },
+        };
+      }
+    }
     await prisma.$transaction(async (tx) => {
       const createdContact = await tx.contact.create({
         data: {
@@ -90,6 +93,8 @@ export const createContacts = async (
         },
       });
 
+      //TODO ここ本当に変えたい 冗長すぎる
+      //? type ContactsLink の url:string を undefined 許容にすれば解決だけど，そのために型を増やしたくない && DBと合わないから嫌だ
       const insertLinks = [
         {
           type: "GITHUB" as LinkType,
@@ -116,7 +121,7 @@ export const createContacts = async (
           url: validatedFields.data.productUrl,
           handle: validatedFields.data.productHandle,
         },
-      ];
+      ] as const;
 
       const filterInsertLinks: CreateContactLink[] = insertLinks.flatMap((l) =>
         l.url
@@ -133,7 +138,15 @@ export const createContacts = async (
 
       await tx.contactLink.createMany({ data: filterInsertLinks });
 
-      if (isVerifyTags) await tx.contactTag.create({});
+      //TODO not elegantですね
+      if (tags?.length) {
+        const insertTags = tags.map((t) => {
+          return { contactId: createdContact.id, tagId: t };
+        });
+        await tx.contactTag.createMany({
+          data: insertTags,
+        });
+      }
     });
 
     return {
@@ -149,12 +162,18 @@ export const createContacts = async (
   }
 };
 
-const verifyTags = async (tags: string[] | undefined): Promise<boolean> => {
-  if (!tags) return false;
-
+/**
+ *
+ * @param tags
+ * @returns boolean
+ *
+ * @description フロントから送られてきたタグをDBで検証する関数 フロントから送られてきたタグの数とDB fetchしたタグの数が一致していれば true を返す
+ */
+const verifyTags = async (tags: string[], userId: string): Promise<boolean> => {
   try {
     const fetchTags = await prisma.tag.findMany({
       where: {
+        userId: userId,
         id: {
           in: tags,
         },
