@@ -12,6 +12,7 @@ type ContactLink = {
   handle?: string;
 };
 
+type CreateContactLink = Omit<ContactLink, "id">;
 type ContactsDetailDTO = {
   id: string;
   name: string;
