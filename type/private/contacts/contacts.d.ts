@@ -25,6 +25,7 @@ type ContactsDetailDTO = {
   tags?: Tag[];
 };
 
+//TODO これそもそもschemaと合ってないから治す
 export type ContactsErrors = {
   name?: string[];
   scheduledAt?: string[];
