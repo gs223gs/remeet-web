@@ -113,7 +113,7 @@ export const createContacts = async (
         },
         {
           type: "PRODUCT" as LinkType,
-          url: validatedFields.data.productHandle,
+          url: validatedFields.data.productUrl,
           handle: validatedFields.data.productHandle,
         },
       ];
@@ -122,6 +122,7 @@ export const createContacts = async (
         l.url
           ? [
               {
+                contactId: createdContact.id,
                 type: l.type,
                 url: l.url,
                 ...(l.handle ? { handle: l.handle } : {}),
@@ -130,7 +131,7 @@ export const createContacts = async (
           : [],
       );
 
-      await tx.contactLink.createMany({});
+      await tx.contactLink.createMany({ data: filterInsertLinks });
 
       if (isVerifyTags) await tx.contactTag.create({});
     });
