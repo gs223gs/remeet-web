@@ -166,7 +166,7 @@ export const NewTag = ({
             if (createdTags.ok) {
               setSelectTags([
                 {
-                  id: createdTags.data.name,
+                  id: createdTags.data.id,
                   name: createdTags.data.name,
                 },
                 ...selectTags,
