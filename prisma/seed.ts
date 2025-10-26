@@ -3,7 +3,7 @@ import { PrismaClient, LinkType } from "@prisma/client";
 const prisma = new PrismaClient();
 
 // 固定ユーザーID（必要なら環境変数で上書き可）
-const USER_ID = process.env.SEED_USER_ID || "cmgmbm4ye00006q9h9410q5mi";
+const USER_ID = process.env.SEED_USER_ID || "cmh6o2t4300006q82a1f3kjhm";
 
 async function ensureUser() {
   // OAuth運用想定: 既存ユーザーがいなければ最低限の行を用意

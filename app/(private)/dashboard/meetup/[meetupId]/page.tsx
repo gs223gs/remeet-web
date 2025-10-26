@@ -12,6 +12,7 @@ export default async function MeetupDetail({
   return (
     <div>
       <div className=" text-3xl">出会った人:{detail.data.contactCount}</div>
+      <Link href={`/dashboard/meetup/${meetupId}/contacts/new`}>new</Link>
       <div>meetup名: {detail.data.detailWithContacts.detail.name}</div>
       <div className="m-1 flex ">
         {detail.data.detailWithContacts.contacts.map((c) => {
