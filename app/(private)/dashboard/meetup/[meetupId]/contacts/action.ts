@@ -193,8 +193,8 @@ export const createTag = async (newTag: string): Promise<Result<Tag>> => {
     return {
       ok: false,
       error: {
-        code: "unauthenticated",
-        message: ["情報取得に失敗しました"],
+        code: "db_error",
+        message: ["タグの作成に失敗しました"],
       },
     };
   }
