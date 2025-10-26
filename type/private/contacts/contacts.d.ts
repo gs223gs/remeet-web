@@ -1,9 +1,5 @@
 import { Result } from "@/type/error/error";
 import { LinkType } from "@prisma/client";
-type Tag = {
-  id: string;
-  name: string;
-};
 
 type ContactLink = {
   id: string;
