@@ -2,7 +2,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/auth";
-import { ContactsDetailResult } from "@/type/private/contacts/contacts";
+import { ContactsDetailResult, Tag } from "@/type/private/contacts/contacts";
+import { Result } from "@/type/error/error";
 
 export const getContactDetail = async (
   contactsId: string,
@@ -74,7 +75,7 @@ export const getContactDetail = async (
         }),
         tags: detail.tags.map((t) => {
           return {
-            tagId: t.id,
+            id: t.id,
             name: t.tag.name,
           };
         }),
@@ -87,6 +88,44 @@ export const getContactDetail = async (
       error: {
         code: "unauthenticated",
         message: ["情報取得に失敗しました"],
+      },
+    };
+  }
+};
+
+export const getTags = async (): Promise<Result<Tag[]>> => {
+  const user = await getUser();
+
+  if (!user)
+    return {
+      ok: false,
+      error: {
+        code: "unauthenticated",
+        message: ["情報取得に失敗しました"],
+      },
+    };
+
+  try {
+    const tags = await prisma.tag.findMany({
+      where: { userId: user.id },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+    return {
+      ok: true,
+      data: tags,
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      //TODO ハンドリング考える
+      ok: false,
+      error: {
+        code: "db_error",
+        message: [],
       },
     };
   }

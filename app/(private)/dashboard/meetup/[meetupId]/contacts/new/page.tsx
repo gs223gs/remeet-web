@@ -1,4 +1,5 @@
 import RequiredForm from "@/components/contacts/form/requiredForm";
+import { getTags } from "../_server/server";
 
 export default async function CreateContacts({
   params,
@@ -6,9 +7,9 @@ export default async function CreateContacts({
   params: Promise<{ meetupId: string }>;
 }) {
   const { meetupId } = await params;
-  //TODO tags がモックだから実装する
+  const tags = await getTags();
 
-  return (
-    <RequiredForm meetupId={meetupId} tags={[{ id: "dawdaw", name: "aaaa" }]} />
-  );
+  //TODO エラーハンドリングを変える
+  if (!tags.ok) return <p>tag取得に失敗しました</p>;
+  return <RequiredForm meetupId={meetupId} tags={tags.data} />;
 }
