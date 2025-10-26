@@ -136,8 +136,9 @@ export const createContacts = async (
           : [],
       );
 
-      await tx.contactLink.createMany({ data: filterInsertLinks });
-
+      if (filterInsertLinks.length) {
+        await tx.contactLink.createMany({ data: filterInsertLinks });
+      }
       //TODO not elegantですね
       if (tags?.length) {
         const insertTags = tags.map((t) => {
