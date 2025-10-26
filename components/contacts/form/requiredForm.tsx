@@ -146,6 +146,7 @@ export const NewTag = ({
   selectTags,
 }: NewTagProps) => {
   const [isPending, startTransition] = useTransition();
+  const [functionMessage, setFunctionMessage] = useState<string[]>([]);
 
   if (isPending) return <p>追加中</p>;
   return (
@@ -158,6 +159,7 @@ export const NewTag = ({
         }}
         value={newTag}
       />
+
       <button
         type="button"
         onClick={() => {
@@ -172,12 +174,17 @@ export const NewTag = ({
                 ...selectTags,
               ]);
               setNewTag("");
+              setFunctionMessage([]);
+            }
+            if (!createdTags.ok) {
+              setFunctionMessage(createdTags.error.message);
             }
           });
         }}
       >
         追加
       </button>
+      {functionMessage && <p>{functionMessage}</p>}
     </div>
   );
 };
