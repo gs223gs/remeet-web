@@ -12,6 +12,9 @@ type ContactLink = {
   handle?: string;
 };
 
+type CreateContactLink = Omit<ContactLink, "id"> & {
+  contactId: string;
+};
 type ContactsDetailDTO = {
   id: string;
   name: string;
@@ -22,6 +25,7 @@ type ContactsDetailDTO = {
   tags?: Tag[];
 };
 
+//TODO これそもそもschemaと合ってないから治す
 export type ContactsErrors = {
   name?: string[];
   scheduledAt?: string[];

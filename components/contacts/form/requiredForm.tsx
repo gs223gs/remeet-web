@@ -24,6 +24,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
   if (isPending) return <div>pending</div>;
   return (
     <form action={action} className="flex flex-col m-4 outline">
+      {state.success ? <p>true</p> : <p>false</p>}
       name:
       <input type="text" name="name" placeholder="name" />
       comp: <input type="text" name="company" placeholder="company" />
@@ -41,7 +42,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
         <button
           type="button"
           onClick={() => {
-            //ここでDBにtagをsubmit して返り値を取りたい
+            //TODO ここでDBにtagをsubmit して返り値を取りたい
             // createTag() //user id は session から
             setSelectTags([{ tagId: "", name: tag }, ...selectTags]);
             setTag("");
@@ -72,7 +73,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
         {selectTags.map((t) => {
           return (
             <div key={t.tagId} className="outline flex">
-              <input defaultValue={t.tagId} name="tagId" type="hidden" />
+              <input defaultValue={t.tagId} name="tags" type="hidden" />
               <span>{t.name}</span>
               <button
                 onClick={() => {

@@ -11,7 +11,7 @@ const getUserMock = vi.hoisted(() => vi.fn());
 vi.mock("@/auth", () => ({ getUser: getUserMock }));
 
 // Import target after mocks are set up
-import { getMeetupDetailWithContacts } from "../app/(private)/dashboard/meetup/_server/server";
+import { getMeetupDetailWithContacts } from "@/app/(private)/dashboard/meetup/_server/server";
 
 describe("getMeetupDetailWithContacts のテスト", () => {
   beforeEach(() => {
