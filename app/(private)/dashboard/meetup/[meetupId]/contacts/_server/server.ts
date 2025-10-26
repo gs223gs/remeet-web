@@ -118,7 +118,7 @@ export const getTags = async (): Promise<Result<Tag[]>> => {
       data: tags,
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return {
       //TODO ハンドリング考える
