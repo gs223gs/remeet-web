@@ -6,8 +6,13 @@
 
 - Next.js App Router
 - shadcn, tailwind
-- storybook,
+- prisma, zod
+- ~~storybook~~
 - supabase
+
+# AI について
+基本的な実装はAIではなく私が行っています
+(学習の一環 + 自分の実力を示すため)
 
 # 設計
 
@@ -26,3 +31,6 @@
 ルート / SSG
 login / SSR
 register / SSR
+
+## 備考
+コロケーションを意識してました.
