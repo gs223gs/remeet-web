@@ -59,7 +59,10 @@ export default function RequiredForm({ meetupId, tags }: Props) {
               key={t.id}
               onClick={() => {
                 setSelectTags([...selectTags, t]);
-                setContactTags([]);
+                const filterContactsTags = contactTags.filter(
+                  (c) => t.id != c.id,
+                );
+                setContactTags([...filterContactsTags]);
                 console.log("clicked");
               }}
             >
