@@ -4,15 +4,18 @@ type Props = {
   tags: Tag[];
 };
 
-import { useActionState, useState } from "react";
-import { createContacts } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
-import { Tag } from "@/type/private/contacts/contacts";
+import { useActionState, useState, useTransition } from "react";
+import {
+  createContacts,
+  createTag,
+} from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
+import { Tag } from "@/type/private/tags/tags";
 export default function RequiredForm({ meetupId, tags }: Props) {
   //formをCSR ページをSSR にする ページでタグを取得して form に props で渡す
   const createContactsWithMeetupId = createContacts.bind(null, meetupId);
   const [contactTags, setContactTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
-  const [tag, setTag] = useState<string>("");
+  const [newTag, setNewTag] = useState<string>("");
   const [state, action, isPending] = useActionState(
     createContactsWithMeetupId,
     {
@@ -30,27 +33,12 @@ export default function RequiredForm({ meetupId, tags }: Props) {
       comp: <input type="text" name="company" placeholder="company" />
       role: <input type="text" name="role" placeholder="role" />
       disc: <textarea name="description" />
-      <div>
-        <input
-          type="text"
-          placeholder="タグを追加"
-          onChange={(e) => {
-            setTag(e.target.value);
-          }}
-          value={tag}
-        />
-        <button
-          type="button"
-          onClick={() => {
-            //TODO ここでDBにtagをsubmit して返り値を取りたい
-            // createTag() //user id は session から
-            setSelectTags([{ id: "", name: tag }, ...selectTags]);
-            setTag("");
-          }}
-        >
-          追加
-        </button>
-      </div>
+      <NewTag
+        newTag={newTag}
+        setNewTag={setNewTag}
+        setSelectTags={setSelectTags}
+        selectTags={selectTags}
+      />
       <div className="outline m-5">
         {contactTags.map((t) => {
           return (
@@ -144,3 +132,59 @@ export default function RequiredForm({ meetupId, tags }: Props) {
     </form>
   );
 }
+
+type NewTagProps = {
+  setNewTag: (s: string) => void;
+  newTag: string;
+  selectTags: Tag[];
+  setSelectTags: (t: Tag[]) => void;
+};
+export const NewTag = ({
+  newTag,
+  setNewTag,
+  setSelectTags,
+  selectTags,
+}: NewTagProps) => {
+  const [isPending, startTransition] = useTransition();
+  const [functionMessage, setFunctionMessage] = useState<string[]>([]);
+
+  if (isPending) return <p>追加中</p>;
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="タグを追加"
+        onChange={(e) => {
+          setNewTag(e.target.value);
+        }}
+        value={newTag}
+      />
+
+      <button
+        type="button"
+        onClick={() => {
+          startTransition(async () => {
+            const createdTags = await createTag(newTag);
+            if (createdTags.ok) {
+              setSelectTags([
+                {
+                  id: createdTags.data.id,
+                  name: createdTags.data.name,
+                },
+                ...selectTags,
+              ]);
+              setNewTag("");
+              setFunctionMessage([]);
+            }
+            if (!createdTags.ok) {
+              setFunctionMessage(createdTags.error.message);
+            }
+          });
+        }}
+      >
+        追加
+      </button>
+      {functionMessage && <p>{functionMessage}</p>}
+    </div>
+  );
+};

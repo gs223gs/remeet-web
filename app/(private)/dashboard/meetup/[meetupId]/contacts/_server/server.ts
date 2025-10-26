@@ -2,8 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/auth";
-import { ContactsDetailResult, Tag } from "@/type/private/contacts/contacts";
+import { ContactsDetailResult } from "@/type/private/contacts/contacts";
 import { Result } from "@/type/error/error";
+import { Tag } from "@/type/private/tags/tags";
 
 export const getContactDetail = async (
   contactsId: string,

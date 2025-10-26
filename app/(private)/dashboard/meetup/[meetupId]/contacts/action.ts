@@ -8,6 +8,8 @@ import {
 } from "@/type/private/contacts/contacts";
 import { createContactsActionSchema } from "@/validations/private/contactsValidation";
 import { LinkType } from "@prisma/client";
+import { Result } from "@/type/error/error";
+import { Tag } from "@/type/private/tags/tags";
 
 export const createContacts = async (
   meetupId: string,
@@ -163,6 +165,41 @@ export const createContacts = async (
   }
 };
 
+//TODO validation
+export const createTag = async (newTag: string): Promise<Result<Tag>> => {
+  try {
+    const user = await getUser();
+    if (!user)
+      return {
+        ok: false,
+        error: {
+          code: "unauthenticated",
+          message: ["情報取得に失敗しました"],
+        },
+      };
+
+    const createdTag = await prisma.tag.create({
+      data: {
+        userId: user.id,
+        name: newTag,
+      },
+    });
+
+    return {
+      ok: true,
+      data: createdTag,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      ok: false,
+      error: {
+        code: "db_error",
+        message: ["タグの作成に失敗しました"],
+      },
+    };
+  }
+};
 /**
  *
  * @param tags
