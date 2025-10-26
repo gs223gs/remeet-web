@@ -9,9 +9,6 @@ export default async function CreateContacts({
   //TODO tags がモックだから実装する
 
   return (
-    <RequiredForm
-      meetupId={meetupId}
-      tags={[{ tagId: "dawdaw", name: "aaaa" }]}
-    />
+    <RequiredForm meetupId={meetupId} tags={[{ id: "dawdaw", name: "aaaa" }]} />
   );
 }

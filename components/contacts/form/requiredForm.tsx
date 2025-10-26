@@ -44,7 +44,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
           onClick={() => {
             //TODO ここでDBにtagをsubmit して返り値を取りたい
             // createTag() //user id は session から
-            setSelectTags([{ tagId: "", name: tag }, ...selectTags]);
+            setSelectTags([{ id: "", name: tag }, ...selectTags]);
             setTag("");
           }}
         >
@@ -56,7 +56,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
           return (
             <div
               className="outline"
-              key={t.tagId}
+              key={t.id}
               onClick={() => {
                 setSelectTags([...selectTags, t]);
                 setContactTags([]);
@@ -72,8 +72,8 @@ export default function RequiredForm({ meetupId, tags }: Props) {
         {/*TODO あとでセレクトボックスにする */}
         {selectTags.map((t) => {
           return (
-            <div key={t.tagId} className="outline flex">
-              <input defaultValue={t.tagId} name="tags" type="hidden" />
+            <div key={t.id} className="outline flex">
+              <input defaultValue={t.id} name="tags" type="hidden" />
               <span>{t.name}</span>
               <button
                 onClick={() => {
