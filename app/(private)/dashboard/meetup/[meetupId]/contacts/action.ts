@@ -165,6 +165,7 @@ export const createContacts = async (
   }
 };
 
+//TODO validation
 export const createTag = async (newTag: string): Promise<Result<Tag>> => {
   try {
     const user = await getUser();
