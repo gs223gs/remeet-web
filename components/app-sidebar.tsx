@@ -31,7 +31,7 @@ export function AppSidebar() {
           </Link>
         </SidebarGroup>
         <SidebarGroup>
-          <Link href={"/dashboard/contscts"}>
+          <Link href={"/dashboard/meetup/contacts"}>
             <span className=" flex  gap-2">
               <Users />
               CONTACTS
