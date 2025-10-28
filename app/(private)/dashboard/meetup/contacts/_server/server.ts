@@ -73,21 +73,25 @@ export const getContacts = async (): Promise<
           company: c.company ?? undefined,
           role: c.role ?? undefined,
           links:
-            c.links.map((l) => {
-              return {
-                id: l.id,
-                type: l.type,
-                handle: l.handle ?? undefined,
-                url: l.url,
-              };
-            }) ?? undefined,
+            c.links.length > 0
+              ? c.links.map((l) => {
+                  return {
+                    id: l.id,
+                    type: l.type,
+                    handle: l.handle ?? undefined,
+                    url: l.url,
+                  };
+                })
+              : undefined,
           tags:
-            c.tags.map((t) => {
-              return {
-                id: t.tag.id,
-                name: t.tag.name,
-              };
-            }) ?? undefined,
+            c.tags.length > 0
+              ? c.tags.map((t) => {
+                  return {
+                    id: t.tag.id,
+                    name: t.tag.name,
+                  };
+                })
+              : undefined,
           meetup: {
             id: first.meetup.id,
             name: first.meetup.name,
