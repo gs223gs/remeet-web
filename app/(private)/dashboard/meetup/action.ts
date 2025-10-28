@@ -61,18 +61,22 @@ export const updateMeetup = async (
   formData: FormData,
 ): Promise<ActionState<MeetupErrors>> => {
   const rawFormData = {
-    id: meetupId,
-    name: formData.get("name"),
-    scheduleAt: formData.get("scheduleAt"),
+    name: formData.get("name") as string,
+    scheduledAt: formData.get("scheduledAt") as string,
   };
 
+  console.log("rawData: ", rawFormData);
+
   const validatedFields = createMeetupSchema.safeParse(rawFormData);
+  console.log(validatedFields);
   if (!validatedFields.success) {
     return {
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+
+  console.log("validation", validatedFields.data);
 
   try {
     const user = await getUser();
@@ -97,7 +101,7 @@ export const updateMeetup = async (
       };
     }
 
-    await prisma.meetup.update({
+    const a = await prisma.meetup.update({
       where: {
         id: meetup.id,
       },
@@ -106,6 +110,8 @@ export const updateMeetup = async (
         scheduledAt: validatedFields.data.scheduledAt,
       },
     });
+
+    console.log("prisma:", a);
 
     return {
       success: true,
