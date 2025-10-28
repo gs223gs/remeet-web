@@ -55,7 +55,54 @@ export const createMeetup = async (
 };
 
 //update
+export const updateMeetup = async (
+  meetupId: string,
+  _: ActionState<MeetupErrors>,
+  formData: FormData,
+): Promise<ActionState<MeetupErrors>> => {
+  const rawData = {
+    id: meetupId,
+    name: formData.get("name"),
+    scheduleAt: formData.get("scheduleAt"),
+  };
+  try {
+    const meetup = await prisma.meetup.findFirst({
+      where: { id: meetupId },
+    });
 
+    if (!meetup) {
+      return {
+        success: false,
+        errors: {
+          server: "server error",
+        },
+      };
+    }
+
+    await prisma.meetup.update({
+      where: {
+        id: meetup.id,
+      },
+      data: {
+        name: "",
+        scheduledAt: "",
+      },
+    });
+
+    return {
+      success: true,
+      errors: {},
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      errors: {
+        server: "server error",
+      },
+    };
+  }
+};
 //read
 
 //delete

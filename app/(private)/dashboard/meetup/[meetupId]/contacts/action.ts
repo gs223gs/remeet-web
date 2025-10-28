@@ -10,7 +10,7 @@ import { createContactsActionSchema } from "@/validations/private/contactsValida
 import { LinkType } from "@prisma/client";
 import { Result } from "@/type/error/error";
 import { Tag } from "@/type/private/tags/tags";
-import { MeetupDetail, MeetupErrors } from "@/type/private/meetup/meetup";
+import { MeetupErrors } from "@/type/private/meetup/meetup";
 
 export const createContacts = async (
   meetupId: string,
@@ -202,25 +202,6 @@ export const createTag = async (newTag: string): Promise<Result<Tag>> => {
   }
 };
 
-export const updateMeetup = async (
-  meetupId: string,
-  formData: FormData,
-): Promise<ActionState<MeetupErrors>> => {
-  try {
-    return {
-      success: true,
-      errors: {},
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      errors: {
-        server: "server error",
-      },
-    };
-  }
-};
 /**
  *
  * @param tags
