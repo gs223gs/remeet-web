@@ -39,6 +39,7 @@ export default async function MeetupDetail({
           );
         })}
       </div>
+      <Link href={`/dashboard/meetup/${meetupId}/edit`}>meetupの編集</Link>
     </div>
   );
 }
