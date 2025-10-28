@@ -65,18 +65,13 @@ export const updateMeetup = async (
     scheduledAt: formData.get("scheduledAt") as string,
   };
 
-  console.log("rawData: ", rawFormData);
-
   const validatedFields = createMeetupSchema.safeParse(rawFormData);
-  console.log(validatedFields);
   if (!validatedFields.success) {
     return {
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-
-  console.log("validation", validatedFields.data);
 
   try {
     const user = await getUser();
@@ -101,7 +96,7 @@ export const updateMeetup = async (
       };
     }
 
-    const a = await prisma.meetup.update({
+    await prisma.meetup.update({
       where: {
         id: meetup.id,
       },
@@ -110,8 +105,6 @@ export const updateMeetup = async (
         scheduledAt: validatedFields.data.scheduledAt,
       },
     });
-
-    console.log("prisma:", a);
 
     return {
       success: true,
