@@ -10,7 +10,6 @@ import { createContactsActionSchema } from "@/validations/private/contactsValida
 import { LinkType } from "@prisma/client";
 import { Result } from "@/type/error/error";
 import { Tag } from "@/type/private/tags/tags";
-import { MeetupErrors } from "@/type/private/meetup/meetup";
 
 export const createContacts = async (
   meetupId: string,
