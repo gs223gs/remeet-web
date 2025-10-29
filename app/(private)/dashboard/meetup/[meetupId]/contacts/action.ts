@@ -200,6 +200,7 @@ export const createTag = async (newTag: string): Promise<Result<Tag>> => {
     };
   }
 };
+
 /**
  *
  * @param tags
