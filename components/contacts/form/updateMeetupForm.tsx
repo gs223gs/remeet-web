@@ -14,7 +14,7 @@ export default function UpdateMeetupForm({ meetupId }: { meetupId: string }) {
   return (
     <form action={action}>
       <input type="text" name="name" />
-      <input type="date" name="scheduleAt" />
+      <input type="date" name="scheduledAt" />
       {state && <p>{state.errors.server}</p>}
       <button type="submit">送信</button>
     </form>
