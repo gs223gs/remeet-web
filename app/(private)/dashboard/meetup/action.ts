@@ -84,7 +84,7 @@ export const updateMeetup = async (
       };
 
     const meetup = await prisma.meetup.findFirst({
-      where: { id: meetupId },
+      where: { id: meetupId, userId: user.id },
     });
 
     if (!meetup) {
