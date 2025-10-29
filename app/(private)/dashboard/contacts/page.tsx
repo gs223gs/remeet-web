@@ -1,5 +1,5 @@
 import React from "react";
-import { getContacts } from "@/app/(private)/dashboard/meetup/contacts/_server/server";
+import { getContacts } from "@/app/(private)/dashboard/contacts/_server/server";
 
 export default async function MeetupContacts() {
   const contacts = await getContacts();
