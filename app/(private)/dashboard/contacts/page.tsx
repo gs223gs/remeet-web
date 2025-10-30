@@ -1,23 +1,29 @@
 import React from "react";
 import { getContacts } from "@/app/(private)/dashboard/contacts/_server/server";
+import Link from "next/link";
 
 export default async function MeetupContacts() {
   const contacts = await getContacts();
   if (!contacts.ok) return <p>何かしらのエラー</p>; //TODO 後でなおす
+  // dashboard/meetup/${c.meetup.id}/contacts/${c.id}
   return (
     <div className="grid grid-cols-3  gap-4 m-3">
       {contacts.data.map((c) => (
         <div key={c.id} className="outline">
-          <div className="outline m-3">
-            <div>Meetup:{c.meetup.name}</div>
-            <div>{c.meetup.scheduledAt.toISOString()}</div>
-          </div>
-          <div className="outline m-3">
-            <div>ID: {c.id}</div>
-            <div>Name: {c.name}</div>
-            <div>Company: {c.company ?? "なし"}</div>
-            <div>Role: {c.role ?? "なし"}</div>
-          </div>
+          {/*TODO Lintを型にする */}
+          <Link href={`/dashboard/meetup/${c.meetup.id}/contacts/${c.id}`}>
+            <div className="outline m-3">
+              <div>Meetup:{c.meetup.name}</div>
+              <div>{c.meetup.scheduledAt.toISOString()}</div>
+            </div>
+            <div className="outline m-3">
+              <div>ID: {c.id}</div>
+              <div>Name: {c.name}</div>
+              <div>Company: {c.company ?? "なし"}</div>
+              <div>Role: {c.role ?? "なし"}</div>
+            </div>
+          </Link>
+
           <div className="outline m-3">
             <div>Links:</div>
             <div>
