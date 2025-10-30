@@ -39,7 +39,7 @@ export function AppSidebar() {
           </Link>
         </SidebarGroup>
         <SidebarGroup>
-          <Link href={"/dashboard/tag"}>
+          <Link href={"/dashboard/tags"}>
             <span className=" flex  gap-2">
               <Tag />
               TAGS
