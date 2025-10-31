@@ -1,5 +1,6 @@
 import React from "react";
 import { getTags } from "./_server/server";
+import Link from "next/link";
 
 export default async function Tags() {
   const tags = await getTags();
@@ -15,9 +16,13 @@ export default async function Tags() {
     <div className="grid grid-cols-3 ">
       {tags.data.map((t) => {
         return (
-          <div key={t.id} className="outline m-5">
+          <Link
+            key={t.id}
+            className="outline m-5"
+            href={`/dashboard/tags/${t.id}/`}
+          >
             {t.name}
-          </div>
+          </Link>
         );
       })}
     </div>
