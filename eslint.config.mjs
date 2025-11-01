@@ -1,32 +1,20 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+// eslint.config.mjs
 import { FlatCompat } from "@eslint/eslintrc";
+import path from "node:path";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import importPlugin from "eslint-plugin-import";
 
-//? ESLint に関しては勉強不足で書けない．
-//? そのため．AIに書いてもらった
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
+  baseDirectory: path.resolve(),
 });
 
-const eslintConfig = [
-  ...compat
-    .config({
-      extends: ["plugin:@next/next/core-web-vitals-legacy", "next/typescript"],
-    })
-    .map((config) => {
-      if ("name" in config) {
-        const sanitized = { ...config };
-        delete sanitized.name;
-        return sanitized;
-      }
-      return config;
-    }),
+export default [
+  // ✅ Next.js旧形式ルールをFlatConfigに変換して展開
+  ...compat.config({
+    extends: ["plugin:@next/next/core-web-vitals", "next/typescript"],
+  }),
+
   {
     ignores: [
       "node_modules/**",
@@ -37,17 +25,18 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+
   {
     files: ["**/*.{ts,tsx}"],
-    plugins: {
-      "@typescript-eslint": tseslint,
-    },
     languageOptions: {
       parser: tsParser,
       parserOptions: {
         project: ["./tsconfig.json"],
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: path.resolve(),
       },
+    },
+    plugins: {
+      "@typescript-eslint": tseslint,
     },
     rules: {
       "no-unused-vars": "off",
@@ -69,6 +58,7 @@ const eslintConfig = [
       "@typescript-eslint/no-floating-promises": "error",
     },
   },
+
   {
     files: ["**/*.{ts,tsx,js,jsx}"],
     plugins: {
@@ -101,5 +91,3 @@ const eslintConfig = [
     },
   },
 ];
-
-export default eslintConfig;
