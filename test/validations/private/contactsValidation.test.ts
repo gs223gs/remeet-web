@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+
 import { createContactsFrontSchema } from "@/validations/private/contactsValidation";
 
 describe("createContactsSchema", () => {

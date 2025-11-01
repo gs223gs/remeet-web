@@ -1,4 +1,4 @@
-import { Result } from "@/type/error/error";
+import type { Result } from "@/type/error/error";
 
 export type MeetupErrors = {
   name?: string[];

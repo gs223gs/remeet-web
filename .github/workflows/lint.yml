@@ -24,5 +24,3 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
-        # 警告をエラーにしたい場合は以下を使用:
-        # run: npm run lint -- --max-warnings=0

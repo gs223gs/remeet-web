@@ -1,4 +1,4 @@
-import { Result } from "@/type/error/error";
+import type { Result } from "@/type/error/error";
 //dashboard ページのための型
 export type DashboardSummary = {
   lastMeetupContacts: DashboardContactDTO[];

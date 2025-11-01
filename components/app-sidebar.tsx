@@ -1,3 +1,6 @@
+import { Building, CircleUserRound, Home, Tag, Users } from "lucide-react";
+import Link from "next/link";
+
 import {
   Sidebar,
   SidebarContent,
@@ -5,8 +8,6 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Building, CircleUserRound, Home, Tag, Users } from "lucide-react";
-import Link from "next/link";
 
 export function AppSidebar() {
   return (

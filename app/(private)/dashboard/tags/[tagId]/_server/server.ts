@@ -1,15 +1,11 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { getUser } from "@/auth";
+import type { Result } from "@/type/error/error";
+import type { ContactsDetailDTO } from "@/type/private/contacts/contacts";
+import type { MeetupDetail } from "@/type/private/meetup/meetup";
 
-import { Result } from "@/type/error/error";
-import {
-  ContactLink,
-  ContactsDetailDTO,
-} from "@/type/private/contacts/contacts";
-import { MeetupDetail } from "@/type/private/meetup/meetup";
-import { Tag } from "@/type/private/tags/tags";
+import { getUser } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
 export const getContactsByTag = async (
   tagId: string,

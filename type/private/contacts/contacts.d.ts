@@ -1,6 +1,6 @@
-import { Result } from "@/type/error/error";
-import { LinkType } from "@prisma/client";
-import { Tag } from "@/type/private/tags/tags";
+import type { Result } from "@/type/error/error";
+import type { Tag } from "@/type/private/tags/tags";
+import type { LinkType } from "@prisma/client";
 
 type ContactLink = {
   id: string;

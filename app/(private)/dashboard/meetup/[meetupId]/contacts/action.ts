@@ -1,15 +1,16 @@
 "use server";
-import { prisma } from "@/lib/prisma";
-import { getUser } from "@/auth";
-import { ActionState } from "@/type/util/action";
-import {
+import type { Result } from "@/type/error/error";
+import type {
   ContactsErrors,
   CreateContactLink,
 } from "@/type/private/contacts/contacts";
+import type { Tag } from "@/type/private/tags/tags";
+import type { ActionState } from "@/type/util/action";
+import type { LinkType } from "@prisma/client";
+
+import { getUser } from "@/auth";
+import { prisma } from "@/lib/prisma";
 import { createContactsActionSchema } from "@/validations/private/contactsValidation";
-import { LinkType } from "@prisma/client";
-import { Result } from "@/type/error/error";
-import { Tag } from "@/type/private/tags/tags";
 
 export const createContacts = async (
   meetupId: string,
@@ -157,7 +158,7 @@ export const createContacts = async (
       errors: {},
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {
       success: false,
       errors: {},
@@ -223,7 +224,7 @@ const verifyTags = async (tags: string[], userId: string): Promise<boolean> => {
 
     return true;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return false;
   }
 };

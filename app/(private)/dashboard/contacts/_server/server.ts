@@ -1,10 +1,11 @@
 "use server";
 
+import type { Result } from "@/type/error/error";
+import type { ContactsDetailDTO } from "@/type/private/contacts/contacts";
+import type { MeetupDetail } from "@/type/private/meetup/meetup";
+
 import { getUser } from "@/auth";
-import { Result } from "@/type/error/error";
-import { ContactsDetailDTO } from "@/type/private/contacts/contacts";
 import { prisma } from "@/lib/prisma";
-import { MeetupDetail } from "@/type/private/meetup/meetup";
 
 export const getContacts = async (): Promise<
   Result<(ContactsDetailDTO & { meetup: MeetupDetail })[]>
