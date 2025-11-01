@@ -1,5 +1,7 @@
 import Link from "next/link";
+
 import { getUserDashboardSummary } from "./_server/server";
+
 import { ModeToggle } from "@/components/ui/color-mode-toggle";
 
 export const dynamic = "force-dynamic";

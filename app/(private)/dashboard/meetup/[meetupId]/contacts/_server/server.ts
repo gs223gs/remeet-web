@@ -1,10 +1,11 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import type { Result } from "@/type/error/error";
+import type { ContactsDetailResult } from "@/type/private/contacts/contacts";
+import type { Tag } from "@/type/private/tags/tags";
+
 import { getUser } from "@/auth";
-import { ContactsDetailResult } from "@/type/private/contacts/contacts";
-import { Result } from "@/type/error/error";
-import { Tag } from "@/type/private/tags/tags";
+import { prisma } from "@/lib/prisma";
 
 export const getContactDetail = async (
   contactsId: string,

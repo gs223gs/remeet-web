@@ -1,6 +1,7 @@
-import React from "react";
-import { getTags } from "./_server/server";
 import Link from "next/link";
+import React from "react";
+
+import { getTags } from "./_server/server";
 
 export default async function Tags() {
   const tags = await getTags();

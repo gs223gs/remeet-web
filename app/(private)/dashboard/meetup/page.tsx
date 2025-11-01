@@ -1,5 +1,6 @@
-import { getMeetup } from "./_server/server";
 import Link from "next/link";
+
+import { getMeetup } from "./_server/server";
 export default async function Meetup() {
   const res = await getMeetup();
 

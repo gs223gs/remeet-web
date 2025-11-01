@@ -1,7 +1,11 @@
 "server-only";
-import { prisma } from "@/lib/prisma";
+import type {
+  DashboardResult,
+  DashboardContactDTO,
+} from "@/type/private/dashboard";
+
 import { getUser } from "@/auth";
-import { DashboardResult, DashboardContactDTO } from "@/type/private/dashboard";
+import { prisma } from "@/lib/prisma";
 
 export const getThisYearContacts = async (userId: string): Promise<number> => {
   const now = new Date();

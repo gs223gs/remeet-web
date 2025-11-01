@@ -1,11 +1,10 @@
 //作成したらredirect -> dashboard/meetup/[id]/contacts/new
 "use server";
-import { prisma } from "@/lib/prisma";
+import type { MeetupErrors } from "@/type/private/meetup/meetup";
+import type { ActionState } from "@/type/util/action";
+
 import { getUser } from "@/auth";
-
-import { MeetupErrors } from "@/type/private/meetup/meetup";
-import { ActionState } from "@/type/util/action";
-
+import { prisma } from "@/lib/prisma";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
 
 export const createMeetup = async (

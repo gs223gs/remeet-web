@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { getMeetupDetailSummary } from "../_server/server";
 
 export default async function MeetupDetail({

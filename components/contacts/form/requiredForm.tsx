@@ -5,11 +5,13 @@ type Props = {
 };
 
 import { useActionState, useState, useTransition } from "react";
+
+import type { Tag } from "@/type/private/tags/tags";
+
 import {
   createContacts,
   createTag,
 } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
-import { Tag } from "@/type/private/tags/tags";
 export default function RequiredForm({ meetupId, tags }: Props) {
   //formをCSR ページをSSR にする ページでタグを取得して form に props で渡す
   const createContactsWithMeetupId = createContacts.bind(null, meetupId);

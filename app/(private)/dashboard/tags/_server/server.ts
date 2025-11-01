@@ -1,9 +1,10 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import type { Result } from "@/type/error/error";
+import type { Tag } from "@/type/private/tags/tags";
+
 import { getUser } from "@/auth";
-import { Tag } from "@/type/private/tags/tags";
-import { Result } from "@/type/error/error";
+import { prisma } from "@/lib/prisma";
 
 //TODO リファクタリング 全く同じ関数がある
 export const getTags = async (): Promise<Result<Tag[]>> => {

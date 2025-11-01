@@ -1,13 +1,13 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { getUser } from "@/auth";
-
-import {
+import type {
   MeetupDetailResult,
   MeetupDetailSummary,
   MeetupResult,
 } from "@/type/private/meetup/meetup";
+
+import { getUser } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
 // meetupの詳細情報
 // contactsの簡易情報

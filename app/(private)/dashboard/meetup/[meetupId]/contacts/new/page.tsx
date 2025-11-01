@@ -1,5 +1,6 @@
-import RequiredForm from "@/components/contacts/form/requiredForm";
 import { getTags } from "../_server/server";
+
+import RequiredForm from "@/components/contacts/form/requiredForm";
 
 export default async function CreateContacts({
   params,
