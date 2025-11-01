@@ -6,8 +6,6 @@ import type { MeetupDetail } from "@/type/private/meetup/meetup";
 
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { ContactLink } from "@/type/private/contacts/contacts";
-import { Tag } from "@/type/private/tags/tags";
 
 export const getContactsByTag = async (
   tagId: string,

@@ -158,7 +158,7 @@ export const createContacts = async (
       errors: {},
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {
       success: false,
       errors: {},
@@ -224,7 +224,7 @@ const verifyTags = async (tags: string[], userId: string): Promise<boolean> => {
 
     return true;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return false;
   }
 };

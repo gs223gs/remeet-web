@@ -53,7 +53,6 @@ export default function RequiredForm({ meetupId, tags }: Props) {
                   (c) => t.id != c.id,
                 );
                 setContactTags([...filterContactsTags]);
-                console.log("clicked");
               }}
             >
               {t.name}

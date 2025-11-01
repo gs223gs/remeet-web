@@ -92,36 +92,6 @@ async function seedContacts() {
   return contacts;
 }
 
-async function seedMeetups(contactIds: string[]) {
-  const now = new Date();
-  const recent = new Date(now.getTime() - 1000 * 60 * 60 * 24 * 3); // 3日前
-  const older = new Date(now.getTime() - 1000 * 60 * 60 * 24 * 30); // 30日前
-
-  const m1 = await prisma.meetup.create({
-    data: {
-      userId: USER_ID,
-      name: "Monthly Dev Meetup",
-      scheduledAt: recent,
-      contacts: {
-        create: contactIds.slice(0, 2).map((contactId) => ({ contactId })),
-      },
-    },
-  });
-
-  const m2 = await prisma.meetup.create({
-    data: {
-      userId: USER_ID,
-      name: "Product Launch Night",
-      scheduledAt: older,
-      contacts: {
-        create: contactIds.slice(1).map((contactId) => ({ contactId })),
-      },
-    },
-  });
-
-  return [m1, m2];
-}
-
 async function seedContactTags(tagIds: string[], contactIds: string[]) {
   // 簡単にいくつか関連付け
   const ops = [
@@ -139,22 +109,14 @@ async function seedContactTags(tagIds: string[], contactIds: string[]) {
 }
 
 async function main() {
-  console.log("Seeding start for user:", USER_ID);
   await ensureUser();
   await clearUserData();
   const tags = await seedTags();
   const contacts = await seedContacts();
-  const meetups = await seedMeetups(contacts.map((c) => c.id));
   await seedContactTags(
     tags.map((t) => t.id),
     contacts.map((c) => c.id),
   );
-  console.log("Seeded:", {
-    userId: USER_ID,
-    tags: tags.length,
-    contacts: contacts.length,
-    meetups: meetups.length,
-  });
 }
 
 main()
