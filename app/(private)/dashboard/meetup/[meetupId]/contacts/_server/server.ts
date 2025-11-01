@@ -94,6 +94,7 @@ export const getContactDetail = async (
   }
 };
 
+//TODO リファクタリング 全く同じ関数がある
 export const getTags = async (): Promise<Result<Tag[]>> => {
   const user = await getUser();
 

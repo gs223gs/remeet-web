@@ -5,6 +5,7 @@ import { getUser } from "@/auth";
 import { Tag } from "@/type/private/tags/tags";
 import { Result } from "@/type/error/error";
 
+//TODO リファクタリング 全く同じ関数がある
 export const getTags = async (): Promise<Result<Tag[]>> => {
   //とりあえず全タグ取得
   try {
