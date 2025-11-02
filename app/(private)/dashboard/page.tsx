@@ -28,9 +28,9 @@ export default async function page() {
         })}
       </div>
 
-      <Link href={"dashboard/meetup/new"}>new</Link>
+      <Link href={"/dashboard/meetup/new"}>new</Link>
       <Link href={`/dashboard/meetup/${id}`}>詳細へ</Link>
-      <Link href={"dashboard/meetup/"}>meetup</Link>
+      <Link href={"/dashboard/meetup"}>meetup</Link>
     </div>
   );
 }
