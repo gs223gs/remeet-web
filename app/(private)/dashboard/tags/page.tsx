@@ -20,7 +20,7 @@ export default async function Tags() {
           <Link
             key={t.id}
             className="outline m-5"
-            href={`/dashboard/tags/${t.id}/`}
+            href={`/dashboard/tags/${t.id}`}
           >
             {t.name}
           </Link>

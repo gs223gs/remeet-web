@@ -15,7 +15,7 @@ export function AppSidebar() {
       <SidebarHeader className="text-3xl">ReMeet</SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <Link href={"/dashboard/"}>
+          <Link href={"/dashboard"}>
             <span className=" flex  gap-2">
               {/**あとでコンポーネント化する */}
               <Home />
@@ -49,12 +49,12 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Link href={"/dashboard/porofile"}>
-          <span className=" flex  gap-2">
-            <CircleUserRound />
-            PROFILE
-          </span>
-        </Link>
+        {/* <Link href={"/dashboard/profile"}> */}
+        <span className=" flex  gap-2">
+          <CircleUserRound />
+          PROFILE
+        </span>
+        {/* </Link> */}
       </SidebarFooter>
     </Sidebar>
   );
