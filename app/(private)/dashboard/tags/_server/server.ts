@@ -7,7 +7,9 @@ import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 //TODO リファクタリング 全く同じ関数がある
-export const getTags = async (): Promise<Result<Tag[]>> => {
+export const getTagsWithRanking = async (): Promise<
+  Result<(Tag & { count: number })[]>
+> => {
   //とりあえず全タグ取得
   try {
     const user = await getUser();
@@ -25,12 +27,23 @@ export const getTags = async (): Promise<Result<Tag[]>> => {
       select: {
         id: true,
         name: true,
+        _count: {
+          select: {
+            contacts: true,
+          },
+        },
       },
     });
 
     return {
       ok: true,
-      data: tags,
+      data: tags.map((t) => {
+        return {
+          id: t.id,
+          name: t.name,
+          count: t._count.contacts,
+        };
+      }),
     };
   } catch (error) {
     console.error(error);
