@@ -1,10 +1,10 @@
 import Link from "next/link";
 import React from "react";
 
-import { getTags } from "./_server/server";
+import { getTagsWithRanking } from "@/app/(private)/dashboard/tags/_server/server";
 
 export default async function Tags() {
-  const tags = await getTags();
+  const tags = await getTagsWithRanking();
   if (!tags.ok)
     return (
       <p>
@@ -23,6 +23,7 @@ export default async function Tags() {
             href={`/dashboard/tags/${t.id}`}
           >
             {t.name}
+            <p>人数{t.count}</p>
           </Link>
         );
       })}
