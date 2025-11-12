@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { getMeetupDetailSummary } from "../_server/server";
 
+import { MeetupOverview } from "@/components/meetup/meetupOverview";
+
 export default async function MeetupDetail({
   params,
 }: {
@@ -9,12 +11,17 @@ export default async function MeetupDetail({
 }) {
   const { meetupId } = await params;
   const detail = await getMeetupDetailSummary(meetupId);
+
   if (!detail.ok) return <div>error</div>;
+
+  const meetupDetail = detail.data.detailWithContacts.detail;
   return (
     <div>
-      <div className=" text-3xl">出会った人:{detail.data.contactCount}</div>
+      <MeetupOverview
+        meetupDetail={meetupDetail}
+        meetupContactsCount={detail.data.contactCount}
+      />
       <Link href={`/dashboard/meetup/${meetupId}/contacts/new`}>new</Link>
-      <div>meetup名: {detail.data.detailWithContacts.detail.name}</div>
       <div className="m-1 flex ">
         {detail.data.detailWithContacts.contacts.map((c) => {
           return (
@@ -40,7 +47,6 @@ export default async function MeetupDetail({
           );
         })}
       </div>
-      <Link href={`/dashboard/meetup/${meetupId}/edit`}>meetupの編集</Link>
     </div>
   );
 }
