@@ -39,13 +39,12 @@ export const NewTag = ({
     }
   };
 
-  if (isPending) return <p>追加中</p>;
-
   return (
     <div>
       <input
         type="text"
         placeholder="タグを追加"
+        disabled={isPending}
         onChange={(e) => {
           setNewTag(e.target.value);
         }}
@@ -61,12 +60,13 @@ export const NewTag = ({
 
       <button
         type="button"
+        disabled={isPending}
         onClick={(e) => {
           e.preventDefault();
           startTransition(addTag);
         }}
       >
-        追加
+        {isPending ? "追加中..." : "追加"}
       </button>
       {functionMessage.length > 0 && (
         <div>
