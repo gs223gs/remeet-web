@@ -148,7 +148,23 @@ export const NewTag = ({
 }: NewTagProps) => {
   const [isPending, startTransition] = useTransition();
   const [functionMessage, setFunctionMessage] = useState<string[]>([]);
-
+  const addTag = async () => {
+    const createdTags = await createTag(newTag);
+    if (createdTags.ok) {
+      setSelectTags([
+        {
+          id: createdTags.data.id,
+          name: createdTags.data.name,
+        },
+        ...selectTags,
+      ]);
+      setNewTag("");
+      setFunctionMessage([]);
+    }
+    if (!createdTags.ok) {
+      setFunctionMessage(createdTags.error.message);
+    }
+  };
   if (isPending) return <p>追加中</p>;
   return (
     <div>
@@ -161,23 +177,7 @@ export const NewTag = ({
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
-            startTransition(async () => {
-              const createdTags = await createTag(newTag);
-              if (createdTags.ok) {
-                setSelectTags([
-                  {
-                    id: createdTags.data.id,
-                    name: createdTags.data.name,
-                  },
-                  ...selectTags,
-                ]);
-                setNewTag("");
-                setFunctionMessage([]);
-              }
-              if (!createdTags.ok) {
-                setFunctionMessage(createdTags.error.message);
-              }
-            });
+            startTransition(addTag);
           }
         }}
         value={newTag}
@@ -187,23 +187,7 @@ export const NewTag = ({
         type="button"
         onClick={(e) => {
           e.preventDefault();
-          startTransition(async () => {
-            const createdTags = await createTag(newTag);
-            if (createdTags.ok) {
-              setSelectTags([
-                {
-                  id: createdTags.data.id,
-                  name: createdTags.data.name,
-                },
-                ...selectTags,
-              ]);
-              setNewTag("");
-              setFunctionMessage([]);
-            }
-            if (!createdTags.ok) {
-              setFunctionMessage(createdTags.error.message);
-            }
-          });
+          startTransition(addTag);
         }}
       >
         追加
