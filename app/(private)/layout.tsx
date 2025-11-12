@@ -1,6 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import "../globals.css";
 export const metadata = {
   title: "Next.js",
@@ -21,12 +21,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider>
+          <SidebarProvider defaultOpen={false}>
             <AppSidebar />
-            <main>
-              <SidebarTrigger />
-              {children}
-            </main>
+            <main>{children}</main>
           </SidebarProvider>
         </ThemeProvider>
       </body>
