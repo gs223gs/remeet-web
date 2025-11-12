@@ -158,12 +158,35 @@ export const NewTag = ({
         onChange={(e) => {
           setNewTag(e.target.value);
         }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            startTransition(async () => {
+              const createdTags = await createTag(newTag);
+              if (createdTags.ok) {
+                setSelectTags([
+                  {
+                    id: createdTags.data.id,
+                    name: createdTags.data.name,
+                  },
+                  ...selectTags,
+                ]);
+                setNewTag("");
+                setFunctionMessage([]);
+              }
+              if (!createdTags.ok) {
+                setFunctionMessage(createdTags.error.message);
+              }
+            });
+          }
+        }}
         value={newTag}
       />
 
       <button
         type="button"
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
           startTransition(async () => {
             const createdTags = await createTag(newTag);
             if (createdTags.ok) {
