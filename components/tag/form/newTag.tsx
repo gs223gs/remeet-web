@@ -68,7 +68,13 @@ export const NewTag = ({
       >
         追加
       </button>
-      {functionMessage && <p>{functionMessage}</p>}
+      {functionMessage.length > 0 && (
+        <div>
+          {functionMessage.map((msg, i) => (
+            <p key={i}>{msg}</p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
