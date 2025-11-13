@@ -35,10 +35,13 @@ type MeetupEditProps = {
   setIsEditing: (state: boolean) => void;
 };
 const MeetupEdit = ({ meetupDetail, setIsEditing }: MeetupEditProps) => {
+  "use client";
+
+  const formatDate = (date: Date) => date.toISOString().split("T")[0];
   return (
     <form>
-      <input type="text" />
-      <input type="text" />
+      <input type="text" defaultValue={meetupDetail.name} />
+      <input type="date" defaultValue={formatDate(meetupDetail.scheduledAt)} />
       <button>送信</button>
       <button onClick={() => setIsEditing(false)}>キャンセル</button>
     </form>
