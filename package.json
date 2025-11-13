@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "vitest",
     "prepare": "husky",
+    "prettier":"prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css,html}\"",
     "seed": "prisma db seed"
   },
   "prisma": {
