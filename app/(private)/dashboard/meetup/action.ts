@@ -1,6 +1,7 @@
 //作成したらredirect -> dashboard/meetup/[id]/contacts/new
 "use server";
 
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 import type { MeetupErrors } from "@/type/private/meetup/meetup";
@@ -116,7 +117,7 @@ export const updateMeetup = async (
      */
     redirect(`/dashboard/meetup/${meetup.id}`);
   } catch (error) {
-    if ((error as Error).message === "NEXT_REDIRECT") throw error;
+    if (isRedirectError(error)) throw error;
     console.error(error);
 
     return {
