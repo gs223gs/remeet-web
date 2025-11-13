@@ -22,7 +22,7 @@ export const MeetupEditForm = ({
   //TODO あとでライブラリにする
   const formatDate = (date: Date) => date.toISOString().split("T")[0];
 
-  if (isPending) return <p>lording</p>;
+  if (isPending) return <p>loading</p>;
 
   //TODO あとで hook form にする
   return (
