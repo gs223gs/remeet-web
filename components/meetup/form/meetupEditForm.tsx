@@ -1,0 +1,43 @@
+"use client";
+import { useActionState } from "react";
+
+import type { MeetupDetail } from "@/type/private/meetup/meetup";
+
+import { updateMeetup } from "@/app/(private)/dashboard/meetup/action";
+
+type MeetupEditProps = {
+  meetupDetail: MeetupDetail;
+  setIsEditing: (state: boolean) => void;
+};
+export const MeetupEditForm = ({
+  meetupDetail,
+  setIsEditing,
+}: MeetupEditProps) => {
+  const updateMeetupWithMeetupId = updateMeetup.bind(null, meetupDetail.id);
+  const [state, action, isPending] = useActionState(updateMeetupWithMeetupId, {
+    success: false,
+    errors: {},
+  });
+
+  //TODO あとでライブラリにする
+  const formatDate = (date: Date) => date.toISOString().split("T")[0];
+
+  if (isPending) return <p>loading</p>;
+
+  //TODO あとで hook form にする
+  return (
+    <form action={action}>
+      <input type="text" name="name" defaultValue={meetupDetail.name} />
+      <input
+        type="date"
+        name="scheduledAt"
+        defaultValue={formatDate(meetupDetail.scheduledAt)}
+      />
+      {state && <p>{state.errors.server}</p>}
+      <button type="submit">送信</button>
+      <button type="button" onClick={() => setIsEditing(false)}>
+        キャンセル
+      </button>
+    </form>
+  );
+};
