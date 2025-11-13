@@ -1,5 +1,8 @@
 //作成したらredirect -> dashboard/meetup/[id]/contacts/new
 "use server";
+
+import { redirect } from "next/navigation";
+
 import type { MeetupErrors } from "@/type/private/meetup/meetup";
 import type { ActionState } from "@/type/util/action";
 
@@ -105,12 +108,17 @@ export const updateMeetup = async (
       },
     });
 
-    return {
-      success: true,
-      errors: {},
-    };
+    /**
+     * ## 本当はredirectにしたくない
+     *?meetupページにredirectしたらcontactsが再renderされてしまうからパフォーマンスが落ちる
+     *?ただ，一つのmeetupに参加するのはせいぜい50人，そこから話したとしても10~20だろう
+     *?(楽観的UIの実装, 学習, 可読性低下) によるコストを考えたら再renderの方がいいと考えた
+     */
+    redirect(`/dashboard/meetup/${meetup.id}`);
   } catch (error) {
+    if ((error as Error).message === "NEXT_REDIRECT") throw error;
     console.error(error);
+
     return {
       success: false,
       errors: {
