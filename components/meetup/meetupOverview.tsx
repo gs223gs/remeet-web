@@ -3,6 +3,8 @@ import { useState } from "react";
 
 import type { MeetupDetail } from "@/type/private/meetup/meetup";
 
+import { MeetupEditForm } from "@/components/meetup/form/meetupEditForm";
+
 type MeetupDetailProps = {
   meetupDetail: MeetupDetail;
   meetupContactsCount: number;
@@ -17,7 +19,7 @@ export const MeetupOverview = ({
 
   if (isEditing)
     return (
-      <MeetupEdit meetupDetail={meetupDetail} setIsEditing={setIsEditing} />
+      <MeetupEditForm meetupDetail={meetupDetail} setIsEditing={setIsEditing} />
     );
   return (
     <div>
@@ -27,23 +29,5 @@ export const MeetupOverview = ({
       <div>count:{meetupContactsCount}</div>
       <button onClick={() => setIsEditing(true)}>Meetupの編集</button>
     </div>
-  );
-};
-
-type MeetupEditProps = {
-  meetupDetail: MeetupDetail;
-  setIsEditing: (state: boolean) => void;
-};
-const MeetupEdit = ({ meetupDetail, setIsEditing }: MeetupEditProps) => {
-  "use client";
-
-  const formatDate = (date: Date) => date.toISOString().split("T")[0];
-  return (
-    <form>
-      <input type="text" defaultValue={meetupDetail.name} />
-      <input type="date" defaultValue={formatDate(meetupDetail.scheduledAt)} />
-      <button>送信</button>
-      <button onClick={() => setIsEditing(false)}>キャンセル</button>
-    </form>
   );
 };
