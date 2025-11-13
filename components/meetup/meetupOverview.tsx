@@ -14,7 +14,11 @@ export const MeetupOverview = ({
   meetupDetail,
   meetupContactsCount,
 }: MeetupDetailProps) => {
-  "use client";
+ export const MeetupOverview = ({
+   meetupDetail,
+   meetupContactsCount,
+ }: MeetupDetailProps) => {
+   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   if (isEditing)
