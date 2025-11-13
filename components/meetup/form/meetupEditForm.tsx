@@ -35,7 +35,9 @@ export const MeetupEditForm = ({
       />
       {state && <p>{state.errors.server}</p>}
       <button type="submit">送信</button>
-      <button type="button" onClick={() => setIsEditing(false)}>キャンセル</button>
+      <button type="button" onClick={() => setIsEditing(false)}>
+        キャンセル
+      </button>
     </form>
   );
 };
