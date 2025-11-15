@@ -42,10 +42,7 @@ type contactsSummaryProps = {
 
 const ContactSummary = ({ meetupId, contactSummary }: contactsSummaryProps) => {
   return (
-    <Link
-      key={contactSummary.id}
-      href={`/dashboard/meetup/${meetupId}/contacts/${contactSummary.id}/`}
-    >
+    <Link href={`/dashboard/meetup/${meetupId}/contacts/${contactSummary.id}/`}>
       <div className=" outline-2 m-2">
         <div>{contactSummary.name}</div>
         <div>{contactSummary.role}</div>
