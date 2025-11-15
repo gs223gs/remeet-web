@@ -110,10 +110,19 @@ export const updateMeetup = async (
     });
 
     /**
-     * ## 本当はredirectにしたくない
+     *!本当はredirectにしたくない
      *?meetupページにredirectしたらcontactsが再renderされてしまうからパフォーマンスが落ちる
-     *?ただ，一つのmeetupに参加するのはせいぜい50人，そこから話したとしても10~20だろう
-     *?(楽観的UIの実装, 学習, 可読性低下) によるコストを考えたら再renderの方がいいと考えた
+     ただ，一つのmeetupに参加するのはせいぜい50人，そこから話したとしても10~20だろう
+     (楽観的UIの実装, 学習, 可読性低下) によるコストを考えたら再renderの方がいいと考えた
+     
+     ** 11/15 追記
+    そもそもの話，contactsを取得しているのは何か？
+    getMeetupDetailSummary()で取得している
+    meetupのデータとcontactsのデータを同時に取得して返している
+    この時点でcontactsは再renderされるのは確定．
+    そして，redirectの仕様はページ全体の再取得RSCの再度実行
+
+    GPT的に言わせればこのままでいいらしいけど研究対象とします
      */
     redirect(`/dashboard/meetup/${meetup.id}`);
   } catch (error) {
