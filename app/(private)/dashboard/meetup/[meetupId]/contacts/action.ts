@@ -1,4 +1,5 @@
 "use server";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 import type { Result } from "@/type/error/error";
@@ -371,6 +372,7 @@ export const updateContacts = async (
 
     redirect(`/dashboard/meetup/${meetupId}/contacts/${contactId}`);
   } catch (error) {
+    if (isRedirectError(error)) throw error;
     console.error(error);
     return {
       success: false,
