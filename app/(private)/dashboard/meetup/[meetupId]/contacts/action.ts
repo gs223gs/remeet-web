@@ -10,31 +10,12 @@ import type {
 import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
-import type { ZodSafeParseResult } from "zod";
 
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { contactsActionSchema } from "@/validations/private/contactsValidation";
 
-const contactValidation = (
-  formData: FormData,
-): ZodSafeParseResult<{
-  name: string;
-  company?: string | undefined;
-  role?: string | undefined;
-  description?: string | undefined;
-  tags?: string[] | undefined;
-  githubHandle?: string | undefined;
-  githubId?: string | undefined;
-  twitterHandle?: string | undefined;
-  twitterId?: string | undefined;
-  websiteHandle?: string | undefined;
-  websiteUrl?: string | undefined;
-  productHandle?: string | undefined;
-  productUrl?: string | undefined;
-  otherHandle?: string | undefined;
-  other?: string | undefined;
-}> => {
+const contactValidation = (formData: FormData) => {
   const rawFormData = {
     name: formData.get("name"),
     company: formData.get("company"),
