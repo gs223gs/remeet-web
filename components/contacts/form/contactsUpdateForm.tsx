@@ -25,9 +25,13 @@ export default function ContactsUpdateForm({
     meetupId,
     contactsDetail.id,
   );
-  const [contactTags, setContactTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>(
     contactsDetail.tags ? [...contactsDetail.tags] : [],
+  );
+  const [contactTags, setContactTags] = useState<Tag[]>(() =>
+    tags.filter(
+      (tag) => !contactsDetail.tags?.some((selected) => selected.id === tag.id),
+    ),
   );
   const [newTag, setNewTag] = useState<string>("");
 
@@ -93,11 +97,10 @@ export default function ContactsUpdateForm({
               className="outline"
               key={t.id}
               onClick={() => {
-                setSelectTags([...selectTags, t]);
-                const filterContactsTags = contactTags.filter(
-                  (c) => t.id != c.id,
+                setSelectTags((prev) =>
+                  prev.some((st) => st.id === t.id) ? prev : [...prev, t],
                 );
-                setContactTags([...filterContactsTags]);
+                setContactTags((prev) => prev.filter((c) => c.id !== t.id));
               }}
             >
               {t.name}
@@ -114,7 +117,10 @@ export default function ContactsUpdateForm({
               <span>{t.name}</span>
               <button
                 onClick={() => {
-                  setSelectTags([...selectTags.filter((st) => st != t)]);
+                  setSelectTags((prev) => prev.filter((st) => st.id !== t.id));
+                  setContactTags((prev) =>
+                    prev.some((ct) => ct.id === t.id) ? prev : [t, ...prev],
+                  );
                 }}
                 className=" outline"
                 type="button"
