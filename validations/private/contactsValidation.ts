@@ -65,7 +65,5 @@ export const createContactsFrontSchema = z
       path: ["other"],
     },
   );
-export const createContactsActionSchema = coerceFormValue(
-  createContactsFrontSchema,
-);
+export const contactsActionSchema = coerceFormValue(createContactsFrontSchema);
 export type CreateContactsSchema = z.infer<typeof createContactsFrontSchema>;
