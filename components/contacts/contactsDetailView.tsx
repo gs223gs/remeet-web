@@ -1,9 +1,13 @@
+import Link from "next/link";
+
 import type { ContactsDetailDTO } from "@/type/private/contacts/contacts";
 
 type ContactsDetailViewProps = {
+  meetupId: string;
   contactsDetail: ContactsDetailDTO;
 };
 export const ContactsDetailView = ({
+  meetupId,
   contactsDetail,
 }: ContactsDetailViewProps) => {
   //この編集ページと表示ページを同時に担うのRSC的にどうなんだろう
@@ -31,6 +35,11 @@ export const ContactsDetailView = ({
           </div>
         ))}
       </div>
+      <Link
+        href={`/dashboard/meetup/${meetupId}/contacts/${contactsDetail.id}/edit`}
+      >
+        編集
+      </Link>
     </div>
   );
 };
