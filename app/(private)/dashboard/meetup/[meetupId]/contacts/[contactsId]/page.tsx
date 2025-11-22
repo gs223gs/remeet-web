@@ -25,5 +25,7 @@ export default async function ContactsDetail({
 
   const contactsDetail = contactsDetailRes.data;
 
-  return <ContactsDetailView contactsDetail={contactsDetail} />;
+  return (
+    <ContactsDetailView contactsDetail={contactsDetail} meetupId={meetupId} />
+  );
 }
