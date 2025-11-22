@@ -39,9 +39,9 @@ export const getContactDetail = async (
         },
         tags: {
           select: {
-            id: true,
             tag: {
               select: {
+                id: true,
                 name: true,
               },
             },
@@ -77,7 +77,7 @@ export const getContactDetail = async (
         }),
         tags: detail.tags.map((t) => {
           return {
-            id: t.id,
+            id: t.tag.id,
             name: t.tag.name,
           };
         }),
