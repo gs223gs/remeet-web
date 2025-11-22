@@ -21,6 +21,7 @@ export default async function TagContactsPage({
 
   return (
     <div className="space-y-4 grid grid-cols-3 gap-4">
+      <Link href={`/dashboard/tags/${tagId}/edit`}>編集する</Link>
       {contacts.map((contact) => {
         const meetup = contact.meetup;
 
