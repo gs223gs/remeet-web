@@ -1,4 +1,4 @@
-import { getContactDetail, getTags } from "../_server/server";
+import { getContactDetail, getTags } from "../../_server/server";
 
 import { ContactsUpdateForm } from "@/components/contacts/form/contactsUpdateForm";
 
