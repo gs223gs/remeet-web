@@ -203,6 +203,11 @@ export const getMeetupDetail = async (
   try {
     const meetupDetail = await prisma.meetup.findFirst({
       where: { id: meetupId, userId: user.id },
+      select: {
+        id: true,
+        name: true,
+        scheduledAt: true,
+      },
     });
 
     if (!meetupDetail) {
