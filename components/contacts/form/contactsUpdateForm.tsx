@@ -13,9 +13,8 @@ type ContactsUpdateFormProps = {
   meetupId: string;
   tags: Tag[];
   contactsDetail: ContactsDetailDTO;
-  setIsEdit: (arg0: boolean) => void;
 };
-export default function ContactsUpdateForm({
+export function ContactsUpdateForm({
   contactsDetail,
   tags,
   meetupId,
