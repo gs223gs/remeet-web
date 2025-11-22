@@ -1,6 +1,8 @@
 "use server";
 
+import type { Result } from "@/type/error/error";
 import type {
+  MeetupDetail,
   MeetupDetailResult,
   MeetupDetailSummary,
   MeetupResult,
@@ -180,6 +182,56 @@ export const getMeetup = async (): Promise<MeetupResult> => {
       error: {
         code: "db_error",
         message: ["情報取得に失敗しました"],
+      },
+    };
+  }
+};
+
+export const getMeetupDetail = async (
+  meetupId: string,
+): Promise<Result<MeetupDetail>> => {
+  const user = await getUser();
+
+  if (!user)
+    return {
+      ok: false,
+      error: {
+        code: "unauthenticated",
+        message: ["情報取得に失敗しました"],
+      },
+    };
+  try {
+    const meetupDetail = await prisma.meetup.findFirst({
+      where: { id: meetupId, userId: user.id },
+      select: {
+        id: true,
+        name: true,
+        scheduledAt: true,
+      },
+    });
+
+    if (!meetupDetail) {
+      return {
+        ok: false,
+        error: {
+          code: "not_found",
+          message: ["meetupが存在しません"],
+        },
+      };
+    }
+
+    return {
+      ok: true,
+      data: meetupDetail,
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      ok: false,
+      error: {
+        code: "unknown",
+        message: ["不明なエラーです"],
       },
     };
   }

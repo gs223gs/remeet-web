@@ -7,12 +7,9 @@ import { updateMeetup } from "@/app/(private)/dashboard/meetup/action";
 
 type MeetupEditProps = {
   meetupDetail: MeetupDetail;
-  setIsEditing: (state: boolean) => void;
 };
-export const MeetupEditForm = ({
-  meetupDetail,
-  setIsEditing,
-}: MeetupEditProps) => {
+
+export const MeetupEditForm = ({ meetupDetail }: MeetupEditProps) => {
   const updateMeetupWithMeetupId = updateMeetup.bind(null, meetupDetail.id);
   const [state, action, isPending] = useActionState(updateMeetupWithMeetupId, {
     success: false,
@@ -35,9 +32,6 @@ export const MeetupEditForm = ({
       />
       {state && <p>{state.errors.server}</p>}
       <button type="submit">送信</button>
-      <button type="button" onClick={() => setIsEditing(false)}>
-        キャンセル
-      </button>
     </form>
   );
 };
