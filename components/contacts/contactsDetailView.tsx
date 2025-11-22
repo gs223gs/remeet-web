@@ -1,32 +1,17 @@
-"use client";
-import { useState } from "react";
-
-import ContactsUpdateForm from "./form/contactsUpdateForm";
+import Link from "next/link";
 
 import type { ContactsDetailDTO } from "@/type/private/contacts/contacts";
-import type { Tag } from "@/type/private/tags/tags";
 
 type ContactsDetailViewProps = {
   meetupId: string;
-  tags: Tag[];
   contactsDetail: ContactsDetailDTO;
 };
 export const ContactsDetailView = ({
   meetupId,
-  tags,
   contactsDetail,
 }: ContactsDetailViewProps) => {
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-
   //この編集ページと表示ページを同時に担うのRSC的にどうなんだろう
-  return isEdit ? (
-    <ContactsUpdateForm
-      meetupId={meetupId}
-      tags={tags}
-      contactsDetail={contactsDetail}
-      setIsEdit={setIsEdit}
-    />
-  ) : (
+  return (
     <div className="m-1 outline">
       <div>名前: {contactsDetail.name}</div>
       <div>会社: {contactsDetail.company ?? ""}</div>
@@ -50,7 +35,11 @@ export const ContactsDetailView = ({
           </div>
         ))}
       </div>
-      <button onClick={() => setIsEdit(true)}>編集</button>
+      <Link
+        href={`/dashboard/meetup/${meetupId}/contacts/${contactsDetail.id}/edit`}
+      >
+        編集
+      </Link>
     </div>
   );
 };

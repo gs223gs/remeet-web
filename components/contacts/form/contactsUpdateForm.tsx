@@ -13,9 +13,19 @@ type ContactsUpdateFormProps = {
   meetupId: string;
   tags: Tag[];
   contactsDetail: ContactsDetailDTO;
-  setIsEdit: (arg0: boolean) => void;
 };
-export default function ContactsUpdateForm({
+/**
+ * Render a form for editing a contact's details, tags, and links and submit updates scoped to a meetup.
+ *
+ * The form is prefilled from `contactsDetail`, allows selecting and creating tags from `tags`, and submits
+ * updates bound to the provided `meetupId`.
+ *
+ * @param contactsDetail - Initial contact values, existing tags, and links used to populate form fields
+ * @param tags - Available tags that can be added to the contact
+ * @param meetupId - Identifier of the meetup used to scope the update operation
+ * @returns A React element containing the contacts update form
+ */
+export function ContactsUpdateForm({
   contactsDetail,
   tags,
   meetupId,
