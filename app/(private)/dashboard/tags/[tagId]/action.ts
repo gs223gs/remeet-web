@@ -54,3 +54,36 @@ export const updateTag = async (
   }
   redirect(`/dashboard/tags/${tagId}`);
 };
+
+export const deleteTag = async (
+  tagId: string,
+): Promise<ActionState<TagErrors>> => {
+  try {
+    const user = await getUser();
+    if (!user)
+      return {
+        success: false,
+        errors: {
+          auth: "認証に失敗しました",
+        },
+      };
+    await prisma.$transaction(async (tx) => {
+      await tx.contactTag.deleteMany({
+        where: { tagId: tagId, tag: { userId: user.id } },
+      });
+
+      await tx.tag.delete({
+        where: { id: tagId, userId: user.id },
+      });
+    });
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      errors: {
+        server: "server error",
+      },
+    };
+  }
+  redirect("/dashboard/tags");
+};
