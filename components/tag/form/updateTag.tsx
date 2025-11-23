@@ -12,7 +12,7 @@ export const UpdateTagForm = ({ tag }: UpdateTagFormProps) => {
   const updateTagWithId = updateTag.bind(null, tag.id);
   const [state, action, isPending] = useActionState(updateTagWithId, {
     success: false,
-    error: {},
+    errors: {},
   });
 
   if (isPending) {
@@ -20,8 +20,11 @@ export const UpdateTagForm = ({ tag }: UpdateTagFormProps) => {
   }
   return (
     <form action={action}>
-      <div>{state && state.success}</div>
-      <input type="text" name="tagName" defaultValue={tag.name} />
+      {state.errors.id}
+      {state.errors.auth}
+      {state.errors.server}
+      <input type="text" name="name" defaultValue={tag.name} />
+      {state.errors.tag}
       <button type="submit">確定</button>
     </form>
   );
