@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import type { MeetupErrors } from "@/type/private/meetup/meetup";
 import type { ActionState } from "@/type/util/action";
 
+import { deleteMeetUpRecord } from "@/app/(private)/dashboard/meetup/_logic/delete/repository";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
@@ -140,3 +141,31 @@ export const updateMeetup = async (
 //read
 
 //delete
+
+export const deleteMeetup = async (
+  meetupId: string,
+  _: ActionState<MeetupErrors>,
+): Promise<ActionState<MeetupErrors>> => {
+  //認可
+  const user = await getUser();
+  if (!user)
+    return {
+      success: false,
+      errors: {
+        auth: "認証に失敗しました",
+      },
+    };
+  const deleteResult = await deleteMeetUpRecord(meetupId, user.id);
+  if (!deleteResult.ok) {
+    return {
+      success: false,
+      errors: {
+        server: "server error",
+      },
+    };
+  }
+
+  //repository
+
+  redirect("/dashboard/meetup");
+};
