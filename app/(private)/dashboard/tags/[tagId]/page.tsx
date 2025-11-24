@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 
 import { getContactsByTag } from "@/app/(private)/dashboard/tags/[tagId]/_server/server";
+import { DeleteTagForm } from "@/components/tag/form/deleteTagForm";
 
 export default async function TagContactsPage({
   params,
@@ -16,12 +17,21 @@ export default async function TagContactsPage({
   const contacts = contactsByTag.data ?? [];
 
   if (contacts.length === 0) {
-    return <p>このタグに紐づくコンタクトはいません。</p>;
+    return (
+      <div>
+        <Link href={`/dashboard/tags/${tagId}/edit`}>編集する</Link>
+        <DeleteTagForm tagId={tagId} />
+        <p>このタグに紐づくコンタクトはいません。</p>
+      </div>
+    );
   }
+
+  //TODO modalに切り替える
 
   return (
     <div>
       <Link href={`/dashboard/tags/${tagId}/edit`}>編集する</Link>
+      <DeleteTagForm tagId={tagId} />
       <div className="space-y-4 grid grid-cols-3 gap-4">
         {contacts.map((contact) => {
           const meetup = contact.meetup;
