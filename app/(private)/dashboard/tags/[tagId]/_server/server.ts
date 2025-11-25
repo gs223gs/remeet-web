@@ -50,15 +50,11 @@ export const getContactsByTag = async (
                     },
                   },
                 },
-                meetups: {
+                meetup: {
                   select: {
-                    meetup: {
-                      select: {
-                        id: true,
-                        name: true,
-                        scheduledAt: true,
-                      },
-                    },
+                    id: true,
+                    name: true,
+                    scheduledAt: true,
                   },
                 },
               },
@@ -80,12 +76,6 @@ export const getContactsByTag = async (
         return { ...t.tag };
       });
 
-      const contactMeetup = contact.meetups.map((m) => {
-        return {
-          ...m.meetup,
-        };
-      });
-
       const contactLinks = contact.links.map((l) => {
         return {
           ...l,
@@ -99,7 +89,7 @@ export const getContactsByTag = async (
         company: contact.company ?? undefined,
         role: contact.role ?? undefined,
         tags: contactTags ?? undefined,
-        meetup: contactMeetup[0],
+        meetup: contact.meetup,
         links: contactLinks ?? undefined,
       };
     });
