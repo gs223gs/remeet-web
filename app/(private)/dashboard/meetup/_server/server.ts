@@ -34,19 +34,15 @@ export const getMeetupDetailWithContacts = async (
         },
         contacts: {
           select: {
-            contact: {
+            id: true,
+            name: true,
+            company: true,
+            role: true,
+            tags: {
               select: {
-                id: true,
-                name: true,
-                company: true,
-                role: true,
-                tags: {
+                tag: {
                   select: {
-                    tag: {
-                      select: {
-                        name: true,
-                      },
-                    },
+                    name: true,
                   },
                 },
               },
@@ -68,11 +64,11 @@ export const getMeetupDetailWithContacts = async (
         },
         contacts: detail.contacts.map((c) => {
           return {
-            id: c.contact.id,
-            name: c.contact.name,
-            company: c.contact.company ?? undefined,
-            role: c.contact.role ?? undefined,
-            tags: c.contact.tags.map((t) => t.tag.name),
+            id: c.id,
+            name: c.name,
+            company: c.company ?? undefined,
+            role: c.role ?? undefined,
+            tags: c.tags.map((t) => t.tag.name),
           };
         }),
       },
