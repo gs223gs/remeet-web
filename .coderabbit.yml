@@ -1,6 +1,5 @@
-language: ja
-
-review:
+pull_requests:
+  language: ja
   instructions: |
     # === 全体方針 ===
     - レビューコメントはすべて日本語で記述してください。
@@ -45,7 +44,7 @@ release_notes:
   language: ja
   summarize: true
 
-rules:
+settings:
   ignore:
     # ビルド成果物
     - "dist/**"
