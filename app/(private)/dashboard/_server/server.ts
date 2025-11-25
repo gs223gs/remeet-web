@@ -29,12 +29,14 @@ export const getLastMeetupContacts = async (
     const latest = await prisma.meetup.findFirst({
       where: { userId },
       orderBy: { scheduledAt: "desc" },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        scheduledAt: true,
         contacts: {
-          include: {
-            contact: {
-              select: { name: true },
-            },
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
@@ -43,11 +45,11 @@ export const getLastMeetupContacts = async (
     if (!latest) return [];
 
     return latest.contacts.map((cm) => ({
-      meetupId: cm.meetupId,
+      meetupId: latest.id,
       meetupName: latest.name,
       meetupScheduledAt: latest.scheduledAt,
-      contactId: cm.contactId,
-      contactName: cm.contact.name,
+      contactId: cm.id,
+      contactName: cm.name,
     }));
   } catch (error) {
     console.error(error);
