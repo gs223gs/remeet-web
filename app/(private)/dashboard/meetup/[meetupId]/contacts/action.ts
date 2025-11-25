@@ -89,18 +89,12 @@ export const createContacts = async (
     await prisma.$transaction(async (tx) => {
       const createdContact = await tx.contact.create({
         data: {
+          meetupId: meetupId,
           userId: user.id,
           name: validatedFields.data.name,
           company: validatedFields.data.company,
           role: validatedFields.data.role,
           description: validatedFields.data.description,
-        },
-      });
-
-      await tx.contactMeetup.create({
-        data: {
-          contactId: createdContact.id,
-          meetupId: meetupId,
         },
       });
 
