@@ -46,17 +46,11 @@ export const getContacts = async (): Promise<
             },
           },
         },
-        meetups: {
-          take: 1,
-          orderBy: { createdAt: "desc" },
+        meetup: {
           select: {
-            meetup: {
-              select: {
-                id: true,
-                name: true,
-                scheduledAt: true,
-              },
-            },
+            id: true,
+            name: true,
+            scheduledAt: true,
           },
         },
       },
@@ -65,9 +59,6 @@ export const getContacts = async (): Promise<
     return {
       ok: true,
       data: contacts.map((c) => {
-        //現在のやりたい実装は contactは一つのmeetupしか参加しない(contactを使い回さない)設計のためこの方法となる
-        //schema自体を多対多にしたため，prismaで取得するとmeetups(配列になって帰ってきてしまう)ので現在の実装になります
-        const [first] = c.meetups;
         return {
           id: c.id,
           name: c.name,
@@ -90,9 +81,9 @@ export const getContacts = async (): Promise<
               };
             }) ?? undefined,
           meetup: {
-            id: first.meetup.id,
-            name: first.meetup.name,
-            scheduledAt: first.meetup.scheduledAt,
+            id: c.meetup.id,
+            name: c.meetup.name,
+            scheduledAt: c.meetup.scheduledAt,
           },
         };
       }),
