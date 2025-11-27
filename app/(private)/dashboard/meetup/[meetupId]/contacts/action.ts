@@ -11,6 +11,7 @@ import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
+import { deleteContactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/deleteContact";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { contactsActionSchema } from "@/validations/private/contactsValidation";
@@ -354,4 +355,31 @@ export const updateContacts = async (
       errors: {},
     };
   }
+};
+
+export const deleteContact = async (
+  contactId: string,
+  meetupId: string,
+  _: ActionState<ContactsErrors>,
+): Promise<ActionState<ContactsErrors>> => {
+  const user = await getUser();
+  if (!user)
+    return {
+      success: false,
+      errors: {
+        auth: "認証に失敗しました",
+      },
+    };
+
+  const isDelete = await deleteContactRepository(contactId, user.id);
+  if (!isDelete) {
+    return {
+      success: false,
+      errors: {
+        server: "server error",
+      },
+    };
+  }
+
+  redirect(`/dashboard/meetup/${meetupId}`);
 };
