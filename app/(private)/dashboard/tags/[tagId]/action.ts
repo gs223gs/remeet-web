@@ -67,15 +67,9 @@ export const deleteTag = async (
           auth: "認証に失敗しました",
         },
       };
-    await prisma.$transaction(async (tx) => {
-      await tx.contactTag.deleteMany({
-        where: { tagId: tagId, tag: { userId: user.id } },
-      });
-
-      await tx.tag.delete({
+    await prisma.tag.delete({
         where: { id: tagId, userId: user.id },
       });
-    });
   } catch (error) {
     console.error(error);
     return {
