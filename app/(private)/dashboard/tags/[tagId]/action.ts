@@ -1,4 +1,5 @@
 "use server";
+
 import { redirect } from "next/navigation";
 
 import type { TagErrors } from "@/type/private/tags/tags";
@@ -14,6 +15,7 @@ const tagValidation = (formData: FormData) => {
   };
   return tagSchema.safeParse(rawFormData);
 };
+
 export const updateTag = async (
   tagId: string,
   _: ActionState<TagErrors>,
@@ -67,14 +69,8 @@ export const deleteTag = async (
           auth: "認証に失敗しました",
         },
       };
-    await prisma.$transaction(async (tx) => {
-      await tx.contactTag.deleteMany({
-        where: { tagId: tagId, tag: { userId: user.id } },
-      });
-
-      await tx.tag.delete({
-        where: { id: tagId, userId: user.id },
-      });
+    await prisma.tag.delete({
+      where: { id: tagId, userId: user.id },
     });
   } catch (error) {
     console.error(error);
