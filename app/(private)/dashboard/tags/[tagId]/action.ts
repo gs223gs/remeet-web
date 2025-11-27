@@ -1,4 +1,5 @@
 "use server";
+
 import { redirect } from "next/navigation";
 
 import type { TagErrors } from "@/type/private/tags/tags";
@@ -14,6 +15,7 @@ const tagValidation = (formData: FormData) => {
   };
   return tagSchema.safeParse(rawFormData);
 };
+
 export const updateTag = async (
   tagId: string,
   _: ActionState<TagErrors>,
@@ -68,8 +70,8 @@ export const deleteTag = async (
         },
       };
     await prisma.tag.delete({
-        where: { id: tagId, userId: user.id },
-      });
+      where: { id: tagId, userId: user.id },
+    });
   } catch (error) {
     console.error(error);
     return {
