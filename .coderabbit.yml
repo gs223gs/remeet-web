@@ -1,67 +1,59 @@
-# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
-version: 2
+language: ja
 
-pull_requests:
-  language: ja
-  instructions: |
-    # === 全体方針 ===
-    - レビューコメントはすべて日本語で記述してください。
-    - コードの読みやすさ、責務分離、一貫した命名規則を重視して指摘してください。
-    - 過剰指摘は避け、PR の目的に沿った指摘を中心にコメントしてください。
-    - TypeScript と Next.js(App Router) のベストプラクティスに基づいて評価してください。
-    - 「AI が書いたコード」かどうかではなく、純粋に技術的品質のみを評価してください。
+reviews:
+  high_level_summary: true
+  path_filters:
+    - "!dist/**"
+    - "!.next/**"
+    - "!out/**"
+    - "!src/generated/**"
+    - "!prisma/migrations/**"
+    - "!**/*.md"
+    - "!**/*.json"
+    - "!**/*.yml"
+    - "!**/*.yaml"
+    - "!tsconfig.json"
+    - "!next.config.js"
+    - "!postcss.config.js"
+    - "!tailwind.config.js"
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        # === 全体方針 ===
+        - レビューコメントはすべて日本語で記述してください。
+        - コードの読みやすさ、責務分離、一貫した命名規則を重視して指摘してください。
+        - 過剰指摘は避け、PR の目的に沿った指摘を中心にコメントしてください。
+        - TypeScript と Next.js(App Router) のベストプラクティスに基づいて評価してください。
+        - 「AI が書いたコード」かどうかではなく、純粋に技術的品質のみを評価してください。
 
-    # === TypeScript  ===
-    - any 型は禁止。代替案（unknown, generics 等）を必ず提案してください。
-    - 型推論可能な場面での明示的型付けの過不足を指摘してください。
-    - Zod, Prisma, Server Actions との型整合性を確認し、齟齬があれば必ず指摘してください。
-    - Union 型や Discriminated Union が適切に使われているかを評価してください。
+        # === TypeScript  ===
+        - any 型は禁止。代替案（unknown, generics 等）を必ず提案してください。
+        - 型推論可能な場面での明示的型付けの過不足を指摘してください。
+        - Zod, Prisma, Server Actions との型整合性を確認し、齟齬があれば必ず指摘してください。
+        - Union 型や Discriminated Union が適切に使われているかを評価してください。
 
-    # === React / Next.js ===
-    - useEffect 乱用はアンチパターンとして厳しく指摘してください。
-    - 不要なクライアントコンポーネント化を指摘し、可能なら Server Component 化を提案してください。
-    - サーバーアクションの粒度、責務の混在を厳しくチェックしてください。
-    - カスタムフックの命名と責務を評価してください。
+        # === React / Next.js ===
+        - useEffect 乱用はアンチパターンとして厳しく指摘してください。
+        - 不要なクライアントコンポーネント化を指摘し、可能なら Server Component 化を提案してください。
+        - サーバーアクションの粒度、責務の混在を厳しくチェックしてください。
+        - カスタムフックの命名と責務を評価してください。
 
-    # === Next.js App Router の構造 ===
-    - ディレクトリ構造の一貫性を評価してください（app/**, components/**, lib/**, validations/**）。
-    - Server Action の中にビジネスロジックが入りすぎていないかチェックしてください。
-    - fetch / DB アクセスの場所が適切か評価してください。
+        # === Next.js App Router の構造 ===
+        - ディレクトリ構造の一貫性を評価してください（app/**, components/**, lib/**, validations/**）。
+        - Server Action の中にビジネスロジックが入りすぎていないかチェックしてください。
+        - fetch / DB アクセスの場所が適切か評価してください。
 
-    # === Prisma / DB ===
-    - N+1 が発生しそうな箇所は必ず指摘してください。
-    - include と select の適切さを評価してください。
-    - Prisma の型とスキーマ定義の整合性を確認してください。
+        # === Prisma / DB ===
+        - N+1 が発生しそうな箇所は必ず指摘してください。
+        - include と select の適切さを評価してください。
+        - Prisma の型とスキーマ定義の整合性を確認してください。
 
-    # === コードスタイル ===
-    - 長すぎる関数 / コンポーネントは責務分割を提案してください。
-    - 同じ処理の重複は抽出案を提示してください。
-    - 命名規則（キャメルケース、意味の一貫性）を厳しくチェックしてください。
+        # === コードスタイル ===
+        - 長すぎる関数 / コンポーネントは責務分割を提案してください。
+        - 同じ処理の重複は抽出案を提示してください。
+        - 命名規則（キャメルケース、意味の一貫性）を厳しくチェックしてください。
 
-    # === 実務観点 ===
-    - PR の意図に対して変更量が適切かどうかを評価してください。
-    - 将来の保守性 / 可読性に問題がある場合は積極的に指摘してください。
-    - UI ではなく、ロジック面・設計面を中心にレビューしてください。
-
-release_notes:
-  language: ja
-  summarize: true
-
-settings:
-  ignore:
-    # ビルド成果物
-    - "dist/**"
-    - ".next/**"
-    - "out/**"
-    # 自動生成コード
-    - "src/generated/**"
-    - "prisma/migrations/**"
-    # 設定ファイル
-    - "**/*.md"
-    - "**/*.json"
-    - "**/*.yml"
-    - "**/*.yaml"
-    - "tsconfig.json"
-    - "next.config.js"
-    - "postcss.config.js"
-    - "tailwind.config.js"
+        # === 実務観点 ===
+        - PR の意図に対して変更量が適切かどうかを評価してください。
+        - 将来の保守性 / 可読性に問題がある場合は積極的に指摘してください。
+        - UI ではなく、ロジック面・設計面を中心にレビューしてください。
