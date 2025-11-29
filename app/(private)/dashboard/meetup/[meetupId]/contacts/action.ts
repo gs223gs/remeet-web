@@ -372,7 +372,7 @@ export const deleteContact = async (
     };
 
   //変数名キモすぎ このままだと　deleteできるかどうか？　と言う意味になる　勉強しろ
-  const isDeleted = await contactRepository.delete(contactId, meetupId);
+  const isDeleted = await contactRepository.delete(contactId, user.id);
   if (!isDeleted.ok) {
     return {
       success: false,
