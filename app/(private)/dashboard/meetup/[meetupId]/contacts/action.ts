@@ -11,7 +11,7 @@ import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
-import { deleteContactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/deleteContact";
+import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { contactsActionSchema } from "@/validations/private/contactsValidation";
@@ -371,13 +371,12 @@ export const deleteContact = async (
       },
     };
 
-  const isDelete = await deleteContactRepository(contactId, user.id);
-  if (!isDelete) {
+  //変数名キモすぎ このままだと　deleteできるかどうか？　と言う意味になる　勉強しろ
+  const isDeleted = await contactRepository.delete(contactId, meetupId);
+  if (!isDeleted.ok) {
     return {
       success: false,
-      errors: {
-        server: "server error",
-      },
+      errors: isDeleted.error,
     };
   }
 
