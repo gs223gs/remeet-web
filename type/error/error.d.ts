@@ -16,6 +16,6 @@ export type AppError = {
 export type Result<T> = { ok: true; data: T } | { ok: false; error: AppError };
 
 //TODO 本当はResult に統一したいがrefactorするのは後回しにする
-export type RepositoryResult<T, E> =
+export type MigrationResult<T, E> =
   | { ok: true; data: T }
   | { ok: false; error: E };
