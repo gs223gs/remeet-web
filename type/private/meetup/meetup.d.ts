@@ -36,4 +36,11 @@ type MeetupSummary = {
   meetup: MeetupDetail;
   contactsCount: number;
 };
+
+//TODO これ廃止させる
 export type MeetupResult = Result<MeetupSummary[]>;
+
+export type MeetupOwnershipDTO = {
+  meetupId: string;
+  userId: string;
+};
