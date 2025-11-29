@@ -11,6 +11,8 @@ import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
+import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
+import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { contactsActionSchema } from "@/validations/private/contactsValidation";
@@ -354,4 +356,42 @@ export const updateContacts = async (
       errors: {},
     };
   }
+};
+
+export const deleteContact = async (
+  contactId: string,
+  meetupId: string,
+  _: ActionState<ContactsErrors>,
+): Promise<ActionState<ContactsErrors>> => {
+  const user = await getUser();
+  if (!user)
+    return {
+      success: false,
+      errors: {
+        auth: "認証に失敗しました",
+      },
+    };
+
+  const contactOwnershipResult = await getOwnedContact(contactId, user.id);
+  if (!contactOwnershipResult.ok) {
+    return {
+      success: false,
+      errors: {
+        auth: "認証に失敗しました",
+      },
+    };
+  }
+
+  const isDeleted = await contactRepository.delete(
+    contactOwnershipResult.data.contactId,
+    contactOwnershipResult.data.userId,
+  );
+  if (!isDeleted.ok) {
+    return {
+      success: false,
+      errors: isDeleted.error,
+    };
+  }
+
+  redirect(`/dashboard/meetup/${meetupId}`);
 };

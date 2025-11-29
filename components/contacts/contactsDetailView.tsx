@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { DeleteContactForm } from "./form/deleteContactForm";
+
 import type { ContactsDetailDTO } from "@/type/private/contacts/contacts";
 
 type ContactsDetailViewProps = {
@@ -40,6 +42,7 @@ export const ContactsDetailView = ({
       >
         編集
       </Link>
+      <DeleteContactForm contactId={contactsDetail.id} meetupId={meetupId} />
     </div>
   );
 };

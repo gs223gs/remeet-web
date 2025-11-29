@@ -30,4 +30,10 @@ export type ContactsErrors = {
   server?: "server error";
 };
 
+//TODO これも廃止する
 export type ContactsDetailResult = Result<ContactsDetailDTO>;
+
+export type ContactOwnershipDTO = {
+  contactId: string;
+  userId: string;
+};
