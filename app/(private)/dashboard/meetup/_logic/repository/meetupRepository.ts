@@ -9,6 +9,18 @@ export const meetupRepository = {
     userId: string,
   ): Promise<MigrationResult<null, MeetupErrors>> {
     try {
+      const deletedMeetups = await prisma.meetup.deleteMany({
+        where: { id: meetupId, userId: userId },
+      });
+
+      if (deletedMeetups.count === 0) {
+        return {
+          ok: false,
+          error: {
+            server: "server error",
+          },
+        };
+      }
       return {
         ok: true,
         data: null,
