@@ -9,9 +9,18 @@ export const contactRepository = {
     userId: string,
   ): Promise<RepositoryResult<null, ContactsErrors>> {
     try {
-      await prisma.contact.delete({
+      const isDeleted = await prisma.contact.deleteMany({
         where: { id: contactId, userId: userId },
       });
+
+      if (isDeleted.count === 0) {
+        return {
+          ok: false,
+          error: {
+            server: "server error",
+          },
+        };
+      }
 
       return {
         ok: true,
