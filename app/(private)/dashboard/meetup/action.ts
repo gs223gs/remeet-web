@@ -140,3 +140,34 @@ export const updateMeetup = async (
 //read
 
 //delete
+export const deleteMeetup = async (
+  meetupId: string,
+  _: ActionState<MeetupErrors>,
+): Promise<ActionState<MeetupErrors>> => {
+  try {
+    const user = await getUser();
+    if (!user)
+      return {
+        success: false,
+        errors: {
+          auth: "認証に失敗しました",
+        },
+      };
+    //Meetup OwnershipCheck
+    const meetupOwnershipResult;
+
+    //deleteMeetup
+    const isDeletedResult;
+
+    redirect("/dashboard/meetup");
+  } catch (error) {
+    console.error(error);
+    if (isRedirectError(error)) throw error;
+    return {
+      success: false,
+      errors: {
+        server: "server error",
+      },
+    };
+  }
+};
