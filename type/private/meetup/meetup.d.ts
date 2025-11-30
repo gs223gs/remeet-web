@@ -32,7 +32,7 @@ export type MeetupDetailSummary = {
 
 export type MeetupDetailResult = Result<MeetupDetailSummary>;
 
-type MeetupSummary = {
+export type MeetupSummary = {
   meetup: MeetupDetail;
   contactsCount: number;
 };

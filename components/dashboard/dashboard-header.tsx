@@ -1,8 +1,3 @@
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/ui/color-mode-toggle";
-
 type DashboardHeaderProps = {
   eyebrow: string;
   title: string;
@@ -24,22 +19,6 @@ export function DashboardHeader({
           {title}
         </h1>
         <p className="text-sm text-muted-foreground">{description}</p>
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <ModeToggle />
-        <Button
-          asChild
-          variant="ghost"
-          className="border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-500/40 dark:bg-blue-500/20 dark:text-blue-50"
-        >
-          <Link href="/dashboard/meetup">Meetup一覧</Link>
-        </Button>
-        <Button
-          asChild
-          className="bg-orange-500 text-white shadow-sm hover:bg-orange-500/90"
-        >
-          <Link href="/dashboard/meetup/new">Meetupを作成</Link>
-        </Button>
       </div>
     </div>
   );

@@ -139,23 +139,6 @@ export const getMeetup = async (): Promise<MeetupResult> => {
         },
       },
     });
-    //TODO あとで正しくする
-    if (meetups.length === 0) {
-      const date = new Date();
-      return {
-        ok: true,
-        data: [
-          {
-            meetup: {
-              id: "",
-              name: "",
-              scheduledAt: date,
-            },
-            contactsCount: 0,
-          },
-        ],
-      };
-    }
 
     return {
       ok: true,
