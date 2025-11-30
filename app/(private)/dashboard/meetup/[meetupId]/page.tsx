@@ -4,7 +4,7 @@ import { getMeetupDetailSummary } from "../_server/server";
 
 import type { MeetupDetailContact } from "@/type/private/meetup/meetup";
 
-import { MeetupOverview } from "@/components/meetup/meetupOverview";
+import { MeetupOverview } from "@/components/meetup//display/meetupOverview";
 
 export default async function MeetupDetail({
   params,
