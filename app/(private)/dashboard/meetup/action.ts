@@ -7,6 +7,8 @@ import { redirect } from "next/navigation";
 import type { MeetupErrors } from "@/type/private/meetup/meetup";
 import type { ActionState } from "@/type/util/action";
 
+import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
+import { getOwnedMeetup } from "@/app/(private)/dashboard/meetup/_logic/service/checkMeetupOwner";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
@@ -154,10 +156,34 @@ export const deleteMeetup = async (
         },
       };
     //Meetup OwnershipCheck
-    const meetupOwnershipResult;
+    /**
+     * TODO リファクタリング
+     * return が何を表しているのかわからない
+     * getOwnedMeetup内で直接prismaを呼び出しているので責務が崩れている
+     */
+    const meetupOwnershipResult = await getOwnedMeetup(meetupId, user.id);
+    if (!meetupOwnershipResult.ok) {
+      return {
+        success: false,
+        errors: {
+          auth: "認証に失敗しました",
+        },
+      };
+    }
 
     //deleteMeetup
-    const isDeletedResult;
+    const deletedMeetupResult = await meetupRepository.delete(
+      meetupId,
+      user.id,
+    );
+    if (!deletedMeetupResult.ok) {
+      return {
+        success: false,
+        errors: {
+          server: "server error",
+        },
+      };
+    }
 
     redirect("/dashboard/meetup");
   } catch (error) {
