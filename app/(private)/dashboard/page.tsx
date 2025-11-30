@@ -53,9 +53,9 @@ export default async function DashboardPage() {
         meetupId: lastMeetupContacts[0].meetupId,
         name: lastMeetupContacts[0].meetupName,
         scheduledAt: lastMeetupContacts[0].meetupScheduledAt,
-        contacts: lastMeetupContacts.map((contact) => ({
-          id: contact.contactId,
-          name: contact.contactName,
+        contacts: lastMeetupContacts.map((c) => ({
+          id: c.contactId,
+          name: c.contactName,
         })),
       }
     : null;
