@@ -63,9 +63,12 @@ export function LatestMeetupCard({ latestMeetup }: LatestMeetupCardProps) {
                       直近のコンタクト
                     </p>
                   </div>
-                  <span className="text-xs font-medium text-orange-500">
-                    メモ確認
-                  </span>
+                  <Link
+                    href={`/dashboard/meetup/${latestMeetup.meetupId}/contacts/${contact.id}`}
+                    className="text-xs font-medium text-orange-500"
+                  >
+                    詳細へ
+                  </Link>
                 </div>
               ))}
             </div>
