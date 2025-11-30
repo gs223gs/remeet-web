@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { dateFormatter } from "@/util/dateFormatter";
 
 type LatestMeetupSummary = {
   name: string;
@@ -24,11 +25,6 @@ type DashboardStatsProps = {
 };
 
 const numberFormatter = new Intl.NumberFormat("ja-JP");
-const meetupDateFormatter = new Intl.DateTimeFormat("ja-JP", {
-  dateStyle: "medium",
-  timeStyle: "short",
-  timeZone: "Asia/Tokyo",
-});
 
 export function DashboardStats({
   meetupCount,
@@ -60,7 +56,7 @@ export function DashboardStats({
       label: "最新Meetup",
       value: latestMeetup ? latestMeetup.name : "未登録",
       helper: latestMeetup
-        ? meetupDateFormatter.format(latestMeetup.scheduledAt)
+        ? dateFormatter(latestMeetup.scheduledAt)
         : "開催日を登録して履歴を残しましょう",
       icon: Sparkles,
       accent: "bg-emerald-500/10 text-emerald-600",

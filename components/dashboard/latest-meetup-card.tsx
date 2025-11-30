@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { dateFormatter } from "@/util/dateFormatter";
 
 export type LatestMeetupData = {
   meetupId: string;
@@ -21,12 +22,6 @@ type LatestMeetupCardProps = {
   latestMeetup: LatestMeetupData | null;
 };
 
-const meetupDateFormatter = new Intl.DateTimeFormat("ja-JP", {
-  dateStyle: "medium",
-  timeStyle: "short",
-  timeZone: "Asia/Tokyo",
-});
-
 export function LatestMeetupCard({ latestMeetup }: LatestMeetupCardProps) {
   return (
     <Card className="border-muted bg-card">
@@ -34,7 +29,7 @@ export function LatestMeetupCard({ latestMeetup }: LatestMeetupCardProps) {
         <CardTitle>最新のMeetup</CardTitle>
         <CardDescription>
           {latestMeetup
-            ? `${meetupDateFormatter.format(latestMeetup.scheduledAt)} 開催`
+            ? `${dateFormatter(latestMeetup.scheduledAt)} 開催`
             : "まだMeetupが登録されていません"}
         </CardDescription>
       </CardHeader>
