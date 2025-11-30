@@ -1,36 +1,84 @@
 import Link from "next/link";
 
-import { getUserDashboardSummary } from "./_server/server";
-
-import { ModeToggle } from "@/components/ui/color-mode-toggle";
+import { getUserDashboardSummary } from "@/app/(private)/dashboard/_server/server";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { DashboardStats } from "@/components/dashboard/dashboard-stats";
+import {
+  LatestMeetupCard,
+  type LatestMeetupData,
+} from "@/components/dashboard/latest-meetup-card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
 
-export default async function page() {
+export default async function DashboardPage() {
   const summary = await getUserDashboardSummary();
 
-  if (!summary.ok) return <div>何かしらのエラーです</div>;
-  const id = "cmgqkfhg0000g6qqbc571th9w";
-  return (
-    <div>
-      <ModeToggle />
-      <div>{summary.data.meetupCount}</div>
-      <div>{summary.data.thisYearContactCount}</div>
-      <div>
-        {summary.data.lastMeetupContacts.map((c) => {
-          return (
-            <div key={c.contactId}>
-              <div>{c.contactName}</div>
-              <div>{c.meetupName}</div>
-              <div>{c.meetupScheduledAt.toISOString()}</div>
-            </div>
-          );
-        })}
+  if (!summary.ok) {
+    return (
+      <div className="flex min-h-[70vh] flex-1 items-center justify-center px-6 py-10">
+        <Card className="max-w-md text-center">
+          <CardHeader>
+            <CardTitle>情報取得に失敗しました</CardTitle>
+            <CardDescription>
+              {summary.error?.message?.join(" / ") ??
+                "再度読み込みをお試しください。"}
+            </CardDescription>
+          </CardHeader>
+          <CardFooter className="flex justify-center">
+            <Button
+              asChild
+              className="bg-orange-500 text-white hover:bg-orange-500/90"
+            >
+              <Link href="/dashboard">リロード</Link>
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
+    );
+  }
 
-      <Link href={"/dashboard/meetup/new"}>new</Link>
-      <Link href={`/dashboard/meetup/${id}`}>詳細へ</Link>
-      <Link href={"/dashboard/meetup"}>meetup</Link>
+  const { meetupCount, thisYearContactCount, lastMeetupContacts } =
+    summary.data;
+
+  const latestMeetup: LatestMeetupData | null = lastMeetupContacts.length
+    ? {
+        meetupId: lastMeetupContacts[0].meetupId,
+        name: lastMeetupContacts[0].meetupName,
+        scheduledAt: lastMeetupContacts[0].meetupScheduledAt,
+        contacts: lastMeetupContacts.map((c) => ({
+          id: c.contactId,
+          name: c.contactName,
+        })),
+      }
+    : null;
+
+  const latestMeetupSummary = latestMeetup
+    ? { name: latestMeetup.name, scheduledAt: latestMeetup.scheduledAt }
+    : null;
+
+  return (
+    <div className="flex min-h-screen flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-10">
+      <DashboardHeader
+        eyebrow="meetup overview"
+        title="ダッシュボード"
+        description="直近のMeetupとコンタクト状況をここで素早く確認しましょう。"
+      />
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)]">
+        <DashboardStats
+          meetupCount={meetupCount}
+          thisYearContactCount={thisYearContactCount}
+          latestMeetup={latestMeetupSummary}
+        />
+        <LatestMeetupCard latestMeetup={latestMeetup} />
+      </section>
     </div>
   );
 }
