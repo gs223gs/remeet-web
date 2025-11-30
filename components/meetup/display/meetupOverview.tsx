@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import { DeleteMeetupForm } from "./form/deleteMeetupForm";
-
 import type { MeetupDetail } from "@/type/private/meetup/meetup";
+
+import { DeleteMeetupForm } from "@/components/meetup/form/deleteMeetupForm";
 
 type MeetupDetailProps = {
   meetupDetail: MeetupDetail;
