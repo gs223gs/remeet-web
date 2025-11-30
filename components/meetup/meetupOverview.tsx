@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { DeleteMeetupForm } from "./form/deleteMeetupForm";
+
 import type { MeetupDetail } from "@/type/private/meetup/meetup";
 
 type MeetupDetailProps = {
@@ -18,6 +20,7 @@ export const MeetupOverview = ({
       <div>date: {meetupDetail.scheduledAt.toISOString()}</div>
       <div>count:{meetupContactsCount}</div>
       <Link href={`/dashboard/meetup/${meetupDetail.id}/edit`}>編集</Link>
+      <DeleteMeetupForm meetupId={meetupDetail.id} />
     </div>
   );
 };
