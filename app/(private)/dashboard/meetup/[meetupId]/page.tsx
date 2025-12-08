@@ -2,9 +2,19 @@ import Link from "next/link";
 
 import { getMeetupDetailSummary } from "../_server/server";
 
-import type { MeetupDetailContact } from "@/type/private/meetup/meetup";
-
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { MeetupContactCard } from "@/components/meetup/display/meetup-contact-card";
 import { MeetupOverview } from "@/components/meetup/display/meetupOverview";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { routes } from "@/util/routes";
 
 export default async function MeetupDetail({
   params,
@@ -14,49 +24,101 @@ export default async function MeetupDetail({
   const { meetupId } = await params;
   const detail = await getMeetupDetailSummary(meetupId);
 
-  if (!detail.ok) return <div>error</div>;
+  if (!detail.ok) {
+    return (
+      <div className="flex min-h-[70vh] flex-1 items-center justify-center px-6 py-10">
+        <Card className="max-w-md text-center">
+          <CardHeader>
+            <CardTitle>情報取得に失敗しました</CardTitle>
+            <CardDescription>
+              {detail.error?.message?.join(" / ") ??
+                "再度読み込みをお試しください。"}
+            </CardDescription>
+          </CardHeader>
+          <CardFooter className="flex justify-center">
+            <Button
+              asChild
+              className="bg-orange-500 text-white hover:bg-orange-500/90"
+            >
+              <Link href={routes.dashboardMeetupList()}>
+                ダッシュボードへ戻る
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   const meetupDetail = detail.data.detailWithContacts.detail;
+  const contacts = detail.data.detailWithContacts.contacts;
+  const contactCount = detail.data.contactCount;
+
   return (
-    <div>
-      <MeetupOverview
-        meetupDetail={meetupDetail}
-        meetupContactsCount={detail.data.contactCount}
+    <div className="flex flex-1 flex-col min-h-screen gap-6 px-4 py-6 sm:px-6 lg:px-10">
+      <DashboardHeader
+        eyebrow="meetup detail"
+        title={`${meetupDetail.name}の詳細`}
+        description="Meetupの概要と登録済みのコンタクトを確認できます。"
       />
-      <Link href={`/dashboard/meetup/${meetupId}/contacts/new`}>new</Link>
-      <div className="m-1 flex ">
-        {detail.data.detailWithContacts.contacts.map((c) => {
-          return (
-            <ContactSummary key={c.id} meetupId={meetupId} contactSummary={c} />
-          );
-        })}
+
+      <div className="">
+        <MeetupOverview
+          meetupDetail={meetupDetail}
+          meetupContactsCount={contactCount}
+        />
       </div>
+
+      <section className="space-y-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-lg font-semibold text-foreground">
+              登録済みコンタクト
+            </p>
+            <p className="text-sm text-muted-foreground">
+              このMeetupで記録したつながりは{contactCount}件です。
+            </p>
+          </div>
+          {/*TODO これアンチパターンじゃない？  asChildだからいいのか?*/}
+          <Button
+            asChild
+            size="sm"
+            variant="ghost"
+            className="border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100"
+          >
+            <Link href={routes.dashboardMeetupContactNew(meetupId)}>
+              コンタクトを追加
+            </Link>
+          </Button>
+        </div>
+
+        {contacts.length ? (
+          <div className="grid grid-cols-2 gap-4 w-full md:grid-cols-2 lg:grid-6 xl:grid-cols-8">
+            {contacts.map((c) => (
+              <MeetupContactCard key={c.id} meetupId={meetupId} contact={c} />
+            ))}
+          </div>
+        ) : (
+          <Card className="border-dashed border-muted-foreground/40 bg-card">
+            <CardContent className="flex min-h-[220px] flex-col items-center justify-center gap-3 text-center">
+              <div className="space-y-2">
+                <CardTitle>まだコンタクトが登録されていません</CardTitle>
+                <CardDescription>
+                  出会った人を記録して、フォローアップを忘れないようにしましょう。
+                </CardDescription>
+              </div>
+              <Button
+                asChild
+                className="bg-orange-500 text-white hover:bg-orange-500/90"
+              >
+                <Link href={routes.dashboardMeetupContactNew(meetupId)}>
+                  コンタクトを追加
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </section>
     </div>
   );
 }
-
-type contactsSummaryProps = {
-  meetupId: string;
-  contactSummary: MeetupDetailContact;
-};
-
-const ContactSummary = ({ meetupId, contactSummary }: contactsSummaryProps) => {
-  return (
-    <Link href={`/dashboard/meetup/${meetupId}/contacts/${contactSummary.id}/`}>
-      <div className=" outline-2 m-2">
-        <div>{contactSummary.name}</div>
-        <div>{contactSummary.role}</div>
-        <div>{contactSummary.company}</div>
-        <div>
-          {contactSummary.tags.map((t) => {
-            return (
-              <div key={t} className=" outline-2 m-2">
-                {t}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </Link>
-  );
-};
