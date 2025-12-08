@@ -16,7 +16,7 @@ export const ContactsList = ({ contacts }: Props) => {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
       {contacts.map((contact) => (
         <ContactCard key={contact.id} contact={contact} />
       ))}
