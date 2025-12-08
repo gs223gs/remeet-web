@@ -21,3 +21,11 @@ export const routes = {
   dashboardTagDetail: (tagId: string) => `/dashboard/tags/${tagId}` as const,
   dashboardTagEdit: (tagId: string) => `/dashboard/tags/${tagId}/edit` as const,
 } as const;
+
+export const outsideUrl = {
+  githubUrl: (id: string) => `https://github.com/${id}`,
+  twitterUrl: (id: string) => `https://x.com/${id}`,
+  websiteUrl: (url: string) => `https://${url}`,
+  otherUrl: (url: string) => `https://${url}`,
+  productUrl: (url: string) => `https://${url}`,
+} as const;
