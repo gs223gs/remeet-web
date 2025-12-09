@@ -21,10 +21,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider defaultOpen={false}>
-            <AppSidebar />
-            <main>{children}</main>
-          </SidebarProvider>
+          <div className="flex min-h-screen">
+            <SidebarProvider defaultOpen={false}>
+              <AppSidebar />
+              <main className="flex-1 min-w-0">{children}</main>
+            </SidebarProvider>
+          </div>
         </ThemeProvider>
       </body>
     </html>
