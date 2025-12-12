@@ -22,10 +22,15 @@ export const routes = {
   dashboardTagEdit: (tagId: string) => `/dashboard/tags/${tagId}/edit` as const,
 } as const;
 
+const ensureHttps = (rawUrl: string) =>
+  rawUrl.startsWith("http://") || rawUrl.startsWith("https://")
+    ? rawUrl
+    : `https://${rawUrl}`;
+
 export const outsideUrl = {
   githubUrl: (id: string) => `https://github.com/${id}`,
   twitterUrl: (id: string) => `https://x.com/${id}`,
-  websiteUrl: (url: string) => `https://${url}`,
-  otherUrl: (url: string) => `https://${url}`,
-  productUrl: (url: string) => `https://${url}`,
+  websiteUrl: (url: string) => ensureHttps(url),
+  otherUrl: (url: string) => ensureHttps(url),
+  productUrl: (url: string) => ensureHttps(url),
 } as const;
