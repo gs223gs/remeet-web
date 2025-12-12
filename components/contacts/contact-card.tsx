@@ -23,7 +23,21 @@ type ContactWithMeetup = ContactsDetailDTO & { meetup: MeetupDetail };
 type Props = {
   contact: ContactWithMeetup;
 };
+const linkHandlers: Record<LinkType, (handle: string, url: string) => string> =
+  {
+    GITHUB: (handle) => outsideUrl.githubUrl(handle),
+    TWITTER: (handle) => outsideUrl.twitterUrl(handle),
+    WEBSITE: (_, siteUrl) => outsideUrl.websiteUrl(siteUrl),
+    OTHER: (_, siteUrl) => outsideUrl.otherUrl(siteUrl),
+    PRODUCT: (_, siteUrl) => outsideUrl.productUrl(siteUrl),
+  };
 
+const createUrl = (type: LinkType, handle: string | undefined, url: string) => {
+  if (!handle) {
+    return linkHandlers[type]("", url);
+  }
+  return linkHandlers[type](handle, url);
+};
 export const ContactCard = ({ contact }: Props) => {
   return (
     <Card className="flex h-full flex-col border-muted transition hover:-translate-y-0.5 hover:border-orange-200">
@@ -72,27 +86,6 @@ export const ContactCard = ({ contact }: Props) => {
           {contact.links && contact.links.length ? (
             <div className="space-y-2">
               {contact.links.map((l) => {
-                const linkHandlers: Record<
-                  LinkType,
-                  (handle: string, url: string) => string
-                > = {
-                  GITHUB: (handle) => outsideUrl.githubUrl(handle),
-                  TWITTER: (handle) => outsideUrl.twitterUrl(handle),
-                  WEBSITE: (_, siteUrl) => outsideUrl.websiteUrl(siteUrl),
-                  OTHER: (_, siteUrl) => outsideUrl.otherUrl(siteUrl),
-                  PRODUCT: (_, siteUrl) => outsideUrl.productUrl(siteUrl),
-                };
-
-                const createUrl = (
-                  type: LinkType,
-                  handle: string | undefined,
-                  url: string,
-                ) => {
-                  if (!handle) {
-                    return linkHandlers[type]("", url);
-                  }
-                  return linkHandlers[type](handle, url);
-                };
                 const linkUrl = createUrl(l.type, l.handle, l.url);
 
                 return (
