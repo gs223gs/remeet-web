@@ -63,7 +63,7 @@ export default async function TagsPage() {
         <TagsHeader />
       </div>
 
-      <section className="">
+      <section className="flex flex-col gap-6">
         <div className="space-y-4">
           <TagsOverviewCard topTag={topTag} />
         </div>
