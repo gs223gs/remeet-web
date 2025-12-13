@@ -2,9 +2,9 @@ import Link from "next/link";
 
 import { getTagsWithRanking } from "@/app/(private)/dashboard/tags/_server/server";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
-import { TagsHeader } from "@/components/tags/tags-header";
-import { TagsList } from "@/components/tags/tags-list";
-import { TagsOverviewCard } from "@/components/tags/tags-overview-card";
+import { TagsHeader } from "@/components/tag/display/tags-header";
+import { TagsList } from "@/components/tag/display/tags-list";
+import { TagsOverviewCard } from "@/components/tag/display/tags-overview-card";
 import { Button } from "@/components/ui/button";
 import {
   Card,
