@@ -16,7 +16,7 @@ type Props = {
 export const TagsOverviewCard = ({ topTag }: Props) => {
   return (
     <Card className="h-fit">
-      <div className="rounded-xl border  px-4 py-4">
+      <div className="rounded-xl px-4 py-4">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
             <Sparkles className="size-5" />
