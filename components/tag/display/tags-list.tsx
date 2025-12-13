@@ -41,7 +41,7 @@ export const TagsList = ({ tags }: TagsListProps) => {
             </p>
           </div>
         ) : (
-          <div className="space-y-3 grid gap-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
+          <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
             {tags.map((tag, index) => {
               const accent = badges[index % badges.length];
 
