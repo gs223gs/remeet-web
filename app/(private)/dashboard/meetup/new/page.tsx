@@ -35,7 +35,15 @@ export default function CreateMeetup() {
     mode: "onChange",
   });
 
-  if (isPending) return <div>loding</div>;
+  const isDisabled = !form.formState.isValid || isPending;
+
+  //冗長だが，今後パターンが増えないのであえてこの形にしておく
+  //今後パターンが増えた場合迷わずマッピングにした方がいい
+  const buttonLabel = isPending
+    ? "送信中"
+    : form.formState.isValid
+      ? "送信"
+      : "入力してください";
 
   return (
     <Form {...form}>
@@ -73,8 +81,8 @@ export default function CreateMeetup() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={!form.formState.isValid}>
-          {form.formState.isValid ? "送信" : "入力してください"}
+        <Button type="submit" disabled={isDisabled}>
+          {buttonLabel}
         </Button>
       </form>
     </Form>
