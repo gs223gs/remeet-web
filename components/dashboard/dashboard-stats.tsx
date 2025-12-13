@@ -64,7 +64,7 @@ export function DashboardStats({
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
       {stats.map((stat) => (
         <Card key={stat.label}>
           <CardHeader className="flex flex-row items-start justify-between space-y-0">

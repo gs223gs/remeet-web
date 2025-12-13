@@ -71,7 +71,7 @@ export default async function DashboardPage() {
         title="ダッシュボード"
         description="直近のMeetupとコンタクト状況をここで素早く確認しましょう。"
       />
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)]">
+      <section className="flex flex-col gap-6">
         <DashboardStats
           meetupCount={meetupCount}
           thisYearContactCount={thisYearContactCount}
