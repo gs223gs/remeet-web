@@ -11,6 +11,7 @@ import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/reposi
 import { getOwnedMeetup } from "@/app/(private)/dashboard/meetup/_logic/service/checkMeetupOwner";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { routes } from "@/util/routes";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
 
 export const createMeetup = async (
@@ -40,15 +41,24 @@ export const createMeetup = async (
         },
       };
 
-    await prisma.meetup.create({
-      data: {
-        userId: user.id,
-        name: validatedFields.data.name,
-        scheduledAt: validatedFields.data.scheduledAt,
-      },
-    });
-    return { success: true, errors: {} };
+    const createMeetupData = {
+      userId: user.id,
+      name: validatedFields.data.name,
+      scheduledAt: validatedFields.data.scheduledAt,
+    };
+
+    const createdMeetupResult = await meetupRepository.create(createMeetupData);
+    if (!createdMeetupResult.ok) {
+      return {
+        success: false,
+        errors: {
+          server: "server error",
+        },
+      };
+    }
+    redirect(routes.dashboardMeetupDetail(createdMeetupResult.data.id));
   } catch (error) {
+    if (isRedirectError(error)) throw error;
     console.error(error);
     return {
       success: false,
