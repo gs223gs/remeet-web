@@ -3,29 +3,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 
+import type { MeetupErrors } from "@/type/private/meetup/meetup";
+import type { ActionState } from "@/type/util/action";
+
 import { createMeetup } from "@/app/(private)/dashboard/meetup/action";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { CreateMeetupForm } from "@/components/meetup/form/create-meetup-form";
+import { ServerErrorCard } from "@/components/util/server-error-card";
 import {
   meetupClientSchema,
   type MeetupClientSchema,
 } from "@/validations/private/meetupValidation";
 
+const initialState: ActionState<MeetupErrors> = {
+  success: false,
+  errors: {},
+};
+
 export default function CreateMeetup() {
-  const [state, action, isPending] = useActionState(createMeetup, {
-    success: false,
-    errors: {},
-  });
+  const [state, action, isPending] = useActionState(createMeetup, initialState);
   const form = useForm<MeetupClientSchema>({
     resolver: zodResolver(meetupClientSchema),
     defaultValues: {
@@ -46,59 +42,21 @@ export default function CreateMeetup() {
       : "入力してください";
 
   return (
-    <Form {...form}>
-      <form action={action} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ミートアップ名</FormLabel>
-              <FormControl>
-                <Input placeholder="ミートアップ名" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-              <p>{state.errors.name}</p>
-            </FormItem>
-          )}
+    <div className="flex min-h-screen flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-10">
+      <DashboardHeader
+        eyebrow="create meetup"
+        title="Meetupを作成"
+        description="参加したMeetupを登録すると、そこで出会った人の記録を整理できます。"
+      />
+      <section className="flex flex-col">
+        {!state.errors && <ServerErrorCard />}
+        <CreateMeetupForm
+          form={form}
+          action={action}
+          buttonLabel={buttonLabel}
+          isDisabled={isDisabled}
         />
-        <FormField
-          control={form.control}
-          name="scheduledAt"
-          render={({ field }) => (
-            <FormItem>
-              <Calendar
-                mode="single"
-                selected={field.value}
-                onSelect={field.onChange}
-                className="rounded-md border shadow-sm"
-                captionLayout="dropdown"
-              />
-              <FormLabel>ミートアップの日付</FormLabel>
-
-              <FormControl>
-                <input
-                  type="hidden"
-                  name="scheduledAt"
-                  value={new Date(field.value).toISOString()}
-                />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-              {state.errors.scheduledAt}
-            </FormItem>
-          )}
-        />
-        <p>{state.errors.server}</p>
-        <Button type="submit" disabled={isDisabled}>
-          {buttonLabel}
-        </Button>
-      </form>
-    </Form>
+      </section>
+    </div>
   );
 }
