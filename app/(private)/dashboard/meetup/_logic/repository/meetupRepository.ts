@@ -1,5 +1,8 @@
 import type { MigrationResult } from "@/type/error/error";
-import type { MeetupErrors } from "@/type/private/meetup/meetup";
+import type {
+  CreateMeetupInput,
+  MeetupErrors,
+} from "@/type/private/meetup/meetup";
 
 import { prisma } from "@/lib/prisma";
 
@@ -24,6 +27,35 @@ export const meetupRepository = {
       return {
         ok: true,
         data: null,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          server: "server error",
+        },
+      };
+    }
+  },
+
+  async create(
+    formdata: CreateMeetupInput,
+  ): Promise<MigrationResult<{ id: string }, MeetupErrors>> {
+    try {
+      const createdMeetup = await prisma.meetup.create({
+        data: {
+          userId: formdata.userId,
+          name: formdata.name,
+          scheduledAt: formdata.scheduledAt,
+        },
+      });
+
+      return {
+        ok: true,
+        data: {
+          id: createdMeetup.id,
+        },
       };
     } catch (error) {
       console.error(error);
