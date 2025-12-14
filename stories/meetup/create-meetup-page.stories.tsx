@@ -1,12 +1,7 @@
-"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useActionState } from "react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { useForm } from "react-hook-form";
 
-import type { MeetupErrors } from "@/type/private/meetup/meetup";
-import type { ActionState } from "@/type/util/action";
-
-import { createMeetup } from "@/app/(private)/dashboard/meetup/action";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { CreateMeetupForm } from "@/components/meetup/form/create-meetup-form";
 import { ServerErrorCard } from "@/components/util/server-error-card";
@@ -15,13 +10,15 @@ import {
   type MeetupClientSchema,
 } from "@/validations/private/meetupValidation";
 
-const initialState: ActionState<MeetupErrors> = {
-  success: false,
-  errors: {},
+type CreateMeetupPagePreviewProps = {
+  showServerError: boolean;
+  isPending: boolean;
 };
 
-export default function CreateMeetup() {
-  const [state, action, isPending] = useActionState(createMeetup, initialState);
+function CreateMeetupPagePreview({
+  showServerError,
+  isPending,
+}: CreateMeetupPagePreviewProps) {
   const form = useForm<MeetupClientSchema>({
     resolver: zodResolver(meetupClientSchema),
     defaultValues: {
@@ -31,15 +28,13 @@ export default function CreateMeetup() {
     mode: "onChange",
   });
 
-  const isDisabled = !form.formState.isValid || isPending;
-
-  //冗長だが，今後パターンが増えないのであえてこの形にしておく
-  //今後パターンが増えた場合迷わずマッピングにした方がいい
   const buttonLabel = isPending
     ? "送信中"
     : form.formState.isValid
       ? "送信"
       : "入力してください";
+
+  const isDisabled = !form.formState.isValid || isPending;
 
   return (
     <div className="flex min-h-screen flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-10">
@@ -49,10 +44,13 @@ export default function CreateMeetup() {
         description="参加したMeetupを登録すると、そこで出会った人の記録を整理できます。"
       />
       <section className="flex flex-col">
-        {state.errors.server && <ServerErrorCard />}
+        {showServerError && <ServerErrorCard />}
         <CreateMeetupForm
           form={form}
-          action={action}
+          action={async (formData) => {
+            const entries = Object.fromEntries(formData.entries());
+            console.log(entries);
+          }}
           buttonLabel={buttonLabel}
           isDisabled={isDisabled}
         />
@@ -60,3 +58,41 @@ export default function CreateMeetup() {
     </div>
   );
 }
+
+const meta = {
+  title: "Meetup/CreateMeetupPage",
+  component: CreateMeetupPagePreview,
+  parameters: {
+    layout: "fullscreen",
+  },
+  args: {
+    showServerError: false,
+    isPending: false,
+  },
+  argTypes: {
+    showServerError: {
+      control: "boolean",
+    },
+    isPending: {
+      control: "boolean",
+    },
+  },
+} satisfies Meta<typeof CreateMeetupPagePreview>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {};
+
+export const Pending: Story = {
+  args: {
+    isPending: true,
+  },
+};
+
+export const ServerError: Story = {
+  args: {
+    showServerError: true,
+  },
+};
