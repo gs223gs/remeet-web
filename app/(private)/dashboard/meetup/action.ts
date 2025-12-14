@@ -19,8 +19,8 @@ export const createMeetup = async (
   formData: FormData,
 ): Promise<ActionState<MeetupErrors>> => {
   const rawFormData = {
-    name: formData.get("name") as string,
-    scheduledAt: formData.get("scheduledAt") as string,
+    name: formData.get("name")?.toString() ?? "",
+    scheduledAt: formData.get("scheduledAt")?.toString() ?? "",
   };
 
   const validatedFields = createMeetupSchema.safeParse(rawFormData);
