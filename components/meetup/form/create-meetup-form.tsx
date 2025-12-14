@@ -76,7 +76,7 @@ export function CreateMeetupForm({
                       >
                         {field.value
                           ? field.value.toLocaleDateString()
-                          : "Select date"}
+                          : "日付を選択"}
                         <ChevronDownIcon />
                       </Button>
                     </PopoverTrigger>
