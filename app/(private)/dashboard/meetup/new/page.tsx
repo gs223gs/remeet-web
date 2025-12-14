@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 
 import { createMeetup } from "@/app/(private)/dashboard/meetup/action";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -19,18 +20,17 @@ import {
   meetupClientSchema,
   type MeetupClientSchema,
 } from "@/validations/private/meetupValidation";
+
 export default function CreateMeetup() {
   const [state, action, isPending] = useActionState(createMeetup, {
     success: false,
     errors: {},
   });
-
-  const today = new Date().toISOString().slice(0, 10);
   const form = useForm<MeetupClientSchema>({
     resolver: zodResolver(meetupClientSchema),
     defaultValues: {
       name: "",
-      scheduledAt: today,
+      scheduledAt: new Date(),
     },
     mode: "onChange",
   });
@@ -55,7 +55,7 @@ export default function CreateMeetup() {
             <FormItem>
               <FormLabel>ミートアップ名</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="ミートアップ名" {...field} />
               </FormControl>
               <FormDescription>
                 This is your public display name.
@@ -69,9 +69,21 @@ export default function CreateMeetup() {
           name="scheduledAt"
           render={({ field }) => (
             <FormItem>
-              <FormLabel></FormLabel>
+              <Calendar
+                mode="single"
+                selected={field.value}
+                onSelect={field.onChange}
+                className="rounded-md border shadow-sm"
+                captionLayout="dropdown"
+              />
+              <FormLabel>ミートアップの日付</FormLabel>
+
               <FormControl>
-                <Input type="date" {...field} />
+                <input
+                  type="hidden"
+                  name="scheduledAt"
+                  value={new Date(field.value).toISOString()}
+                />
               </FormControl>
               <FormDescription>
                 This is your public display name.
