@@ -7,10 +7,14 @@ export type MeetupErrors = {
   server?: "server error";
 };
 
-export type MeetupDetail = {
-  id: string;
+export type CreateMeetupInput = {
+  userId: string;
   name: string;
   scheduledAt: Date;
+};
+
+export type MeetupDetail = Omit<CreateMeetupInput, "userId"> & {
+  id: string;
 };
 
 export type MeetupDetailContact = {
