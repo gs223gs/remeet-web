@@ -49,7 +49,7 @@ export default function CreateMeetup() {
         description="参加したMeetupを登録すると、そこで出会った人の記録を整理できます。"
       />
       <section className="flex flex-col">
-        {!state.errors && <ServerErrorCard />}
+        {state.errors.server && <ServerErrorCard />}
         <CreateMeetupForm
           form={form}
           action={action}
