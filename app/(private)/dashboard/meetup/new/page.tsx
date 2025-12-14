@@ -61,6 +61,7 @@ export default function CreateMeetup() {
                 This is your public display name.
               </FormDescription>
               <FormMessage />
+              <p>{state.errors.name}</p>
             </FormItem>
           )}
         />
@@ -93,6 +94,7 @@ export default function CreateMeetup() {
             </FormItem>
           )}
         />
+        <p>{state.errors.server}</p>
         <Button type="submit" disabled={isDisabled}>
           {buttonLabel}
         </Button>
