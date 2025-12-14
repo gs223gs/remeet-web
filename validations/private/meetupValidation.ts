@@ -11,9 +11,7 @@ const meetupBaseSchema = z.object({
 });
 
 export const meetupClientSchema = meetupBaseSchema.extend({
-  scheduledAt: z
-    .string()
-    .refine((v) => !Number.isNaN(Date.parse(v)), "日付が不正です"),
+  scheduledAt: z.date("日付が不正です"),
 });
 
 export const meetupServerSchema = meetupClientSchema.extend({
