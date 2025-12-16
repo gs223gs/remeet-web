@@ -131,6 +131,9 @@ export const getMeetup = async (): Promise<MeetupResult> => {
   try {
     const meetups = await prisma.meetup.findMany({
       where: { userId: user.id },
+      orderBy: {
+        createdAt: "desc",
+      },
       select: {
         id: true,
         name: true,
