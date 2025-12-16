@@ -33,6 +33,9 @@ export const getMeetupDetailWithContacts = async (
           },
         },
         contacts: {
+          orderBy: {
+            createdAt: "desc",
+          },
           select: {
             id: true,
             name: true,
@@ -128,6 +131,9 @@ export const getMeetup = async (): Promise<MeetupResult> => {
   try {
     const meetups = await prisma.meetup.findMany({
       where: { userId: user.id },
+      orderBy: {
+        scheduledAt: "desc",
+      },
       select: {
         id: true,
         name: true,
