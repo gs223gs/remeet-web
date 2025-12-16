@@ -132,7 +132,7 @@ export const getMeetup = async (): Promise<MeetupResult> => {
     const meetups = await prisma.meetup.findMany({
       where: { userId: user.id },
       orderBy: {
-        createdAt: "desc",
+        scheduledAt: "desc",
       },
       select: {
         id: true,
