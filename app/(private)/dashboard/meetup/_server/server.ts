@@ -33,6 +33,9 @@ export const getMeetupDetailWithContacts = async (
           },
         },
         contacts: {
+          orderBy: {
+            createdAt: "desc",
+          },
           select: {
             id: true,
             name: true,
