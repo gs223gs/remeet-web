@@ -4,14 +4,17 @@ type Props = {
   tags: Tag[];
 };
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionState, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import type { Tag } from "@/type/private/tags/tags";
+import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
 
 import { createContacts } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
 import { NewTag } from "@/components/tag/form/newTag";
-import { Form } from "react-hook-form";
 import {
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -20,13 +23,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createContactsFrontSchema } from "@/validations/private/contactsValidation";
 
 export default function RequiredForm({ meetupId, tags }: Props) {
   const createContactsWithMeetupId = createContacts.bind(null, meetupId);
   const [contactTags, setContactTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
   const [newTag, setNewTag] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
 
   const [state, action, isPending] = useActionState(
     createContactsWithMeetupId,
@@ -36,12 +39,36 @@ export default function RequiredForm({ meetupId, tags }: Props) {
     },
   );
 
+  //validation
+  const form = useForm<CreateContactsSchema>({
+    resolver: zodResolver(createContactsFrontSchema),
+    defaultValues: {
+      name: "",
+      company: "",
+      role: "",
+      description: "",
+      tags: [],
+      twitterHandle: "",
+      twitterId: "",
+      websiteHandle: "",
+      websiteUrl: "",
+      githubHandle: "",
+      githubId: "",
+      productHandle: "",
+      productUrl: "",
+      otherHandle: "",
+      other: "",
+    },
+    mode: "onChange",
+  });
   if (isPending) return <div>pending</div>;
 
   return (
     <Form {...form}>
+      <p>{state.errors.server}</p>
+      <p>{state.errors.auth}</p>
       <form action={action} className="flex flex-col m-4 outline">
-        <p className="">*必須</p>
+        <p className=" bg-amber-200">*必須</p>
         <FormField
           control={form.control}
           name="name"
@@ -107,6 +134,47 @@ export default function RequiredForm({ meetupId, tags }: Props) {
           setSelectTags={setSelectTags}
           selectTags={selectTags}
         />
+        <FormField
+          control={form.control}
+          name="tags"
+          render={() => (
+            <FormItem>
+              <FormLabel>tag</FormLabel>
+              <FormControl>
+                {selectTags.map((t) => {
+                  return (
+                    <div key={t.id} className="outline flex">
+                      <span>{t.name}</span>
+                      <button
+                        onClick={() => {
+                          const filteredTag = selectTags.filter(
+                            (st) => st != t,
+                          );
+                          form.setValue(
+                            "tags",
+                            filteredTag.map((ft) => {
+                              return ft.id;
+                            }),
+                            { shouldValidate: true },
+                          );
+                          setSelectTags([
+                            ...selectTags.filter((st) => st != t),
+                          ]);
+                        }}
+                        className=" outline"
+                        type="button"
+                      >
+                        x
+                      </button>
+                    </div>
+                  );
+                })}
+              </FormControl>
+              <FormDescription>5つまでタグをつけれます</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="outline m-5">
           {contactTags.map((t) => {
             return (
@@ -128,26 +196,6 @@ export default function RequiredForm({ meetupId, tags }: Props) {
                 }}
               >
                 {t.name}
-              </div>
-            );
-          })}
-        </div>
-        <div className="outline m-5">
-          {/*TODO あとでセレクトボックスにする */}
-          {selectTags.map((t) => {
-            return (
-              <div key={t.id} className="outline flex">
-                <input defaultValue={t.id} name="tags" type="hidden" />
-                <span>{t.name}</span>
-                <button
-                  onClick={() => {
-                    setSelectTags([...selectTags.filter((st) => st != t)]);
-                  }}
-                  className=" outline"
-                  type="button"
-                >
-                  x
-                </button>
               </div>
             );
           })}
@@ -196,7 +244,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
         />
         <FormField
           control={form.control}
-          name="githubId"
+          name="twitterId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>TwitterId</FormLabel>
@@ -213,7 +261,7 @@ export default function RequiredForm({ meetupId, tags }: Props) {
           name="websiteHandle"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>TwitterId</FormLabel>
+              <FormLabel>website</FormLabel>
               <FormControl>
                 <Input placeholder="プロフィールサイト名" {...field} />
               </FormControl>
