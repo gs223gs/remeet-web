@@ -1,9 +1,10 @@
 import { coerceFormValue } from "@conform-to/zod/v4/future";
 import z from "zod";
 //TODO メッセージを後で考える
+//TODO これを使っているコードを廃止する
 export const createContactsFrontSchema = z
   .object({
-    name: z.string().min(1),
+    name: z.string().min(1, "入力してください"),
     company: z.string().optional(),
     role: z.string().optional(),
     description: z.string().optional(),
