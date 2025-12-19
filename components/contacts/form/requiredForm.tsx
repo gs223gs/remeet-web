@@ -130,8 +130,8 @@ export default function RequiredForm({ meetupId, tags }: Props) {
           )}
         />
         {/* form送信のためのinput */}
-        {selectTags.map((s) => {
-          return <input key={s.id} type="hidden" name="tags" value={s.id} />;
+        {form.getValues().tags?.map((s) => {
+          return <input key={s} type="hidden" name="tags" value={s} />;
         })}
         {/* tagが五つ以上入れれるバグがあるからなおす */}
         <NewTag
