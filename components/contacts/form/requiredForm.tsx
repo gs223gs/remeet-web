@@ -27,7 +27,7 @@ import { createContactsFrontSchema } from "@/validations/private/contactsValidat
 
 export default function RequiredForm({ meetupId, tags }: Props) {
   const createContactsWithMeetupId = createContacts.bind(null, meetupId);
-  const [contactTags, setContactTags] = useState<Tag[]>([...tags]);
+  const [initialTags, setInitialTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
   const [newTag, setNewTag] = useState<string>("");
 
@@ -39,7 +39,6 @@ export default function RequiredForm({ meetupId, tags }: Props) {
     },
   );
 
-  //validation
   const form = useForm<CreateContactsSchema>({
     resolver: zodResolver(createContactsFrontSchema),
     defaultValues: {
@@ -59,8 +58,10 @@ export default function RequiredForm({ meetupId, tags }: Props) {
       otherHandle: "",
       other: "",
     },
+    //Actionとの併用のためfocus が外れたらエラーを出す
     mode: "onChange",
   });
+
   if (isPending) return <div>pending</div>;
 
   return (
@@ -128,55 +129,75 @@ export default function RequiredForm({ meetupId, tags }: Props) {
             </FormItem>
           )}
         />
+        {/* form送信のためのinput */}
+        {selectTags.map((s) => {
+          return <input key={s.id} type="hidden" name="tags" value={s.id} />;
+        })}
+        {/* tagが五つ以上入れれるバグがあるからなおす */}
         <NewTag
           newTag={newTag}
           setNewTag={setNewTag}
           setSelectTags={setSelectTags}
           selectTags={selectTags}
         />
+        {}
+        {/* タグ解除 */}
         <FormField
           control={form.control}
           name="tags"
           render={() => (
             <FormItem>
               <FormLabel>tag</FormLabel>
-              <FormControl>
-                {selectTags.map((t) => {
-                  return (
-                    <div key={t.id} className="outline flex">
-                      <span>{t.name}</span>
-                      <button
-                        onClick={() => {
-                          const filteredTag = selectTags.filter(
-                            (st) => st != t,
-                          );
-                          form.setValue(
-                            "tags",
-                            filteredTag.map((ft) => {
-                              return ft.id;
-                            }),
-                            { shouldValidate: true },
-                          );
-                          setSelectTags([
-                            ...selectTags.filter((st) => st != t),
-                          ]);
-                        }}
-                        className=" outline"
-                        type="button"
-                      >
-                        x
-                      </button>
-                    </div>
-                  );
-                })}
-              </FormControl>
+              <FormControl></FormControl>
+              {selectTags.map((t) => {
+                return (
+                  /**
+                   * TODO コンポーネントを分ける tagItem.tsx? 命名は適切に作ってください
+                   * constTagItem = ({tag:Tag, children}){
+                   *  return (
+                   *  <div>
+                   *  tagの内容
+                   *  onClick
+                   * children
+                   *  </div>
+                   * )
+                   * }
+                   *
+                   */
+                  <div key={t.id} className="outline flex">
+                    <span>{t.name}</span>
+                    <button
+                      onClick={() => {
+                        const filteredTag = selectTags.filter((st) => st != t);
+
+                        // RHF にセット
+                        form.setValue(
+                          "tags",
+                          filteredTag.map((ft) => {
+                            return ft.id;
+                          }),
+                          { shouldValidate: true },
+                        );
+                        console.log(form.getValues().tags);
+                        setSelectTags([...filteredTag]);
+                        setInitialTags([t, ...initialTags]);
+                      }}
+                      className=" outline"
+                      type="button"
+                    >
+                      x
+                    </button>
+                  </div>
+                );
+              })}
               <FormDescription>5つまでタグをつけれます</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+        {/* タグ選択 クリックでタグを選択*/}
         <div className="outline m-5">
-          {contactTags.map((t) => {
+          {initialTags.map((t) => {
             return (
               <div
                 className="outline"
@@ -188,11 +209,26 @@ export default function RequiredForm({ meetupId, tags }: Props) {
                     }
                     return;
                   }
+
+                  const selectedFormTag = [
+                    ...selectTags,
+                    { id: t.id, name: t.name },
+                  ];
+
+                  form.setValue(
+                    "tags",
+                    selectedFormTag.map((st) => {
+                      return st.id;
+                    }),
+                    { shouldValidate: true },
+                  );
+                  console.log(form.getValues().tags);
+
                   setSelectTags([...selectTags, t]);
-                  const filterContactsTags = contactTags.filter(
+                  const filterContactsTags = initialTags.filter(
                     (c) => t.id != c.id,
                   );
-                  setContactTags([...filterContactsTags]);
+                  setInitialTags([...filterContactsTags]);
                 }}
               >
                 {t.name}
