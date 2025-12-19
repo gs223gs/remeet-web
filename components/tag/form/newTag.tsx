@@ -6,12 +6,18 @@ import type { Tag } from "@/type/private/tags/tags";
 import { createTag } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
 
 type NewTagProps = {
+  setNewTag: (s: string) => void;
+  newTag: string;
   selectTags: Tag[];
   setSelectTags: (t: Tag[]) => void;
 };
 
-export const NewTag = ({ setSelectTags, selectTags }: NewTagProps) => {
-  const [newTag, setNewTag] = useState<string>("");
+export const NewTag = ({
+  newTag,
+  setNewTag,
+  setSelectTags,
+  selectTags,
+}: NewTagProps) => {
   const [isPending, startTransition] = useTransition();
   const [functionMessage, setFunctionMessage] = useState<string[]>([]);
 
