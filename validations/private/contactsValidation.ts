@@ -1,7 +1,5 @@
 import { coerceFormValue } from "@conform-to/zod/v4/future";
 import z from "zod";
-//TODO メッセージを後で考える
-//TODO これを使っているコードを廃止する
 export const createContactsFrontSchema = z
   .object({
     name: z.string().min(1, "入力してください"),
@@ -10,6 +8,7 @@ export const createContactsFrontSchema = z
     description: z.string().optional(),
     tags: z
       .array(z.string())
+      .max(5, "タグは五つ以内にしてください")
       .refine((tags) => new Set(tags).size === tags.length, {
         message: "タグが重複しています",
       })
