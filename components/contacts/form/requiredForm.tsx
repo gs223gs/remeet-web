@@ -23,6 +23,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { createContactsFrontSchema } from "@/validations/private/contactsValidation";
 
 export default function RequiredForm({ meetupId, tags }: Props) {
@@ -149,93 +151,104 @@ export default function RequiredForm({ meetupId, tags }: Props) {
             <FormItem>
               <FormLabel>tag</FormLabel>
               <FormControl></FormControl>
-              {selectTags.map((t) => {
-                return (
-                  /**
-                   * TODO コンポーネントを分ける tagItem.tsx? 命名は適切に作ってください
-                   * constTagItem = ({tag:Tag, children}){
-                   *  return (
-                   *  <div>
-                   *  tagの内容
-                   *  onClick
-                   * children
-                   *  </div>
-                   * )
-                   * }
-                   *
-                   */
-                  <div key={t.id} className="outline flex">
-                    <span>{t.name}</span>
-                    <button
-                      onClick={() => {
-                        const filteredTag = selectTags.filter((st) => st != t);
+              <div className="flex gap-5">
+                {selectTags.map((t) => {
+                  return (
+                    /**
+                     * TODO コンポーネントを分ける tagItem.tsx? 命名は適切に作ってください
+                     * constTagItem = ({tag:Tag, children}){
+                     *  return (
+                     *  <div>
+                     *  tagの内容
+                     *  onClick
+                     * children
+                     *  </div>
+                     * )
+                     * }
+                     *
+                     */
+                    <div key={t.id} className="outline">
+                      <span>{t.name}</span>
+                      <button
+                        onClick={() => {
+                          const filteredTag = selectTags.filter(
+                            (st) => st != t,
+                          );
 
-                        // RHF にセット
-                        form.setValue(
-                          "tags",
-                          filteredTag.map((ft) => {
-                            return ft.id;
-                          }),
-                          { shouldValidate: true },
-                        );
-                        console.log(form.getValues().tags);
-                        setSelectTags([...filteredTag]);
-                        setInitialTags([t, ...initialTags]);
-                      }}
-                      className=" outline"
-                      type="button"
-                    >
-                      x
-                    </button>
-                  </div>
-                );
-              })}
+                          // RHF にセット
+                          form.setValue(
+                            "tags",
+                            filteredTag.map((ft) => {
+                              return ft.id;
+                            }),
+                            { shouldValidate: true },
+                          );
+                          console.log(form.getValues().tags);
+                          setSelectTags([...filteredTag]);
+                          setInitialTags([t, ...initialTags]);
+                        }}
+                        className=" outline"
+                        type="button"
+                      >
+                        x
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
               <FormDescription>5つまでタグをつけれます</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         {/* タグ選択 クリックでタグを選択*/}
-        <div className="outline m-5">
-          {initialTags.map((t) => {
-            return (
-              <div
-                className="outline"
-                key={t.id}
-                onClick={() => {
-                  if (selectTags.length === 5) {
-                    {
-                      /** error どうしようね */
+        <ScrollArea className="h-72 w-48 rounded-md border">
+          <div className="p-4">
+            <h4 className="mb-4 text-sm leading-none font-medium">Tags</h4>
+            {initialTags
+              .filter((it) =>
+                it.name.toLowerCase().includes(newTag.toLowerCase()),
+              )
+              .map((t) => (
+                <div
+                  className="outline"
+                  key={t.id}
+                  onClick={() => {
+                    if (selectTags.length === 5) {
+                      {
+                        /** error どうしようね */
+                      }
+                      return;
                     }
-                    return;
-                  }
 
-                  const selectedFormTag = [
-                    ...selectTags,
-                    { id: t.id, name: t.name },
-                  ];
+                    const selectedFormTag = [
+                      ...selectTags,
+                      { id: t.id, name: t.name },
+                    ];
 
-                  form.setValue(
-                    "tags",
-                    selectedFormTag.map((st) => {
-                      return st.id;
-                    }),
-                    { shouldValidate: true },
-                  );
-                  console.log(form.getValues().tags);
+                    form.setValue(
+                      "tags",
+                      selectedFormTag.map((st) => {
+                        return st.id;
+                      }),
+                      { shouldValidate: true },
+                    );
+                    console.log(form.getValues().tags);
 
-                  setSelectTags([...selectTags, t]);
-                  const filterContactsTags = initialTags.filter(
-                    (c) => t.id != c.id,
-                  );
-                  setInitialTags([...filterContactsTags]);
-                }}
-              >
-                {t.name}
-              </div>
-            );
-          })}
-        </div>
+                    setSelectTags([...selectTags, t]);
+                    const filterContactsTags = initialTags.filter(
+                      (c) => t.id != c.id,
+                    );
+                    setInitialTags([...filterContactsTags]);
+                  }}
+                >
+                  {t.name}
+                  <Separator className="my-2" />
+                </div>
+              ))}
+          </div>
+        </ScrollArea>
         <FormField
           control={form.control}
           name="githubHandle"
