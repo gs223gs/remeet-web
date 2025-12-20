@@ -16,7 +16,7 @@ type Props = {
   tags: Tag[];
 };
 
-export default function CreateContactForm({ meetupId, tags }: Props) {
+export const CreateContactForm = ({ meetupId, tags }: Props) => {
   const createContactsWithMeetupId = createContacts.bind(null, meetupId);
 
   const [state, action, isPending] = useActionState(
@@ -59,4 +59,4 @@ export default function CreateContactForm({ meetupId, tags }: Props) {
       isPending={isPending}
     />
   );
-}
+};

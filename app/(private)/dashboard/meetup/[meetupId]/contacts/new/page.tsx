@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getTags } from "../_server/server";
 
 import { ContactsErrorCard } from "@/components/contacts/contacts-error-card";
-import RequiredForm from "@/components/contacts/form/requiredForm";
+import { CreateContactForm } from "@/components/contacts/form/CreateContactForm";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/util/routes";
@@ -50,7 +50,7 @@ export default async function CreateContacts({
           </Button>
         </div>
       </div>
-      <RequiredForm meetupId={meetupId} tags={tags.data} />
+      <CreateContactForm meetupId={meetupId} tags={tags.data} />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)]"></div>
     </div>
   );
