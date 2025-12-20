@@ -227,9 +227,6 @@ export const ContactForm = ({
               onTagSelect={onTagSelect}
             />
           </CardContent>
-        </Card>
-
-        <Card>
           <CardHeader className="pb-4">
             <CardTitle>リンク・SNS</CardTitle>
             <CardDescription>
