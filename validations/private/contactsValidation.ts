@@ -67,3 +67,4 @@ export const createContactsFrontSchema = z
   );
 export const contactsActionSchema = coerceFormValue(createContactsFrontSchema);
 export type CreateContactsSchema = z.infer<typeof createContactsFrontSchema>;
+export type ContactFormFieldName = keyof CreateContactsSchema;
