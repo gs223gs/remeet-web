@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 type Props = {
   userTags: Tag[];
   tagQuery: string;
-  onTagSelect: () => void;
+  onTagSelect: (t: Tag) => void;
 };
 export const ScrollTagSelector = ({
   userTags,
@@ -24,7 +24,7 @@ export const ScrollTagSelector = ({
               key={t.id}
               type="button"
               className="flex w-full items-center justify-between px-4 py-3 text-left text-sm transition hover:bg-muted/40"
-              onClick={onTagSelect}
+              onClick={() => onTagSelect(t)}
             >
               <span>{t.name}</span>
               <span className="text-xs uppercase text-muted-foreground">
