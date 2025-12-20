@@ -1,3 +1,5 @@
+"use client";
+
 import type { Tag } from "@/type/private/tags/tags";
 
 type Props = {
@@ -17,7 +19,7 @@ export const SelectedTags = ({ selectedTags, onTagDeselect }: Props) => {
               onClick={() => onTagDeselect(t)}
             >
               {t.name}
-              <span className="text-xs text-muted-foreground">×</span>
+              <span className="text-xs text-muted-foreground">削除</span>
             </button>
           ))}
         </div>

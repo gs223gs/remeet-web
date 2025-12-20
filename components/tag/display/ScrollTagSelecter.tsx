@@ -1,3 +1,5 @@
+"use client";
+
 import type { Tag } from "@/type/private/tags/tags";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
