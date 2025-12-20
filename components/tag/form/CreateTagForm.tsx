@@ -7,19 +7,19 @@ import { createTag } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-type NewTagProps = {
+type Props = {
   setNewTag: (s: string) => void;
   newTag: string;
   selectTags: Tag[];
   setSelectTags: (t: Tag[]) => void;
 };
 
-export const NewTag = ({
+export const CreateTagForm = ({
   newTag,
   setNewTag,
   setSelectTags,
   selectTags,
-}: NewTagProps) => {
+}: Props) => {
   const [isPending, startTransition] = useTransition();
   const [functionMessage, setFunctionMessage] = useState<string[]>([]);
 
