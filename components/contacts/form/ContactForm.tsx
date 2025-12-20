@@ -7,7 +7,11 @@ import type { ActionState } from "@/type/util/action";
 import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
 import type { UseFormReturn } from "react-hook-form";
 
-import { LinkInputFields } from "@/components/contacts/form/link/LinkInputField";
+import { GithubLinkFields } from "@/components/contacts/form/link/GithubLinkFields";
+import { OtherLinkFields } from "@/components/contacts/form/link/OtherLinkFields";
+import { ProductLinkFields } from "@/components/contacts/form/link/ProductLinkFields";
+import { TwitterLinkFields } from "@/components/contacts/form/link/TwitterLinkFields";
+import { WebsiteLinkFields } from "@/components/contacts/form/link/WebsiteLinkFields";
 import { ScrollTagSelector } from "@/components/tag/display/ScrollTagSelector";
 import { SelectedTags } from "@/components/tag/display/SelectedTags";
 import { CreateTagForm } from "@/components/tag/form/CreateTagForm";
@@ -234,69 +238,11 @@ export const ContactForm = ({
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-2">
-            <LinkInputFields
-              formControl={form.control}
-              name="twitterHandle"
-              label="Twitter 表示名"
-              placeholder="Jon due"
-            />
-            <LinkInputFields
-              formControl={form.control}
-              name="twitterId"
-              label="twitter ID"
-              placeholder="@username"
-            />
-
-            <LinkInputFields
-              formControl={form.control}
-              name="websiteHandle"
-              label="Webサイト名"
-              placeholder="例: ポートフォリオサイト"
-            />
-            <LinkInputFields
-              formControl={form.control}
-              name="websiteUrl"
-              label="Webサイト URL"
-              placeholder="https://example.com"
-            />
-
-            <LinkInputFields
-              formControl={form.control}
-              name="websiteHandle"
-              label="Webサイト名"
-              placeholder="例: ポートフォリオサイト"
-            />
-            <LinkInputFields
-              formControl={form.control}
-              name="websiteUrl"
-              label="Webサイト URL"
-              placeholder="https://example.com"
-            />
-
-            <LinkInputFields
-              formControl={form.control}
-              name="productHandle"
-              label="個人開発サービス名"
-              placeholder="例: ReMeet"
-            />
-            <LinkInputFields
-              formControl={form.control}
-              name="productUrl"
-              label="個人開発サービス URL"
-              placeholder="https://product.example"
-            />
-            <LinkInputFields
-              formControl={form.control}
-              name="otherHandle"
-              label="その他リンクの名称"
-              placeholder="例: LinkedIn / SpeakerDeck"
-            />
-            <LinkInputFields
-              formControl={form.control}
-              name="other"
-              label="その他リンク URL"
-              placeholder="https://..."
-            />
+            <GithubLinkFields formControl={form.control} />
+            <TwitterLinkFields formControl={form.control} />
+            <WebsiteLinkFields formControl={form.control} />
+            <ProductLinkFields formControl={form.control} />
+            <OtherLinkFields formControl={form.control} />
           </CardContent>
         </Card>
         <Button
