@@ -247,115 +247,68 @@ export const ContactForm = ({
               placeholder="https://github.com/username"
             />
 
-            <FormField
-              control={form.control}
+            <LinkInputFields
+              formControl={form.control}
               name="twitterHandle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>X (Twitter) ハンドル</FormLabel>
-                  <FormControl>
-                    <Input placeholder="@username" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    呼び名がわかる場合に入力します。
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Twitter 表示名"
+              placeholder="Jon due"
             />
-            <FormField
-              control={form.control}
+            <LinkInputFields
+              formControl={form.control}
               name="twitterId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>X (Twitter) ID</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://x.com/username" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="twitter ID"
+              placeholder="@username"
             />
-            <FormField
-              control={form.control}
+
+            <LinkInputFields
+              formControl={form.control}
               name="websiteHandle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Webサイト名</FormLabel>
-                  <FormControl>
-                    <Input placeholder="例: ポートフォリオサイト" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Webサイト名"
+              placeholder="例: ポートフォリオサイト"
             />
-            <FormField
-              control={form.control}
+            <LinkInputFields
+              formControl={form.control}
               name="websiteUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Webサイト URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Webサイト URL"
+              placeholder="https://example.com"
             />
-            <FormField
-              control={form.control}
+
+            <LinkInputFields
+              formControl={form.control}
+              name="websiteHandle"
+              label="Webサイト名"
+              placeholder="例: ポートフォリオサイト"
+            />
+            <LinkInputFields
+              formControl={form.control}
+              name="websiteUrl"
+              label="Webサイト URL"
+              placeholder="https://example.com"
+            />
+
+            <LinkInputFields
+              formControl={form.control}
               name="productHandle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>個人開発サービス名</FormLabel>
-                  <FormControl>
-                    <Input placeholder="例: ReMeet" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="個人開発サービス名"
+              placeholder="例: ReMeet"
             />
-            <FormField
-              control={form.control}
+            <LinkInputFields
+              formControl={form.control}
               name="productUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>個人開発サービス URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://product.example" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="個人開発サービス URL"
+              placeholder="https://product.example"
             />
-            <FormField
-              control={form.control}
+            <LinkInputFields
+              formControl={form.control}
               name="otherHandle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>その他リンクの名称</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="例: LinkedIn / SpeakerDeck"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="その他リンクの名称"
+              placeholder="例: LinkedIn / SpeakerDeck"
             />
-            <FormField
-              control={form.control}
+            <LinkInputFields
+              formControl={form.control}
               name="other"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>その他リンク URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="その他リンク URL"
+              placeholder="https://..."
             />
           </CardContent>
         </Card>
