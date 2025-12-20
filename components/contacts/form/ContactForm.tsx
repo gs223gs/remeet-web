@@ -7,7 +7,7 @@ import type { ActionState } from "@/type/util/action";
 import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
 import type { UseFormReturn } from "react-hook-form";
 
-import { LinkInputFields } from "@/components/contacts/form/LinkInputField";
+import { LinkInputFields } from "@/components/contacts/form/link/LinkInputField";
 import { ScrollTagSelector } from "@/components/tag/display/ScrollTagSelector";
 import { SelectedTags } from "@/components/tag/display/SelectedTags";
 import { CreateTagForm } from "@/components/tag/form/CreateTagForm";
@@ -234,19 +234,6 @@ export const ContactForm = ({
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-2">
-            <LinkInputFields
-              formControl={form.control}
-              name="githubHandle"
-              label="GitHub 表示名"
-              placeholder="Jon due"
-            />
-            <LinkInputFields
-              formControl={form.control}
-              name="githubId"
-              label="GitHub ID"
-              placeholder="https://github.com/username"
-            />
-
             <LinkInputFields
               formControl={form.control}
               name="twitterHandle"
