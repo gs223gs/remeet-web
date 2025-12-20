@@ -7,7 +7,7 @@ import type { Tag } from "@/type/private/tags/tags";
 import type { LinkType } from "@prisma/client";
 
 import { updateContacts } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
-import { NewTag } from "@/components/tag/form/newTag";
+import { CreateTagForm } from "@/components/tag/form/CreateTagForm";
 
 type ContactsUpdateFormProps = {
   meetupId: string;
@@ -94,9 +94,9 @@ export function ContactsUpdateForm({
         name="description"
         defaultValue={contactsDetail.description ?? ""}
       />
-      <NewTag
-        newTag={newTag}
-        setNewTag={setNewTag}
+      <CreateTagForm
+        tagQuery={newTag}
+        setTagQuery={setNewTag}
         setSelectTags={setSelectTags}
         selectTags={selectTags}
       />
