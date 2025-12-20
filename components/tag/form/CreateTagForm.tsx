@@ -8,15 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 type Props = {
-  setNewTag: (s: string) => void;
-  newTag: string;
+  setTagQuery: (s: string) => void;
+  tagQuery: string;
   selectTags: Tag[];
   setSelectTags: (t: Tag[]) => void;
 };
 
 export const CreateTagForm = ({
-  newTag,
-  setNewTag,
+  tagQuery,
+  setTagQuery,
   setSelectTags,
   selectTags,
 }: Props) => {
@@ -24,7 +24,7 @@ export const CreateTagForm = ({
   const [functionMessage, setFunctionMessage] = useState<string[]>([]);
 
   const addTag = async () => {
-    const createdTags = await createTag(newTag);
+    const createdTags = await createTag(tagQuery);
     if (createdTags.ok) {
       setSelectTags([
         {
@@ -33,7 +33,7 @@ export const CreateTagForm = ({
         },
         ...selectTags,
       ]);
-      setNewTag("");
+      setTagQuery("");
       setFunctionMessage([]);
     }
     if (!createdTags.ok) {
@@ -48,9 +48,9 @@ export const CreateTagForm = ({
           type="text"
           placeholder="タグ名を入力"
           disabled={isPending}
-          value={newTag}
+          value={tagQuery}
           onChange={(e) => {
-            setNewTag(e.target.value);
+            setTagQuery(e.target.value);
           }}
           onKeyDown={(e) => {
             if (e.nativeEvent.isComposing) return;
