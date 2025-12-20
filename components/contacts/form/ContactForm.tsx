@@ -52,7 +52,7 @@ export const ContactForm = ({
   isPending,
   state,
 }: Props) => {
-  const [initialTags, setInitialTags] = useState<Tag[]>([...tags]);
+  const [userTags, setUserTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
   const [tagQuery, setTagQuery] = useState<string>("");
 
@@ -71,22 +71,22 @@ export const ContactForm = ({
       { shouldValidate: true },
     );
     setSelectTags([...selectTags, t]);
-    const filterContactsTags = initialTags.filter((c) => t.id != c.id);
-    setInitialTags([...filterContactsTags]);
+    const filteredContactsTags = userTags.filter((c) => t.id != c.id);
+    setUserTags([...filteredContactsTags]);
     setTagQuery("");
   };
   const onTagDeselect = (t: Tag) => {
-    const filteredTag = selectTags.filter((st) => st != t);
+    const deselectedTag = selectTags.filter((st) => st != t);
 
     form.setValue(
       "tags",
-      filteredTag.map((ft) => {
-        return ft.id;
+      deselectedTag.map((dt) => {
+        return dt.id;
       }),
       { shouldValidate: true },
     );
-    setSelectTags([...filteredTag]);
-    setInitialTags([t, ...initialTags]);
+    setSelectTags([...deselectedTag]);
+    setUserTags([t, ...userTags]);
   };
 
   return (
@@ -222,7 +222,7 @@ export const ContactForm = ({
               onTagDeselect={onTagDeselect}
             />
             <ScrollTagSelector
-              userTags={initialTags}
+              userTags={userTags}
               tagQuery={tagQuery}
               onTagSelect={onTagSelect}
             />
