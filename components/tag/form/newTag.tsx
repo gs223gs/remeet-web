@@ -4,6 +4,8 @@ import { useState, useTransition } from "react";
 import type { Tag } from "@/type/private/tags/tags";
 
 import { createTag } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type NewTagProps = {
   setNewTag: (s: string) => void;
@@ -40,36 +42,39 @@ export const NewTag = ({
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="タグを追加"
-        disabled={isPending}
-        onChange={(e) => {
-          setNewTag(e.target.value);
-        }}
-        onKeyDown={(e) => {
-          if (e.nativeEvent.isComposing) return;
-          if (e.key === "Enter") {
+    <div className="space-y-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <Input
+          type="text"
+          placeholder="タグ名を入力"
+          disabled={isPending}
+          value={newTag}
+          onChange={(e) => {
+            setNewTag(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.nativeEvent.isComposing) return;
+            if (e.key === "Enter") {
+              e.preventDefault();
+              startTransition(addTag);
+            }
+          }}
+        />
+
+        <Button
+          type="button"
+          disabled={isPending}
+          onClick={(e) => {
             e.preventDefault();
             startTransition(addTag);
-          }
-        }}
-        value={newTag}
-      />
-
-      <button
-        type="button"
-        disabled={isPending}
-        onClick={(e) => {
-          e.preventDefault();
-          startTransition(addTag);
-        }}
-      >
-        {isPending ? "追加中..." : "追加"}
-      </button>
+          }}
+          className="bg-orange-500 text-white shadow-sm hover:bg-orange-500/90"
+        >
+          {isPending ? "作成中..." : "タグ新規作成"}
+        </Button>
+      </div>
       {functionMessage.length > 0 && (
-        <div>
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
           {functionMessage.map((msg, i) => (
             <p key={i}>{msg}</p>
           ))}
