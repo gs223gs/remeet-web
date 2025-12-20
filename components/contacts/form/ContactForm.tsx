@@ -7,6 +7,7 @@ import type { ActionState } from "@/type/util/action";
 import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
 import type { UseFormReturn } from "react-hook-form";
 
+import { LinkInputFields } from "@/components/contacts/form/LinkInputField";
 import { ScrollTagSelector } from "@/components/tag/display/ScrollTagSelector";
 import { SelectedTags } from "@/components/tag/display/SelectedTags";
 import { CreateTagForm } from "@/components/tag/form/CreateTagForm";
@@ -29,7 +30,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { LinkInputFields } from "@/components/util/form/LinkInputField";
 import { ServerErrorCard } from "@/components/util/server-error-card";
 
 type Props = {
