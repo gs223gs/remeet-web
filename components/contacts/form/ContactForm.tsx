@@ -1,0 +1,372 @@
+"use client";
+import { useState } from "react";
+
+import type { ContactsErrors } from "@/type/private/contacts/contacts";
+import type { Tag } from "@/type/private/tags/tags";
+import type { ActionState } from "@/type/util/action";
+import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
+import type { UseFormReturn } from "react-hook-form";
+
+import { ScrollTagSelector } from "@/components/tag/display/ScrollTagSelector";
+import { SelectedTags } from "@/components/tag/display/SelectedTags";
+import { CreateTagForm } from "@/components/tag/form/CreateTagForm";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { LinkInputFields } from "@/components/util/form/LinkInputField";
+import { ServerErrorCard } from "@/components/util/server-error-card";
+
+type Props = {
+  tags: Tag[];
+  form: UseFormReturn<CreateContactsSchema>;
+  isPending: boolean;
+  state: ActionState<ContactsErrors>;
+  action: (payload: FormData) => void;
+};
+const TAG_LIMIT = 5;
+
+export const ContactForm = ({
+  tags,
+  form,
+  action,
+  isPending,
+  state,
+}: Props) => {
+  const [initialTags, setInitialTags] = useState<Tag[]>([...tags]);
+  const [selectTags, setSelectTags] = useState<Tag[]>([]);
+  const [tagQuery, setTagQuery] = useState<string>("");
+
+  const onTagSelect = (t: Tag) => {
+    if (selectTags.length === TAG_LIMIT) {
+      return;
+    }
+
+    const selectedFormTag = [...selectTags, { id: t.id, name: t.name }];
+
+    form.setValue(
+      "tags",
+      selectedFormTag.map((st) => {
+        return st.id;
+      }),
+      { shouldValidate: true },
+    );
+    setSelectTags([...selectTags, t]);
+    const filterContactsTags = initialTags.filter((c) => t.id != c.id);
+    setInitialTags([...filterContactsTags]);
+    setTagQuery("");
+  };
+  const onTagDeselect = (t: Tag) => {
+    const filteredTag = selectTags.filter((st) => st != t);
+
+    form.setValue(
+      "tags",
+      filteredTag.map((ft) => {
+        return ft.id;
+      }),
+      { shouldValidate: true },
+    );
+    setSelectTags([...filteredTag]);
+    setInitialTags([t, ...initialTags]);
+  };
+
+  return (
+    <Form {...form}>
+      <form action={action} className="space-y-6">
+        {isPending && (
+          <div className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-600">
+            送信中です。画面を閉じずにお待ちください。
+          </div>
+        )}
+
+        {state.errors.server && <ServerErrorCard />}
+        {state.errors.auth && (
+          <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+            {state.errors.auth}
+          </div>
+        )}
+
+        <Card>
+          <CardHeader className="pb-4">
+            <CardTitle>基本情報</CardTitle>
+            <CardDescription>
+              出会った相手のプロフィールや会話の背景を簡潔にまとめましょう。
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="md:col-span-2">
+                  <FormLabel className="flex items-center gap-2 text-base">
+                    名前 <span className="text-xs text-orange-500">必須</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="例: T. Miura" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    名札やプロフィールに記載された名前を入力します。
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="company"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>所属企業</FormLabel>
+                  <FormControl>
+                    <Input placeholder="例: TMiura Inc." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    所属している企業やコミュニティ名を入力します。
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>役職</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="例: 個人開発者 / VPoE / テックリード"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    聞き出せた肩書きを記録します。
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem className="md:col-span-2">
+                  <FormLabel>会話メモ</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="どんな話をしたか、相手の興味や課題感などをメモとして残しておきましょう。"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    今後のリリースで markdown に対応します
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+
+          {/* server 用に hidden でおいておく */}
+          {form.getValues().tags?.map((tagId) => (
+            <input key={tagId} type="hidden" name="tags" value={tagId} />
+          ))}
+
+          <CardHeader className="flex flex-row items-center gap-3 pb-4">
+            <div>
+              <CardTitle>タグを選択</CardTitle>
+              <span className="text-xs text-muted-foreground">
+                {selectTags.length}/{TAG_LIMIT}
+              </span>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <FormField
+              control={form.control}
+              name="tags"
+              render={() => (
+                <FormItem>
+                  <div className="flex items-center justify-between"></div>
+                  <CreateTagForm
+                    tagQuery={tagQuery}
+                    setTagQuery={setTagQuery}
+                    setSelectTags={setSelectTags}
+                    selectTags={selectTags}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <SelectedTags
+              selectedTags={selectTags}
+              onTagDeselect={onTagDeselect}
+            />
+            <ScrollTagSelector
+              userTags={initialTags}
+              tagQuery={tagQuery}
+              onTagSelect={onTagSelect}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-4">
+            <CardTitle>リンク・SNS</CardTitle>
+            <CardDescription>
+              交換したSNSやプロダクトの情報があれば入力してください。スキップ可能です。
+              名前を入れた場合はIDも入れてください
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-2">
+            <LinkInputFields
+              formControl={form.control}
+              name="githubHandle"
+              label="GitHub 表示名"
+              placeholder="Jon due"
+            />
+            <LinkInputFields
+              formControl={form.control}
+              name="githubId"
+              label="GitHub ID"
+              placeholder="https://github.com/username"
+            />
+
+            <FormField
+              control={form.control}
+              name="twitterHandle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>X (Twitter) ハンドル</FormLabel>
+                  <FormControl>
+                    <Input placeholder="@username" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    呼び名がわかる場合に入力します。
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="twitterId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>X (Twitter) ID</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://x.com/username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="websiteHandle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Webサイト名</FormLabel>
+                  <FormControl>
+                    <Input placeholder="例: ポートフォリオサイト" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="websiteUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Webサイト URL</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="productHandle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>個人開発サービス名</FormLabel>
+                  <FormControl>
+                    <Input placeholder="例: ReMeet" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="productUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>個人開発サービス URL</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://product.example" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="otherHandle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>その他リンクの名称</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="例: LinkedIn / SpeakerDeck"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="other"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>その他リンク URL</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="w-full bg-orange-500 text-white shadow-sm hover:bg-orange-500/90 sm:w-auto"
+        >
+          {isPending ? "送信中..." : "コンタクトを登録"}
+        </Button>
+      </form>
+    </Form>
+  );
+};
