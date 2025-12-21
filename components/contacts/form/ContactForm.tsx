@@ -76,7 +76,7 @@ export const ContactForm = ({
     setTagQuery("");
   };
   const onTagDeselect = (t: Tag) => {
-    const deselectedTag = selectTags.filter((st) => st.id != t.id);
+    const deselectedTag = selectTags.filter((st) => st.id !== t.id);
 
     form.setValue(
       "tags",
@@ -188,7 +188,7 @@ export const ContactForm = ({
           </CardContent>
 
           {/* server 用に hidden でおいておく */}
-          {form.getValues().tags?.map((tagId) => (
+          {form.watch("tags")?.map((tagId) => (
             <input key={tagId} type="hidden" name="tags" value={tagId} />
           ))}
 
