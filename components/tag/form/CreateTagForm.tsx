@@ -32,20 +32,22 @@ export const CreateTagForm = ({
     }
     setIsPending(true);
     const createdTags = await createTag(tagQuery);
-    if (createdTags.ok) {
-      setSelectTags([
-        {
-          id: createdTags.data.id,
-          name: createdTags.data.name,
-        },
-        ...selectTags,
-      ]);
-      setTagQuery("");
-      setFunctionMessage([]);
-    }
+
     if (!createdTags.ok) {
       setFunctionMessage(createdTags.error.message);
+      return;
     }
+
+    setSelectTags([
+      {
+        id: createdTags.data.id,
+        name: createdTags.data.name,
+      },
+      ...selectTags,
+    ]);
+    setTagQuery("");
+    setFunctionMessage([]);
+
     setIsPending(false);
   };
 
