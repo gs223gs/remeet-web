@@ -71,7 +71,7 @@ export const ContactForm = ({
       { shouldValidate: true },
     );
     setSelectTags([...selectTags, t]);
-    const filteredContactsTags = userTags.filter((c) => t.id != c.id);
+    const filteredContactsTags = userTags.filter((c) => t.id !== c.id);
     setUserTags([...filteredContactsTags]);
     setTagQuery("");
   };
