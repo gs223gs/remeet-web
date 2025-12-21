@@ -14,6 +14,7 @@ import type { LinkType } from "@prisma/client";
 import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
+import { tagRepository } from "@/app/(private)/dashboard/tags/_server/tagRepository";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -56,13 +57,18 @@ export const createContacts = async (
       };
     //TODO リファクタリング対象
     //ちょっと不愉快
-    const tags = validatedFields.data.tags;
-    if (tags?.length) {
-      const isVerifyTags = await verifyTags(tags, user.id);
-      if (!isVerifyTags) {
+    const validatedTagId = validatedFields.data.tags;
+    if (validatedTagId) {
+      const VerifiedTag = await tagRepository.validateOwnedTagsExistence(
+        user.id,
+        validatedTagId,
+      );
+      if (!VerifiedTag.ok) {
         return {
           success: false,
-          errors: { auth: "認証に失敗しました" },
+          errors: {
+            server: "server error", //TODO Error を変える
+          },
         };
       }
     }
@@ -125,8 +131,9 @@ export const createContacts = async (
         await tx.contactLink.createMany({ data: filterInsertLinks });
       }
       //TODO not elegantですね
-      if (tags?.length) {
-        const insertTags = tags.map((t) => {
+      if (validatedTagId) {
+        //一旦変更
+        const insertTags = validatedTagId.map((t) => {
           return { contactId: createdContact.id, tagId: t };
         });
         await tx.contactTag.createMany({
