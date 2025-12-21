@@ -23,7 +23,13 @@ export const CreateTagForm = ({
   const [isPending, setIsPending] = useState<boolean>(false);
   const [functionMessage, setFunctionMessage] = useState<string[]>([]);
 
+  //TODO 今後のupdateについて
+  // tagQueryに既存タグがあった場合はserver に行く前にsetSelectedTagする
   const addTag = async () => {
+    if (!tagQuery) {
+      setFunctionMessage(["タグ名を入力してください"]);
+      return;
+    }
     setIsPending(true);
     const createdTags = await createTag(tagQuery);
     if (createdTags.ok) {
