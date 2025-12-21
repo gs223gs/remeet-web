@@ -26,29 +26,36 @@ export const CreateTagForm = ({
   //TODO 今後のupdateについて
   // tagQueryに既存タグがあった場合はserver に行く前にsetSelectedTagする
   const addTag = async () => {
-    if (!tagQuery) {
+    if (isPending) return;
+
+    if (!tagQuery.trim()) {
       setFunctionMessage(["タグ名を入力してください"]);
       return;
     }
+
     setIsPending(true);
-    const createdTags = await createTag(tagQuery);
 
-    if (!createdTags.ok) {
-      setFunctionMessage(createdTags.error.message);
-      return;
+    try {
+      const createdTags = await createTag(tagQuery);
+
+      if (!createdTags.ok) {
+        setFunctionMessage(createdTags.error.message);
+        return;
+      }
+
+      //ここ prev => の方がいいかも
+      setSelectTags([
+        {
+          id: createdTags.data.id,
+          name: createdTags.data.name,
+        },
+        ...selectTags,
+      ]);
+      setTagQuery("");
+      setFunctionMessage([]);
+    } finally {
+      setIsPending(false);
     }
-
-    setSelectTags([
-      {
-        id: createdTags.data.id,
-        name: createdTags.data.name,
-      },
-      ...selectTags,
-    ]);
-    setTagQuery("");
-    setFunctionMessage([]);
-
-    setIsPending(false);
   };
 
   return (
