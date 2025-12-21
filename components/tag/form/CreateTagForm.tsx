@@ -1,5 +1,5 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 
 import type { Tag } from "@/type/private/tags/tags";
 
@@ -20,10 +20,11 @@ export const CreateTagForm = ({
   setSelectTags,
   selectTags,
 }: Props) => {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState<boolean>(false);
   const [functionMessage, setFunctionMessage] = useState<string[]>([]);
 
   const addTag = async () => {
+    setIsPending(true);
     const createdTags = await createTag(tagQuery);
     if (createdTags.ok) {
       setSelectTags([
@@ -39,6 +40,7 @@ export const CreateTagForm = ({
     if (!createdTags.ok) {
       setFunctionMessage(createdTags.error.message);
     }
+    setIsPending(false);
   };
 
   return (
@@ -52,11 +54,12 @@ export const CreateTagForm = ({
           onChange={(e) => {
             setTagQuery(e.target.value);
           }}
-          onKeyDown={(e) => {
+          onKeyDown={async (e) => {
+            //IME変換中なら即時return
             if (e.nativeEvent.isComposing) return;
             if (e.key === "Enter") {
               e.preventDefault();
-              startTransition(addTag);
+              await addTag();
             }
           }}
         />
@@ -64,9 +67,9 @@ export const CreateTagForm = ({
         <Button
           type="button"
           disabled={isPending}
-          onClick={(e) => {
+          onClick={async (e) => {
             e.preventDefault();
-            startTransition(addTag);
+            await addTag();
           }}
           className="bg-orange-500 text-white shadow-sm hover:bg-orange-500/90"
         >
