@@ -2,6 +2,8 @@
 import { useState } from "react";
 
 import type { Tag } from "@/type/private/tags/tags";
+import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
+import type { UseFormReturn } from "react-hook-form";
 
 import { createTag } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
 import { Button } from "@/components/ui/button";
@@ -12,6 +14,7 @@ type Props = {
   tagQuery: string;
   selectTags: Tag[];
   setSelectTags: (t: Tag[]) => void;
+  form: UseFormReturn<CreateContactsSchema>;
 };
 
 export const CreateTagForm = ({
@@ -19,6 +22,7 @@ export const CreateTagForm = ({
   setTagQuery,
   setSelectTags,
   selectTags,
+  form,
 }: Props) => {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [functionMessage, setFunctionMessage] = useState<string[]>([]);
@@ -43,14 +47,17 @@ export const CreateTagForm = ({
         return;
       }
 
+      const updatedTags = [createdTags.data, ...selectTags];
       //ここ prev => の方がいいかも
-      setSelectTags([
-        {
-          id: createdTags.data.id,
-          name: createdTags.data.name,
-        },
-        ...selectTags,
-      ]);
+      setSelectTags(updatedTags);
+      form.setValue(
+        "tags",
+        updatedTags.map((st) => {
+          return st.id;
+        }),
+        { shouldValidate: true },
+      );
+
       setTagQuery("");
       setFunctionMessage([]);
     } finally {

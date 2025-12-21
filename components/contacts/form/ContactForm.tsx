@@ -212,6 +212,7 @@ export const ContactForm = ({
                     setTagQuery={setTagQuery}
                     setSelectTags={setSelectTags}
                     selectTags={selectTags}
+                    form={form}
                   />
                   <FormMessage />
                 </FormItem>
