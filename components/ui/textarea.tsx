@@ -2,6 +2,11 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Renders a styled textarea that merges the component's internal utility classes with any provided `className` and forwards all other native textarea props.
+ *
+ * @returns The rendered textarea element with merged classes and forwarded props.
+ */
 function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
     <textarea

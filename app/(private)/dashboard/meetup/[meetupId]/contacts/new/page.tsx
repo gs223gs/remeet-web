@@ -8,6 +8,16 @@ import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/util/routes";
 
+/**
+ * Renders the "Create Contact" page for a specific meetup.
+ *
+ * Fetches available tags and, if successful, displays the page header, action buttons,
+ * and the contact creation form populated with those tags. If tag retrieval fails,
+ * returns an error card with a user-facing message.
+ *
+ * @param params - A promise that resolves to an object containing the `meetupId` route parameter
+ * @returns The page UI for creating a contact for the specified meetup, or a ContactsErrorCard with a failure message if tag retrieval fails
+ */
 export default async function CreateContacts({
   params,
 }: {
