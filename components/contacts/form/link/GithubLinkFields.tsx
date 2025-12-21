@@ -1,7 +1,7 @@
 import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
 import type { Control } from "react-hook-form";
 
-import { LinkInputFields } from "@/components/contacts/form/link/LinkInputField";
+import { LinkInputField } from "@/components/contacts/form/link/LinkInputField";
 
 type Props = {
   formControl: Control<CreateContactsSchema>;
@@ -10,13 +10,13 @@ type Props = {
 export const GithubLinkFields = ({ formControl }: Props) => {
   return (
     <>
-      <LinkInputFields
+      <LinkInputField
         formControl={formControl}
         name="githubHandle"
         label="GitHub 表示名"
         placeholder="John Doe"
       />
-      <LinkInputFields
+      <LinkInputField
         formControl={formControl}
         name="githubId"
         label="GitHub ID"

@@ -1,3 +1,5 @@
+"use client";
+
 import type {
   ContactFormFieldName,
   CreateContactsSchema,
@@ -33,7 +35,7 @@ type Props = {
   label: string;
   placeholder: string;
 };
-export const LinkInputFields = ({
+export const LinkInputField = ({
   formControl,
   name,
   label,

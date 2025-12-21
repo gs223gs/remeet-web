@@ -1,21 +1,21 @@
 import type { ComponentProps } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { LinkInputFields } from "@/components/contacts/form/link/LinkInputField";
+import { LinkInputField } from "@/components/contacts/form/link/LinkInputField";
 import { ContactLinkFormPreview } from "@/stories/contacts/link-form-preview";
 import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
 
-type LinkInputFieldsProps = Omit<
-  ComponentProps<typeof LinkInputFields>,
+type LinkInputFieldProps = Omit<
+  ComponentProps<typeof LinkInputField>,
   "formControl"
 >;
 
-type StoryProps = LinkInputFieldsProps & {
+type StoryProps = LinkInputFieldProps & {
   defaultValues?: Partial<CreateContactsSchema>;
   triggerValidation?: boolean;
 };
 
-const LinkInputFieldsStory = ({
+const LinkInputFieldStory = ({
   defaultValues,
   triggerValidation,
   ...rest
@@ -25,14 +25,14 @@ const LinkInputFieldsStory = ({
       defaultValues={defaultValues}
       triggerValidation={triggerValidation}
     >
-      {(form) => <LinkInputFields formControl={form.control} {...rest} />}
+      {(form) => <LinkInputField formControl={form.control} {...rest} />}
     </ContactLinkFormPreview>
   );
 };
 
 const meta = {
   title: "Contacts/Links/LinkInputField",
-  component: LinkInputFieldsStory,
+  component: LinkInputFieldStory,
   args: {
     name: "githubHandle",
     label: "GitHub 表示名",
@@ -65,7 +65,7 @@ const meta = {
       control: "boolean",
     },
   },
-} satisfies Meta<typeof LinkInputFieldsStory>;
+} satisfies Meta<typeof LinkInputFieldStory>;
 
 export default meta;
 
