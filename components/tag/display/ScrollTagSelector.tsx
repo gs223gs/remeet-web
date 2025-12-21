@@ -14,14 +14,22 @@ export const ScrollTagSelector = ({
   tagQuery,
   onTagSelect,
 }: Props) => {
+  const filtered = userTags.filter((ut) =>
+    ut.name.toLowerCase().includes(tagQuery.toLowerCase()),
+  );
+
   return (
     <ScrollArea className="h-72 w-full rounded-lg border border-dashed">
       <div className="divide-y divide-border/60">
-        {userTags
-          .filter((ut) =>
-            ut.name.toLowerCase().includes(tagQuery.toLowerCase()),
-          )
-          .map((t) => (
+        {filtered.length === 0 ? (
+          <div
+            role="status"
+            className="flex items-center justify-center px-4 py-3 text-sm text-muted-foreground"
+          >
+            該当するタグがありません
+          </div>
+        ) : (
+          filtered.map((t) => (
             <button
               key={t.id}
               type="button"
@@ -33,7 +41,8 @@ export const ScrollTagSelector = ({
                 追加
               </span>
             </button>
-          ))}
+          ))
+        )}
       </div>
     </ScrollArea>
   );
