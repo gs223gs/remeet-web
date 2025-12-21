@@ -1,14 +1,14 @@
 import { coerceFormValue } from "@conform-to/zod/v4/future";
 import z from "zod";
-//TODO メッセージを後で考える
 export const createContactsFrontSchema = z
   .object({
-    name: z.string().min(1),
+    name: z.string().min(1, "入力してください"),
     company: z.string().optional(),
     role: z.string().optional(),
     description: z.string().optional(),
     tags: z
       .array(z.string())
+      .max(5, "タグは五つ以内にしてください")
       .refine((tags) => new Set(tags).size === tags.length, {
         message: "タグが重複しています",
       })
@@ -67,3 +67,4 @@ export const createContactsFrontSchema = z
   );
 export const contactsActionSchema = coerceFormValue(createContactsFrontSchema);
 export type CreateContactsSchema = z.infer<typeof createContactsFrontSchema>;
+export type ContactFormFieldName = keyof CreateContactsSchema;

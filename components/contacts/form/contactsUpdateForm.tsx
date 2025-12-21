@@ -7,24 +7,14 @@ import type { Tag } from "@/type/private/tags/tags";
 import type { LinkType } from "@prisma/client";
 
 import { updateContacts } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
-import { NewTag } from "@/components/tag/form/newTag";
+// import { CreateTagForm } from "@/components/tag/form/CreateTagForm";
 
 type ContactsUpdateFormProps = {
   meetupId: string;
   tags: Tag[];
   contactsDetail: ContactsDetailDTO;
 };
-/**
- * Render a form for editing a contact's details, tags, and links and submit updates scoped to a meetup.
- *
- * The form is prefilled from `contactsDetail`, allows selecting and creating tags from `tags`, and submits
- * updates bound to the provided `meetupId`.
- *
- * @param contactsDetail - Initial contact values, existing tags, and links used to populate form fields
- * @param tags - Available tags that can be added to the contact
- * @param meetupId - Identifier of the meetup used to scope the update operation
- * @returns A React element containing the contacts update form
- */
+
 export function ContactsUpdateForm({
   contactsDetail,
   tags,
@@ -43,7 +33,7 @@ export function ContactsUpdateForm({
       (tag) => !contactsDetail.tags?.some((selected) => selected.id === tag.id),
     ),
   );
-  const [newTag, setNewTag] = useState<string>("");
+  // const [newTag, setNewTag] = useState<string>("");
 
   const findLinkByType = (type: LinkType) =>
     contactsDetail.links?.find((link) => link.type === type);
@@ -94,12 +84,13 @@ export function ContactsUpdateForm({
         name="description"
         defaultValue={contactsDetail.description ?? ""}
       />
-      <NewTag
-        newTag={newTag}
-        setNewTag={setNewTag}
+      {/* <CreateTagForm
+        tagQuery={newTag}
+        setTagQuery={setNewTag}
         setSelectTags={setSelectTags}
         selectTags={selectTags}
-      />
+        form={form}
+      /> */}
       <div className="outline m-5">
         {contactTags.map((t) => {
           return (

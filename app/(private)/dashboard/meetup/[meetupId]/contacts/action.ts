@@ -11,33 +11,11 @@ import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
+import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { contactsActionSchema } from "@/validations/private/contactsValidation";
-
-const contactValidation = (formData: FormData) => {
-  const rawFormData = {
-    name: formData.get("name"),
-    company: formData.get("company"),
-    role: formData.get("role"),
-    description: formData.get("description"),
-    tags: formData.getAll("tags"),
-    githubHandle: formData.get("githubHandle"),
-    githubId: formData.get("githubId"),
-    twitterHandle: formData.get("twitterHandle"),
-    twitterId: formData.get("twitterId"),
-    websiteHandle: formData.get("websiteHandle"),
-    websiteUrl: formData.get("websiteUrl"),
-    productHandle: formData.get("productHandle"),
-    productUrl: formData.get("productUrl"),
-    otherHandle: formData.get("otherHandle"),
-    other: formData.get("other"),
-  };
-
-  return contactsActionSchema.safeParse(rawFormData);
-};
 
 export const createContacts = async (
   meetupId: string,

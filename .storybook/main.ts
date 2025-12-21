@@ -1,3 +1,5 @@
+import { mergeConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 import type { StorybookConfig } from "@storybook/nextjs-vite";
 
 const config: StorybookConfig = {
@@ -11,8 +13,14 @@ const config: StorybookConfig = {
     "@storybook/addon-a11y",
     "@storybook/addon-docs",
     "@storybook/addon-onboarding",
+    "@storybook/addon-essentials",
   ],
   framework: "@storybook/nextjs-vite",
   staticDirs: ["../public"],
+  async viteFinal(config) {
+    return mergeConfig(config, {
+      plugins: [tsconfigPaths()],
+    });
+  },
 };
 export default config;
