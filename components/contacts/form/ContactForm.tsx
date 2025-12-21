@@ -76,7 +76,7 @@ export const ContactForm = ({
     setTagQuery("");
   };
   const onTagDeselect = (t: Tag) => {
-    const deselectedTag = selectTags.filter((st) => st != t);
+    const deselectedTag = selectTags.filter((st) => st.id != t.id);
 
     form.setValue(
       "tags",
