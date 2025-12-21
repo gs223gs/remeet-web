@@ -13,14 +13,14 @@ export const TwitterLinkFields = ({ formControl }: Props) => {
       <LinkInputField
         formControl={formControl}
         name="twitterHandle"
-        label="Twitter 表示名"
+        label="twitter 表示名"
         placeholder="Jon due"
       />
       <LinkInputField
         formControl={formControl}
         name="twitterId"
         label="twitter ID"
-        placeholder="@username"
+        placeholder="username"
       />
     </>
   );
