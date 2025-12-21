@@ -14,13 +14,13 @@ export const GithubLinkFields = ({ formControl }: Props) => {
         formControl={formControl}
         name="githubHandle"
         label="GitHub 表示名"
-        placeholder="Jon due"
+        placeholder="John Doe"
       />
       <LinkInputFields
         formControl={formControl}
         name="githubId"
         label="GitHub ID"
-        placeholder="https://github.com/username"
+        placeholder="username"
       />
     </>
   );
