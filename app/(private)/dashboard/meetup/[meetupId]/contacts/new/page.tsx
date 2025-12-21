@@ -51,7 +51,6 @@ export default async function CreateContacts({
         </div>
       </div>
       <CreateContactForm meetupId={meetupId} tags={tags.data} />
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)]"></div>
     </div>
   );
 }
