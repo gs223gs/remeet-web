@@ -1,5 +1,4 @@
 import type { Result } from "@/type/error/error";
-import type { Tag } from "@/type/private/tags/tags";
 
 import { prisma } from "@/lib/prisma";
 
@@ -7,7 +6,7 @@ export const tagRepository = {
   async validateOwnedTagsExistence(
     userId: string,
     tagsField: string[],
-  ): Promise<Result<Tag[]>> {
+  ): Promise<Result<void>> {
     try {
       if (!tagsField.length) {
         return {
@@ -56,7 +55,7 @@ export const tagRepository = {
       }
       return {
         ok: true,
-        data: searchUserTags,
+        data: undefined,
       };
     } catch (error) {
       console.error(error);
