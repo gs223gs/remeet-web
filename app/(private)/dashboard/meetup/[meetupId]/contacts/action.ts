@@ -61,11 +61,11 @@ export const createContacts = async (
     //ちょっと不愉快
     const validatedTagId = validatedFields.data.tags;
     if (validatedTagId) {
-      const VerifiedTag = await tagRepository.validateOwnedTagsExistence(
+      const verifiedTag = await tagRepository.validateOwnedTagsExistence(
         user.id,
         validatedTagId,
       );
-      if (!VerifiedTag.ok) {
+      if (!verifiedTag.ok) {
         return {
           success: false,
           errors: {
