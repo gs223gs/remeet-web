@@ -18,7 +18,7 @@ export const tagRepository = {
         };
       }
 
-      if (!userId || userId.length === 0) {
+      if (!userId) {
         return {
           ok: false,
           error: {
@@ -33,7 +33,7 @@ export const tagRepository = {
 
       const searchUserTags = await prisma.tag.findMany({
         where: {
-          userId: userId,
+          userId,
           id: {
             in: uniqueIds,
           },
@@ -44,6 +44,7 @@ export const tagRepository = {
         },
       });
 
+      //Inのタグの数と Outのタグの数を検証して認可チェック
       if (searchUserTags.length !== uniqueIds.length) {
         return {
           ok: false,
