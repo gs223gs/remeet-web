@@ -72,18 +72,6 @@ export const meetupRepository = {
     meetupId: string,
   ): Promise<Result<void>> {
     try {
-      const isBlankMeetupId = meetupId.trim().length === 0;
-      const isBlankUserId = userId.trim().length === 0;
-
-      if (isBlankMeetupId || isBlankUserId) {
-        return {
-          ok: false,
-          error: {
-            code: "validation",
-            message: ["userIdまたはmeetupIdが空文字"],
-          },
-        };
-      }
       const verifiedUserOwned = await prisma.meetup.findFirst({
         where: { userId: userId, id: meetupId },
         select: { id: true },
