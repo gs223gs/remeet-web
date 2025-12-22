@@ -70,7 +70,7 @@ export const meetupRepository = {
   async verifyUserOwnedMeetup(
     userId: string,
     meetupId: string,
-  ): Promise<Result<string>> {
+  ): Promise<Result<void>> {
     try {
       const isBlankMeetupId = meetupId.trim().length === 0;
       const isBlankUserId = userId.trim().length === 0;
@@ -101,7 +101,7 @@ export const meetupRepository = {
 
       return {
         ok: true,
-        data: verifiedUserOwned.id,
+        data: undefined,
       };
     } catch (error) {
       console.error(error);
