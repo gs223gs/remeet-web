@@ -14,6 +14,7 @@ import type { LinkType } from "@prisma/client";
 import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
+import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
 import { tagRepository } from "@/app/(private)/dashboard/tags/_server/tagRepository";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
@@ -42,17 +43,18 @@ export const createContacts = async (
           auth: "認証に失敗しました",
         },
       };
-    const isVerifyMeetup = await prisma.meetup.findFirst({
-      where: { userId: user.id, id: meetupId },
-      select: { id: true },
-    });
+
+    const verifyOwnedMeetup = await meetupRepository.verifyUserOwnedMeetup(
+      user.id,
+      meetupId,
+    );
 
     //TODO ここあとで整える
-    if (!isVerifyMeetup)
+    if (!verifyOwnedMeetup.ok)
       return {
         success: false,
         errors: {
-          auth: "認証に失敗しました",
+          server: "server error", //本来は認可エラーだけど一旦これでいく
         },
       };
     //TODO リファクタリング対象
