@@ -1,5 +1,4 @@
 import type { Result } from "@/type/error/error";
-import type { Tag } from "@/type/private/tags/tags";
 
 import { prisma } from "@/lib/prisma";
 
@@ -7,9 +6,9 @@ export const tagRepository = {
   async validateOwnedTagsExistence(
     userId: string,
     tagsField: string[],
-  ): Promise<Result<Tag[]>> {
+  ): Promise<Result<void>> {
     try {
-      if (!tagsField?.length) {
+      if (!tagsField.length) {
         return {
           ok: false,
           error: {
@@ -19,7 +18,7 @@ export const tagRepository = {
         };
       }
 
-      if (!userId || userId.length === 0) {
+      if (!userId) {
         return {
           ok: false,
           error: {
@@ -34,7 +33,7 @@ export const tagRepository = {
 
       const searchUserTags = await prisma.tag.findMany({
         where: {
-          userId: userId,
+          userId,
           id: {
             in: uniqueIds,
           },
@@ -45,6 +44,7 @@ export const tagRepository = {
         },
       });
 
+      //Inのタグの数と Outのタグの数を検証して認可チェック
       if (searchUserTags.length !== uniqueIds.length) {
         return {
           ok: false,
@@ -56,7 +56,7 @@ export const tagRepository = {
       }
       return {
         ok: true,
-        data: searchUserTags,
+        data: undefined,
       };
     } catch (error) {
       console.error(error);
