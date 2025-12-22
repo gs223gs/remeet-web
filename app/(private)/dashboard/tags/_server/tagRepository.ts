@@ -9,7 +9,7 @@ export const tagRepository = {
     tagsField: string[],
   ): Promise<Result<Tag[]>> {
     try {
-      if (!tagsField?.length) {
+      if (!tagsField.length) {
         return {
           ok: false,
           error: {
