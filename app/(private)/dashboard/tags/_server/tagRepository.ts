@@ -3,6 +3,31 @@ import type { Result } from "@/type/error/error";
 import { prisma } from "@/lib/prisma";
 
 export const tagRepository = {
+  async createContactTag(
+    addContactTag: {
+      contactId: string;
+      tagId: string;
+    }[],
+  ): Promise<Result<void>> {
+    try {
+      await prisma.contactTag.createMany({
+        data: addContactTag,
+      });
+      return {
+        ok: true,
+        data: undefined,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+          message: ["prismaでerror発生"],
+        },
+      };
+    }
+  },
   async validateOwnedTagsExistence(
     userId: string,
     tagsField: string[],
