@@ -74,47 +74,48 @@ export const createContacts = async (
         };
       }
     }
-    await prisma.$transaction(async (tx) => {
-      const createdContact = await tx.contact.create({
-        data: {
-          meetupId: meetupId,
-          userId: user.id,
-          name: validatedFields.data.name,
-          company: validatedFields.data.company,
-          role: validatedFields.data.role,
-          description: validatedFields.data.description,
-        },
-      });
 
-      //TODO ここ本当に変えたい 冗長すぎる
-      //? type ContactsLink の url:string を undefined 許容にすれば解決だけど，そのために型を増やしたくない && DBと合わないから嫌だ
-      const insertLinks = [
-        {
-          type: "GITHUB" as LinkType,
-          url: validatedFields.data.githubId,
-          handle: validatedFields.data.githubHandle,
-        },
-        {
-          type: "TWITTER" as LinkType,
-          url: validatedFields.data.twitterId,
-          handle: validatedFields.data.twitterHandle,
-        },
-        {
-          type: "WEBSITE" as LinkType,
-          url: validatedFields.data.websiteUrl,
-          handle: validatedFields.data.websiteHandle,
-        },
-        {
-          type: "OTHER" as LinkType,
-          url: validatedFields.data.other,
-          handle: validatedFields.data.otherHandle,
-        },
-        {
-          type: "PRODUCT" as LinkType,
-          url: validatedFields.data.productUrl,
-          handle: validatedFields.data.productHandle,
-        },
-      ] as const;
+    //TODO ここ本当に変えたい 冗長すぎる
+    //? type ContactsLink の url:string を undefined 許容にすれば解決だけど，そのために型を増やしたくない && DBと合わないから嫌だ
+    const insertLinks = [
+      {
+        type: "GITHUB" as LinkType,
+        url: validatedFields.data.githubId,
+        handle: validatedFields.data.githubHandle,
+      },
+      {
+        type: "TWITTER" as LinkType,
+        url: validatedFields.data.twitterId,
+        handle: validatedFields.data.twitterHandle,
+      },
+      {
+        type: "WEBSITE" as LinkType,
+        url: validatedFields.data.websiteUrl,
+        handle: validatedFields.data.websiteHandle,
+      },
+      {
+        type: "OTHER" as LinkType,
+        url: validatedFields.data.other,
+        handle: validatedFields.data.otherHandle,
+      },
+      {
+        type: "PRODUCT" as LinkType,
+        url: validatedFields.data.productUrl,
+        handle: validatedFields.data.productHandle,
+      },
+    ] as const;
+
+    const addContactsData = {
+      meetupId: meetupId,
+      userId: user.id,
+      name: validatedFields.data.name,
+      company: validatedFields.data.company,
+      role: validatedFields.data.role,
+      description: validatedFields.data.description,
+    };
+
+    await prisma.$transaction(async (tx) => {
+      const createdContact = await contactRepository.create(addContactsData);
 
       const filterInsertLinks: CreateContactLink[] = insertLinks.flatMap((l) =>
         l.url
