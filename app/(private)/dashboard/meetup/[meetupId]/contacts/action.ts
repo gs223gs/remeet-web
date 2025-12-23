@@ -18,6 +18,7 @@ import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/reposi
 import { tagRepository } from "@/app/(private)/dashboard/tags/_server/tagRepository";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { linkRepository } from "./_logic/linkRepository";
 
 export const createContacts = async (
   meetupId: string,
@@ -114,37 +115,47 @@ export const createContacts = async (
       description: validatedFields.data.description,
     };
 
+    const filterInsertLinks = insertLinks.flatMap((l) =>
+      l.url
+        ? [
+            {
+              type: l.type,
+              url: l.url,
+              ...(l.handle ? { handle: l.handle } : {}),
+            },
+          ]
+        : [],
+    );
+
     await prisma.$transaction(async (tx) => {
       const createdContact = await contactRepository.create(
         tx,
         addContactsData,
       );
       if (!createdContact.ok) {
-        return;
+        throw new Error("abort transaction");
       }
-      const filterInsertLinks: CreateContactLink[] = insertLinks.flatMap((l) =>
-        l.url
-          ? [
-              {
-                contactId: createdContact.data,
-                type: l.type,
-                url: l.url,
-                ...(l.handle ? { handle: l.handle } : {}),
-              },
-            ]
-          : [],
-      );
 
       if (filterInsertLinks.length) {
-        await tx.contactLink.createMany({ data: filterInsertLinks });
+        const createdLinks = await linkRepository.create(
+          tx,
+          createdContact.data,
+          filterInsertLinks,
+        );
+
+        if (!createdLinks.ok) {
+          throw new Error("abort transaction");
+        }
       }
-      //TODO not elegantですね
       if (validatedTagId) {
-        //一旦変更
-        const insertTags = validatedTagId.map((t) => {
-          return { contactId: createdContact.data, tagId: t };
-        });
-        await tagRepository.createContactTag(tx, insertTags);
+        const createdContactTags = await tagRepository.createContactTag(
+          tx,
+          createdContact.data,
+          validatedTagId,
+        );
+        if (!createdContactTags.ok) {
+          throw new Error("abort transaction");
+        }
       }
     });
 
