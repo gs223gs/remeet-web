@@ -6,14 +6,13 @@ import { prisma } from "@/lib/prisma";
 export const tagRepository = {
   async createContactTag(
     tx: Prisma.TransactionClient,
-    addContactTag: {
-      contactId: string;
-      tagId: string;
-    }[],
+    contactId: string,
+    tagIds: string[],
   ): Promise<Result<void>> {
     try {
       await tx.contactTag.createMany({
-        data: addContactTag,
+        //serviceで呼び出す時にシンプルになるためrepositoryで組み立て
+        data: tagIds.map((tagId) => ({ tagId, contactId })),
       });
       return {
         ok: true,
