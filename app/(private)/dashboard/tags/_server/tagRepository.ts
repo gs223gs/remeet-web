@@ -1,8 +1,36 @@
 import type { Result } from "@/type/error/error";
+import type { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
 export const tagRepository = {
+  async createContactTag(
+    tx: Prisma.TransactionClient,
+    contactId: string,
+    tagIds: string[],
+  ): Promise<Result<void>> {
+    try {
+      await tx.contactTag.createMany({
+        //serviceで呼び出す時にシンプルになるためrepositoryで組み立て
+        data: tagIds.map((tagId) => ({ tagId, contactId })),
+      });
+      return {
+        ok: true,
+        data: undefined,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+          message: ["prismaでerror発生"],
+        },
+      };
+    }
+  },
+
+  //TODO validationをやめる => service で行うため
   async validateOwnedTagsExistence(
     userId: string,
     tagsField: string[],

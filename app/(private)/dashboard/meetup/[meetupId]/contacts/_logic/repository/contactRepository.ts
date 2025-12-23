@@ -1,9 +1,42 @@
-import type { MigrationResult } from "@/type/error/error";
+import type { MigrationResult, Result } from "@/type/error/error";
 import type { ContactsErrors } from "@/type/private/contacts/contacts";
+import type { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
+type ContactsInput = {
+  meetupId: string;
+  userId: string;
+  name: string;
+  company?: string;
+  role?: string;
+  description?: string;
+};
 export const contactRepository = {
+  async create(
+    tx: Prisma.TransactionClient,
+    data: ContactsInput,
+  ): Promise<Result<string>> {
+    try {
+      const createdContact = await tx.contact.create({
+        data,
+      });
+
+      return {
+        ok: true,
+        data: createdContact.id, //transaction内でidを使うためidだけreturn
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+          message: ["prismaでerror発生"],
+        },
+      };
+    }
+  },
   async delete(
     contactId: string,
     userId: string,

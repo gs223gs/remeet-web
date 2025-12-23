@@ -12,6 +12,7 @@ import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
 import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
+import { linkRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/linkRepository";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
 import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
@@ -74,73 +75,87 @@ export const createContacts = async (
         };
       }
     }
+
+    //TODO ここ本当に変えたい 冗長すぎる
+    //? type ContactsLink の url:string を undefined 許容にすれば解決だけど，そのために型を増やしたくない && DBと合わないから嫌だ
+    const insertLinks = [
+      {
+        type: "GITHUB" as LinkType,
+        url: validatedFields.data.githubId,
+        handle: validatedFields.data.githubHandle,
+      },
+      {
+        type: "TWITTER" as LinkType,
+        url: validatedFields.data.twitterId,
+        handle: validatedFields.data.twitterHandle,
+      },
+      {
+        type: "WEBSITE" as LinkType,
+        url: validatedFields.data.websiteUrl,
+        handle: validatedFields.data.websiteHandle,
+      },
+      {
+        type: "OTHER" as LinkType,
+        url: validatedFields.data.other,
+        handle: validatedFields.data.otherHandle,
+      },
+      {
+        type: "PRODUCT" as LinkType,
+        url: validatedFields.data.productUrl,
+        handle: validatedFields.data.productHandle,
+      },
+    ] as const;
+
+    const addContactsData = {
+      meetupId: meetupId,
+      userId: user.id,
+      name: validatedFields.data.name,
+      company: validatedFields.data.company,
+      role: validatedFields.data.role,
+      description: validatedFields.data.description,
+    };
+
+    const filterInsertLinks = insertLinks.flatMap((l) =>
+      l.url
+        ? [
+            {
+              type: l.type,
+              url: l.url,
+              ...(l.handle ? { handle: l.handle } : {}),
+            },
+          ]
+        : [],
+    );
+
     await prisma.$transaction(async (tx) => {
-      const createdContact = await tx.contact.create({
-        data: {
-          meetupId: meetupId,
-          userId: user.id,
-          name: validatedFields.data.name,
-          company: validatedFields.data.company,
-          role: validatedFields.data.role,
-          description: validatedFields.data.description,
-        },
-      });
-
-      //TODO ここ本当に変えたい 冗長すぎる
-      //? type ContactsLink の url:string を undefined 許容にすれば解決だけど，そのために型を増やしたくない && DBと合わないから嫌だ
-      const insertLinks = [
-        {
-          type: "GITHUB" as LinkType,
-          url: validatedFields.data.githubId,
-          handle: validatedFields.data.githubHandle,
-        },
-        {
-          type: "TWITTER" as LinkType,
-          url: validatedFields.data.twitterId,
-          handle: validatedFields.data.twitterHandle,
-        },
-        {
-          type: "WEBSITE" as LinkType,
-          url: validatedFields.data.websiteUrl,
-          handle: validatedFields.data.websiteHandle,
-        },
-        {
-          type: "OTHER" as LinkType,
-          url: validatedFields.data.other,
-          handle: validatedFields.data.otherHandle,
-        },
-        {
-          type: "PRODUCT" as LinkType,
-          url: validatedFields.data.productUrl,
-          handle: validatedFields.data.productHandle,
-        },
-      ] as const;
-
-      const filterInsertLinks: CreateContactLink[] = insertLinks.flatMap((l) =>
-        l.url
-          ? [
-              {
-                contactId: createdContact.id,
-                type: l.type,
-                url: l.url,
-                ...(l.handle ? { handle: l.handle } : {}),
-              },
-            ]
-          : [],
+      const createdContact = await contactRepository.create(
+        tx,
+        addContactsData,
       );
+      if (!createdContact.ok) {
+        throw new Error("abort transaction");
+      }
 
       if (filterInsertLinks.length) {
-        await tx.contactLink.createMany({ data: filterInsertLinks });
+        const createdLinks = await linkRepository.create(
+          tx,
+          createdContact.data,
+          filterInsertLinks,
+        );
+
+        if (!createdLinks.ok) {
+          throw new Error("abort transaction");
+        }
       }
-      //TODO not elegantですね
       if (validatedTagId) {
-        //一旦変更
-        const insertTags = validatedTagId.map((t) => {
-          return { contactId: createdContact.id, tagId: t };
-        });
-        await tx.contactTag.createMany({
-          data: insertTags,
-        });
+        const createdContactTags = await tagRepository.createContactTag(
+          tx,
+          createdContact.data,
+          validatedTagId,
+        );
+        if (!createdContactTags.ok) {
+          throw new Error("abort transaction");
+        }
       }
     });
 
