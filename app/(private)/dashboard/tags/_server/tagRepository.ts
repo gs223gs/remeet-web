@@ -29,6 +29,8 @@ export const tagRepository = {
       };
     }
   },
+
+  //TODO validationをやめる => service で行うため
   async validateOwnedTagsExistence(
     userId: string,
     tagsField: string[],
