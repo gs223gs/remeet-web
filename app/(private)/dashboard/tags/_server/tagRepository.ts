@@ -1,16 +1,18 @@
 import type { Result } from "@/type/error/error";
+import type { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
 export const tagRepository = {
   async createContactTag(
+    tx: Prisma.TransactionClient,
     addContactTag: {
       contactId: string;
       tagId: string;
     }[],
   ): Promise<Result<void>> {
     try {
-      await prisma.contactTag.createMany({
+      await tx.contactTag.createMany({
         data: addContactTag,
       });
       return {

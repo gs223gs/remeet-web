@@ -115,13 +115,18 @@ export const createContacts = async (
     };
 
     await prisma.$transaction(async (tx) => {
-      const createdContact = await contactRepository.create(addContactsData);
-
+      const createdContact = await contactRepository.create(
+        tx,
+        addContactsData,
+      );
+      if (!createdContact.ok) {
+        return;
+      }
       const filterInsertLinks: CreateContactLink[] = insertLinks.flatMap((l) =>
         l.url
           ? [
               {
-                contactId: createdContact.id,
+                contactId: createdContact.data,
                 type: l.type,
                 url: l.url,
                 ...(l.handle ? { handle: l.handle } : {}),
@@ -137,11 +142,9 @@ export const createContacts = async (
       if (validatedTagId) {
         //一旦変更
         const insertTags = validatedTagId.map((t) => {
-          return { contactId: createdContact.id, tagId: t };
+          return { contactId: createdContact.data, tagId: t };
         });
-        await tx.contactTag.createMany({
-          data: insertTags,
-        });
+        await tagRepository.createContactTag(tx, insertTags);
       }
     });
 

@@ -1,7 +1,9 @@
 import type { MigrationResult, Result } from "@/type/error/error";
 import type { ContactsErrors } from "@/type/private/contacts/contacts";
+import type { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
+
 type AddContacts = {
   meetupId: string;
   userId: string;
@@ -11,15 +13,18 @@ type AddContacts = {
   description: string | undefined;
 };
 export const contactRepository = {
-  async create(data: AddContacts): Promise<Result<string>> {
+  async create(
+    tx: Prisma.TransactionClient,
+    data: AddContacts,
+  ): Promise<Result<string>> {
     try {
-      const createdContact = await prisma.contact.create({
+      const createdContact = await tx.contact.create({
         data,
       });
 
       return {
         ok: true,
-        data: createdContact.id,
+        data: createdContact.id, //transaction内でidを使うためidだけreturn
       };
     } catch (error) {
       console.error(error);
@@ -27,7 +32,7 @@ export const contactRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: ["dbエラーです"],
+          message: ["prismaでerror発生"],
         },
       };
     }
