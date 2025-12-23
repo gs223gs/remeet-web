@@ -4,18 +4,18 @@ import type { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
-type AddContacts = {
+type ContactsInput = {
   meetupId: string;
   userId: string;
   name: string;
-  company: string | undefined;
-  role: string | undefined;
-  description: string | undefined;
+  company?: string;
+  role?: string;
+  description?: string;
 };
 export const contactRepository = {
   async create(
     tx: Prisma.TransactionClient,
-    data: AddContacts,
+    data: ContactsInput,
   ): Promise<Result<string>> {
     try {
       const createdContact = await tx.contact.create({
