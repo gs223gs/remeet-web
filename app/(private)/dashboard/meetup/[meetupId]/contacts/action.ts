@@ -12,13 +12,13 @@ import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
 import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
+import { linkRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/linkRepository";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
 import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
 import { tagRepository } from "@/app/(private)/dashboard/tags/_server/tagRepository";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { linkRepository } from "./_logic/linkRepository";
 
 export const createContacts = async (
   meetupId: string,
