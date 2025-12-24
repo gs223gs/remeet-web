@@ -11,30 +11,17 @@ import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
+import { contactsService } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsService";
 import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
-import { linkRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/linkRepository";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
-import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
-import { tagRepository } from "@/app/(private)/dashboard/tags/_server/tagRepository";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
-
 export const createContacts = async (
   meetupId: string,
   _: ActionState<ContactsErrors>,
   formData: FormData,
 ): Promise<ActionState<ContactsErrors>> => {
-  const validatedFields = contactValidation(formData);
-
-  if (!validatedFields.success)
-    return {
-      success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
-    };
-
   try {
     const user = await getUser();
     if (!user)
@@ -45,119 +32,18 @@ export const createContacts = async (
         },
       };
 
-    const verifyOwnedMeetup = await meetupRepository.verifyUserOwnedMeetup(
-      user.id,
+    const createdContactResult = await contactsService.createContact(
       meetupId,
+      user.id,
+      formData,
     );
 
-    //TODO ここあとで整える
-    if (!verifyOwnedMeetup.ok)
+    if (!createdContactResult.ok) {
       return {
         success: false,
-        errors: {
-          server: "server error", //本来は認可エラーだけど一旦これでいく
-        },
+        errors: {},
       };
-    //TODO リファクタリング対象
-    //ちょっと不愉快
-    const validatedTagId = validatedFields.data.tags;
-    if (validatedTagId) {
-      const verifiedTag = await tagRepository.validateOwnedTagsExistence(
-        user.id,
-        validatedTagId,
-      );
-      if (!verifiedTag.ok) {
-        return {
-          success: false,
-          errors: {
-            server: "server error", //TODO Error を変える
-          },
-        };
-      }
     }
-
-    //TODO ここ本当に変えたい 冗長すぎる
-    //? type ContactsLink の url:string を undefined 許容にすれば解決だけど，そのために型を増やしたくない && DBと合わないから嫌だ
-    const insertLinks = [
-      {
-        type: "GITHUB" as LinkType,
-        url: validatedFields.data.githubId,
-        handle: validatedFields.data.githubHandle,
-      },
-      {
-        type: "TWITTER" as LinkType,
-        url: validatedFields.data.twitterId,
-        handle: validatedFields.data.twitterHandle,
-      },
-      {
-        type: "WEBSITE" as LinkType,
-        url: validatedFields.data.websiteUrl,
-        handle: validatedFields.data.websiteHandle,
-      },
-      {
-        type: "OTHER" as LinkType,
-        url: validatedFields.data.other,
-        handle: validatedFields.data.otherHandle,
-      },
-      {
-        type: "PRODUCT" as LinkType,
-        url: validatedFields.data.productUrl,
-        handle: validatedFields.data.productHandle,
-      },
-    ] as const;
-
-    const addContactsData = {
-      meetupId: meetupId,
-      userId: user.id,
-      name: validatedFields.data.name,
-      company: validatedFields.data.company,
-      role: validatedFields.data.role,
-      description: validatedFields.data.description,
-    };
-
-    const filterInsertLinks = insertLinks.flatMap((l) =>
-      l.url
-        ? [
-            {
-              type: l.type,
-              url: l.url,
-              ...(l.handle ? { handle: l.handle } : {}),
-            },
-          ]
-        : [],
-    );
-
-    await prisma.$transaction(async (tx) => {
-      const createdContact = await contactRepository.create(
-        tx,
-        addContactsData,
-      );
-      if (!createdContact.ok) {
-        throw new Error("abort transaction");
-      }
-
-      if (filterInsertLinks.length) {
-        const createdLinks = await linkRepository.create(
-          tx,
-          createdContact.data,
-          filterInsertLinks,
-        );
-
-        if (!createdLinks.ok) {
-          throw new Error("abort transaction");
-        }
-      }
-      if (validatedTagId) {
-        const createdContactTags = await tagRepository.createContactTag(
-          tx,
-          createdContact.data,
-          validatedTagId,
-        );
-        if (!createdContactTags.ok) {
-          throw new Error("abort transaction");
-        }
-      }
-    });
 
     return {
       success: true,
