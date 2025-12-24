@@ -11,8 +11,8 @@ import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
-import { contactsService } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsService";
 import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
+import { createContactService } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/createContactsService";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
 import { getUser } from "@/auth";
@@ -32,7 +32,7 @@ export const createContacts = async (
         },
       };
 
-    const createdContactResult = await contactsService.createContact(
+    const createdContactResult = await createContactService(
       meetupId,
       user.id,
       formData,
