@@ -17,6 +17,7 @@ import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/c
 import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { routes } from "@/util/routes";
 export const createContacts = async (
   meetupId: string,
   _: ActionState<ContactsErrors>,
@@ -37,19 +38,15 @@ export const createContacts = async (
       user.id,
       formData,
     );
-
     if (!createdContactResult.ok) {
       return {
         success: false,
         errors: {},
       };
     }
-
-    return {
-      success: true,
-      errors: {},
-    };
+    redirect(routes.dashboardMeetupDetail(meetupId));
   } catch (error) {
+    if (isRedirectError(error)) throw error;
     console.error(error);
     return {
       success: false,
