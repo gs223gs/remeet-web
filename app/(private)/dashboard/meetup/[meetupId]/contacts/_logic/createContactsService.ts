@@ -42,7 +42,7 @@ export const createContactService = async (
     //TODO リファクタリング対象
     //ちょっと不愉快
     const validatedTagId = validatedFields.data.tags;
-    if (validatedTagId) {
+    if (validatedTagId?.length) {
       const verifiedTag = await tagRepository.validateOwnedTagsExistence(
         userId,
         validatedTagId,
@@ -128,7 +128,7 @@ export const createContactService = async (
           throw new Error("abort transaction");
         }
       }
-      if (validatedTagId) {
+      if (validatedTagId?.length) {
         const createdContactTags = await tagRepository.createContactTag(
           tx,
           createdContact.data,
