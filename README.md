@@ -68,8 +68,8 @@ actionにはエラーコードとdetailを返す
 
 責務: actionでの判断基準のため,repositoryの結果 + 追加情報
 #### server action の return について
-service から渡ってきたエラーコードに基づいてUIで表示する文字をreturn する
-
+~~service から渡ってきたエラーコードに基づいてUIで表示する文字をreturn する~~
+ErrorCordをreturnし，ErrorCordに基づき`<XxxErrorCard />`を表示する
 責務: UI表示のため
 
 
