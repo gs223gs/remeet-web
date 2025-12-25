@@ -9,8 +9,8 @@ import type { CreateContactsSchema } from "@/validations/private/contactsValidat
 
 import { createContacts } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
 import { ContactForm } from "@/components/contacts/form/ContactForm";
+import { ServerErrorCard } from "@/components/util/server-error-card";
 import { createContactsFrontSchema } from "@/validations/private/contactsValidation";
-
 type Props = {
   meetupId: string;
   tags: Tag[];
@@ -21,10 +21,7 @@ export const CreateContactForm = ({ meetupId, tags }: Props) => {
 
   const [state, action, isPending] = useActionState(
     createContactsWithMeetupId,
-    {
-      success: false,
-      errors: {},
-    },
+    null,
   );
 
   const form = useForm<CreateContactsSchema>({
@@ -51,12 +48,14 @@ export const CreateContactForm = ({ meetupId, tags }: Props) => {
   });
 
   return (
-    <ContactForm
-      tags={tags}
-      form={form}
-      action={action}
-      state={state}
-      isPending={isPending}
-    />
+    <div>
+      {state?.errors === "unknown" && <ServerErrorCard />}
+      <ContactForm
+        tags={tags}
+        form={form}
+        action={action}
+        isPending={isPending}
+      />
+    </div>
   );
 };

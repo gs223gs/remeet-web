@@ -34,24 +34,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ServerErrorCard } from "@/components/util/server-error-card";
 
 type Props = {
   tags: Tag[];
   form: UseFormReturn<CreateContactsSchema>;
   isPending: boolean;
-  state: ActionState<ContactsErrors>;
   action: (payload: FormData) => void;
 };
 const TAG_LIMIT = 5;
 
-export const ContactForm = ({
-  tags,
-  form,
-  action,
-  isPending,
-  state,
-}: Props) => {
+export const ContactForm = ({ tags, form, action, isPending }: Props) => {
   const [userTags, setUserTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
   const [tagQuery, setTagQuery] = useState<string>("");
@@ -95,13 +87,6 @@ export const ContactForm = ({
         {isPending && (
           <div className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-600">
             送信中です。画面を閉じずにお待ちください。
-          </div>
-        )}
-
-        {state.errors.server && <ServerErrorCard />}
-        {state.errors.auth && (
-          <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-            {state.errors.auth}
           </div>
         )}
 
