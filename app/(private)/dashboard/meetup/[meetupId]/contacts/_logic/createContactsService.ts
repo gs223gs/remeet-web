@@ -58,9 +58,8 @@ export const createContactService = async (
       }
     }
 
-    //TODO ここ本当に変えたい 冗長すぎる
-    //? type ContactsLink の url:string を undefined 許容にすれば解決だけど，そのために型を増やしたくない && DBと合わないから嫌だ
-    const insertLinks = [
+    //今後linkが増えたらfunctionにする
+    const linkFields = [
       {
         type: "GITHUB" as LinkType,
         url: validatedFields.data.githubId,
@@ -88,16 +87,7 @@ export const createContactService = async (
       },
     ] as const;
 
-    const addContactsData = {
-      meetupId: meetupId,
-      userId: userId,
-      name: validatedFields.data.name,
-      company: validatedFields.data.company,
-      role: validatedFields.data.role,
-      description: validatedFields.data.description,
-    };
-
-    const filterInsertLinks = insertLinks.flatMap((l) =>
+    const insertableLinks = linkFields.flatMap((l) =>
       l.url
         ? [
             {
@@ -108,6 +98,16 @@ export const createContactService = async (
           ]
         : [],
     );
+
+    const addContactsData = {
+      meetupId: meetupId,
+      userId: userId,
+      name: validatedFields.data.name,
+      company: validatedFields.data.company,
+      role: validatedFields.data.role,
+      description: validatedFields.data.description,
+    };
+
     await prisma.$transaction(async (tx) => {
       const createdContact = await contactRepository.create(
         tx,
@@ -117,11 +117,11 @@ export const createContactService = async (
         throw new Error("abort transaction");
       }
 
-      if (filterInsertLinks.length) {
+      if (insertableLinks.length) {
         const createdLinks = await linkRepository.create(
           tx,
           createdContact.data,
-          filterInsertLinks,
+          insertableLinks,
         );
 
         if (!createdLinks.ok) {
