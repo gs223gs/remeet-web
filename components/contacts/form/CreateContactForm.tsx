@@ -9,8 +9,8 @@ import type { CreateContactsSchema } from "@/validations/private/contactsValidat
 
 import { createContacts } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
 import { ContactForm } from "@/components/contacts/form/ContactForm";
+import { ServerErrorCard } from "@/components/util/server-error-card";
 import { createContactsFrontSchema } from "@/validations/private/contactsValidation";
-
 type Props = {
   meetupId: string;
   tags: Tag[];
@@ -21,10 +21,7 @@ export const CreateContactForm = ({ meetupId, tags }: Props) => {
 
   const [state, action, isPending] = useActionState(
     createContactsWithMeetupId,
-    {
-      success: false,
-      errors: {},
-    },
+    null,
   );
 
   const form = useForm<CreateContactsSchema>({
@@ -47,16 +44,26 @@ export const CreateContactForm = ({ meetupId, tags }: Props) => {
       other: "",
     },
     //Actionとの併用のためfocus が外れたらエラーを出す
-    mode: "onBlur",
+    mode: "onChange",
   });
 
+  const isDisabled = !form.formState.isValid || isPending;
+  const buttonLabel = isPending
+    ? "送信中"
+    : form.formState.isValid
+      ? "送信"
+      : "入力してください";
+
   return (
-    <ContactForm
-      tags={tags}
-      form={form}
-      action={action}
-      state={state}
-      isPending={isPending}
-    />
+    <div>
+      {state?.errors === "unknown" && <ServerErrorCard />}
+      <ContactForm
+        tags={tags}
+        form={form}
+        action={action}
+        buttonLabel={buttonLabel}
+        isDisabled={isDisabled}
+      />
+    </div>
   );
 };
