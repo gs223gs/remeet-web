@@ -36,12 +36,19 @@ import { Textarea } from "@/components/ui/textarea";
 type Props = {
   tags: Tag[];
   form: UseFormReturn<CreateContactsSchema>;
-  isPending: boolean;
   action: (payload: FormData) => void;
+  buttonLabel: string;
+  isDisabled: boolean;
 };
 const TAG_LIMIT = 5;
 
-export const ContactForm = ({ tags, form, action, isPending }: Props) => {
+export const ContactForm = ({
+  tags,
+  form,
+  action,
+  isDisabled,
+  buttonLabel,
+}: Props) => {
   const [userTags, setUserTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
   const [tagQuery, setTagQuery] = useState<string>("");
@@ -82,12 +89,6 @@ export const ContactForm = ({ tags, form, action, isPending }: Props) => {
   return (
     <Form {...form}>
       <form action={action} className="space-y-6">
-        {isPending && (
-          <div className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-600">
-            送信中です。画面を閉じずにお待ちください。
-          </div>
-        )}
-
         <Card>
           <CardHeader className="pb-4">
             <CardTitle>基本情報</CardTitle>
@@ -228,10 +229,10 @@ export const ContactForm = ({ tags, form, action, isPending }: Props) => {
         </Card>
         <Button
           type="submit"
-          disabled={isPending}
+          disabled={isDisabled}
           className="w-full bg-orange-500 text-white shadow-sm hover:bg-orange-500/90 sm:w-auto"
         >
-          {isPending ? "送信中..." : "コンタクトを登録"}
+          {buttonLabel}
         </Button>
       </form>
     </Form>

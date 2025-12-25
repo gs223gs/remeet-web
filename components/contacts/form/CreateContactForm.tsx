@@ -44,8 +44,15 @@ export const CreateContactForm = ({ meetupId, tags }: Props) => {
       other: "",
     },
     //Actionとの併用のためfocus が外れたらエラーを出す
-    mode: "onBlur",
+    mode: "onChange",
   });
+
+  const isDisabled = !form.formState.isValid || isPending;
+  const buttonLabel = isPending
+    ? "送信中"
+    : form.formState.isValid
+      ? "送信"
+      : "入力してください";
 
   return (
     <div>
@@ -54,7 +61,8 @@ export const CreateContactForm = ({ meetupId, tags }: Props) => {
         tags={tags}
         form={form}
         action={action}
-        isPending={isPending}
+        buttonLabel={buttonLabel}
+        isDisabled={isDisabled}
       />
     </div>
   );
