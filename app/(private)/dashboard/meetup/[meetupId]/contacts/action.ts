@@ -2,7 +2,7 @@
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
-import type { Result } from "@/type/error/error";
+import type { ErrorCode, Result } from "@/type/error/error";
 import type {
   ContactsErrors,
   CreateContactLink,
@@ -20,18 +20,12 @@ import { prisma } from "@/lib/prisma";
 import { routes } from "@/util/routes";
 export const createContacts = async (
   meetupId: string,
-  _: ActionState<ContactsErrors>,
+  _: ActionState<ErrorCode> | null,
   formData: FormData,
-): Promise<ActionState<ContactsErrors>> => {
+): Promise<ActionState<ErrorCode>> => {
   try {
     const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
+    if (!user) redirect(routes.login());
 
     const createdContactResult = await createContactService(
       meetupId,
@@ -41,7 +35,7 @@ export const createContacts = async (
     if (!createdContactResult.ok) {
       return {
         success: false,
-        errors: {},
+        errors: createdContactResult.error.code,
       };
     }
     redirect(routes.dashboardMeetupDetail(meetupId));
@@ -50,7 +44,7 @@ export const createContacts = async (
     console.error(error);
     return {
       success: false,
-      errors: {},
+      errors: "unknown",
     };
   }
 };
