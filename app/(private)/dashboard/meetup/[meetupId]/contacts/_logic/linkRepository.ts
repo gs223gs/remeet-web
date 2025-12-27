@@ -5,7 +5,7 @@ import type { ContactLink } from "@/type/private/contacts/contacts";
 import type { Prisma } from "@prisma/client";
 
 //service でcontactId単体で送らせた方がservice側の可読性が上がる
-type ContactLinkInput = Omit<ContactLink, "contactsId" | "id">;
+type ContactLinkInput = Omit<ContactLink, "id">;
 
 export const linkRepository = {
   async create(
