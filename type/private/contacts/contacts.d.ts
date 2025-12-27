@@ -9,9 +9,11 @@ type ContactLink = {
   handle?: string;
 };
 
+//TODO update contacts を refactoringしたら消す
 type CreateContactLink = Omit<ContactLink, "id"> & {
   contactId: string;
 };
+
 type ContactsDetailDTO = {
   id: string;
   name: string;

@@ -1,4 +1,4 @@
-import type { MigrationResult } from "@/type/error/error";
+import type { MigrationResult, Result } from "@/type/error/error";
 import type {
   CreateMeetupInput,
   MeetupErrors,
@@ -63,6 +63,41 @@ export const meetupRepository = {
         ok: false,
         error: {
           server: "server error",
+        },
+      };
+    }
+  },
+  async verifyUserOwnedMeetup(
+    userId: string,
+    meetupId: string,
+  ): Promise<Result<void>> {
+    try {
+      const verifiedUserOwned = await prisma.meetup.findFirst({
+        where: { userId: userId, id: meetupId },
+        select: { id: true },
+      });
+
+      if (!verifiedUserOwned) {
+        return {
+          ok: false,
+          error: {
+            code: "authorization",
+            message: ["meetupの権限不足"],
+          },
+        };
+      }
+
+      return {
+        ok: true,
+        data: undefined,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+          message: ["prismaでerror発生"],
         },
       };
     }

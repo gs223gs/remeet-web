@@ -2,7 +2,7 @@
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
-import type { Result } from "@/type/error/error";
+import type { ErrorCode, Result } from "@/type/error/error";
 import type {
   ContactsErrors,
   CreateContactLink,
@@ -12,138 +12,39 @@ import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
 import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
+import { createContactService } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/createContactsService";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
-
+import { routes } from "@/util/routes";
 export const createContacts = async (
   meetupId: string,
-  _: ActionState<ContactsErrors>,
+  _: ActionState<ErrorCode> | null,
   formData: FormData,
-): Promise<ActionState<ContactsErrors>> => {
-  const validatedFields = contactValidation(formData);
-
-  if (!validatedFields.success)
-    return {
-      success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
-    };
-
+): Promise<ActionState<ErrorCode>> => {
   try {
     const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
-    const isVerifyMeetup = await prisma.meetup.findFirst({
-      where: { userId: user.id, id: meetupId },
-      select: { id: true },
-    });
+    if (!user) redirect(routes.login());
 
-    //TODO ここあとで整える
-    if (!isVerifyMeetup)
+    const createdContactResult = await createContactService(
+      meetupId,
+      user.id,
+      formData,
+    );
+    if (!createdContactResult.ok) {
       return {
         success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
+        errors: createdContactResult.error.code,
       };
-    //TODO リファクタリング対象
-    //ちょっと不愉快
-    const tags = validatedFields.data.tags;
-    if (tags?.length) {
-      const isVerifyTags = await verifyTags(tags, user.id);
-      if (!isVerifyTags) {
-        return {
-          success: false,
-          errors: { auth: "認証に失敗しました" },
-        };
-      }
     }
-    await prisma.$transaction(async (tx) => {
-      const createdContact = await tx.contact.create({
-        data: {
-          meetupId: meetupId,
-          userId: user.id,
-          name: validatedFields.data.name,
-          company: validatedFields.data.company,
-          role: validatedFields.data.role,
-          description: validatedFields.data.description,
-        },
-      });
-
-      //TODO ここ本当に変えたい 冗長すぎる
-      //? type ContactsLink の url:string を undefined 許容にすれば解決だけど，そのために型を増やしたくない && DBと合わないから嫌だ
-      const insertLinks = [
-        {
-          type: "GITHUB" as LinkType,
-          url: validatedFields.data.githubId,
-          handle: validatedFields.data.githubHandle,
-        },
-        {
-          type: "TWITTER" as LinkType,
-          url: validatedFields.data.twitterId,
-          handle: validatedFields.data.twitterHandle,
-        },
-        {
-          type: "WEBSITE" as LinkType,
-          url: validatedFields.data.websiteUrl,
-          handle: validatedFields.data.websiteHandle,
-        },
-        {
-          type: "OTHER" as LinkType,
-          url: validatedFields.data.other,
-          handle: validatedFields.data.otherHandle,
-        },
-        {
-          type: "PRODUCT" as LinkType,
-          url: validatedFields.data.productUrl,
-          handle: validatedFields.data.productHandle,
-        },
-      ] as const;
-
-      const filterInsertLinks: CreateContactLink[] = insertLinks.flatMap((l) =>
-        l.url
-          ? [
-              {
-                contactId: createdContact.id,
-                type: l.type,
-                url: l.url,
-                ...(l.handle ? { handle: l.handle } : {}),
-              },
-            ]
-          : [],
-      );
-
-      if (filterInsertLinks.length) {
-        await tx.contactLink.createMany({ data: filterInsertLinks });
-      }
-      //TODO not elegantですね
-      if (tags?.length) {
-        const insertTags = tags.map((t) => {
-          return { contactId: createdContact.id, tagId: t };
-        });
-        await tx.contactTag.createMany({
-          data: insertTags,
-        });
-      }
-    });
-
-    return {
-      success: true,
-      errors: {},
-    };
+    redirect(routes.dashboardMeetupDetail(meetupId));
   } catch (error) {
+    if (isRedirectError(error)) throw error;
     console.error(error);
     return {
       success: false,
-      errors: {},
+      errors: "unknown",
     };
   }
 };

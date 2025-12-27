@@ -1,9 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import type { ContactsErrors } from "@/type/private/contacts/contacts";
 import type { Tag } from "@/type/private/tags/tags";
-import type { ActionState } from "@/type/util/action";
 import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
 import type { UseFormReturn } from "react-hook-form";
 
@@ -34,14 +32,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ServerErrorCard } from "@/components/util/server-error-card";
 
 type Props = {
   tags: Tag[];
   form: UseFormReturn<CreateContactsSchema>;
-  isPending: boolean;
-  state: ActionState<ContactsErrors>;
   action: (payload: FormData) => void;
+  buttonLabel: string;
+  isDisabled: boolean;
 };
 const TAG_LIMIT = 5;
 
@@ -49,8 +46,8 @@ export const ContactForm = ({
   tags,
   form,
   action,
-  isPending,
-  state,
+  isDisabled,
+  buttonLabel,
 }: Props) => {
   const [userTags, setUserTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
@@ -92,19 +89,6 @@ export const ContactForm = ({
   return (
     <Form {...form}>
       <form action={action} className="space-y-6">
-        {isPending && (
-          <div className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-600">
-            送信中です。画面を閉じずにお待ちください。
-          </div>
-        )}
-
-        {state.errors.server && <ServerErrorCard />}
-        {state.errors.auth && (
-          <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-            {state.errors.auth}
-          </div>
-        )}
-
         <Card>
           <CardHeader className="pb-4">
             <CardTitle>基本情報</CardTitle>
@@ -245,10 +229,10 @@ export const ContactForm = ({
         </Card>
         <Button
           type="submit"
-          disabled={isPending}
+          disabled={isDisabled}
           className="w-full bg-orange-500 text-white shadow-sm hover:bg-orange-500/90 sm:w-auto"
         >
-          {isPending ? "送信中..." : "コンタクトを登録"}
+          {buttonLabel}
         </Button>
       </form>
     </Form>
