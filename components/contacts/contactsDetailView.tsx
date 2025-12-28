@@ -96,7 +96,7 @@ export const ContactsDetailView = ({ meetupId, contactsDetail }: Props) => {
             {/**TODO コンポーネントわけ  */}
             {links.length ? (
               links.map((l) => {
-                const linkUrl = createLinkUrl(l.type, l.handle, l.url);
+                const linkUrl = createLinkUrl(l.type, l.url);
 
                 return (
                   <div

@@ -71,7 +71,7 @@ export const ContactCard = ({ contact }: Props) => {
           {contact.links && contact.links.length ? (
             <div className="space-y-2">
               {contact.links.map((l) => {
-                const linkUrl = createLinkUrl(l.type, l.handle, l.url);
+                const linkUrl = createLinkUrl(l.type, l.url);
 
                 return (
                   <div
