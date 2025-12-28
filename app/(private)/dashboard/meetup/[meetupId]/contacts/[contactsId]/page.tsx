@@ -1,15 +1,13 @@
+import Link from "next/link";
+
 import { getContactDetail } from "../_server/server";
 
+import { ContactsErrorCard } from "@/components/contacts/contacts-error-card";
 import { ContactsDetailView } from "@/components/contacts/contactsDetailView";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { Button } from "@/components/ui/button";
+import { routes } from "@/util/routes";
 
-/**
- * Renders a contact detail page for a given meetup and contact.
- *
- * Awaits the provided `params` to obtain `meetupId` and `contactsId`, fetches the contact detail, and renders either an error block containing the meetup and contact IDs plus any error messages, or the ContactsDetailView component populated with the fetched contact detail.
- *
- * @param params - A promise that resolves to an object with `meetupId` and `contactsId`.
- * @returns The page UI: an error block when fetching fails, or the ContactsDetailView when fetching succeeds.
- */
 export default async function ContactsDetail({
   params,
 }: {
@@ -20,20 +18,51 @@ export default async function ContactsDetail({
 
   if (!contactsDetailRes.ok) {
     return (
-      <div>
-        <div>meetup: {meetupId}</div>
-        <div>contacts: {contactsId}</div>
-        <div>エラー</div>
-        {contactsDetailRes.error?.message?.map((m, i) => (
-          <div key={i}>{m}</div>
-        ))}
-      </div>
+      <ContactsErrorCard
+        message={contactsDetailRes.error?.message?.join(" / ")}
+      />
     );
   }
 
   const contactsDetail = contactsDetailRes.data;
 
   return (
-    <ContactsDetailView contactsDetail={contactsDetail} meetupId={meetupId} />
+    <div className="flex min-h-screen flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-10">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <DashboardHeader
+          eyebrow="contact detail"
+          title={`${contactsDetail.name}`}
+          description="Meetupで記録したコンタクトの情報を整理し、次のアクションにつなげましょう。"
+        />
+        <div className="flex items-center gap-3">
+          <Button
+            asChild
+            size="sm"
+            variant="ghost"
+            className="border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100"
+          >
+            <Link href={routes.dashboardMeetupDetail(meetupId)}>
+              Meetup詳細へ戻る
+            </Link>
+          </Button>
+          <Button
+            asChild
+            size="sm"
+            className="bg-orange-500 text-white shadow-sm hover:bg-orange-500/90"
+          >
+            <Link
+              href={routes.dashboardMeetupContactEdit(
+                meetupId,
+                contactsDetail.id,
+              )}
+            >
+              コンタクトを編集
+            </Link>
+          </Button>
+        </div>
+      </div>
+
+      <ContactsDetailView contactsDetail={contactsDetail} meetupId={meetupId} />
+    </div>
   );
 }

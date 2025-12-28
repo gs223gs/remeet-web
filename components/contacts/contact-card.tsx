@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import type { ContactsDetailDTO } from "@/type/private/contacts/contacts";
 import type { MeetupDetail } from "@/type/private/meetup/meetup";
-import type { LinkType } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,30 +13,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { linkLabels, createLinkUrl } from "@/util/contactLinkFormatter";
 import { dateFormatter } from "@/util/dateFormatter";
 import { routes } from "@/util/routes";
-import { outsideUrl } from "@/util/routes";
 
 type ContactWithMeetup = ContactsDetailDTO & { meetup: MeetupDetail };
 
 type Props = {
   contact: ContactWithMeetup;
 };
-const linkHandlers: Record<LinkType, (handle: string, url: string) => string> =
-  {
-    GITHUB: (handle) => outsideUrl.githubUrl(handle),
-    TWITTER: (handle) => outsideUrl.twitterUrl(handle),
-    WEBSITE: (_, siteUrl) => outsideUrl.websiteUrl(siteUrl),
-    OTHER: (_, siteUrl) => outsideUrl.otherUrl(siteUrl),
-    PRODUCT: (_, siteUrl) => outsideUrl.productUrl(siteUrl),
-  };
 
-const createUrl = (type: LinkType, handle: string | undefined, url: string) => {
-  if (!handle) {
-    return linkHandlers[type]("", url);
-  }
-  return linkHandlers[type](handle, url);
-};
 export const ContactCard = ({ contact }: Props) => {
   return (
     <Card className="flex h-full flex-col border-muted transition hover:-translate-y-0.5 hover:border-orange-200">
@@ -86,7 +71,7 @@ export const ContactCard = ({ contact }: Props) => {
           {contact.links && contact.links.length ? (
             <div className="space-y-2">
               {contact.links.map((l) => {
-                const linkUrl = createUrl(l.type, l.handle, l.url);
+                const linkUrl = createLinkUrl(l.type, l.url);
 
                 return (
                   <div
@@ -95,7 +80,7 @@ export const ContactCard = ({ contact }: Props) => {
                   >
                     <div>
                       <p className="text-sm font-medium text-foreground">
-                        {l.type}
+                        {linkLabels[l.type]}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {l.handle ?? l.url}
