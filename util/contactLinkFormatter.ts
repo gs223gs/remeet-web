@@ -17,6 +17,8 @@ const linkHandlers: Record<LinkType, (url: string) => string> = {
   PRODUCT: (siteUrl) => outsideUrl.productUrl(siteUrl),
 };
 
+//linkHandlers を UI から呼び出す物いいとは思う
+//ただ，あとから読み返したときにcreateLinkUrlが呼び出されていた方が可読性上がる
 export const createLinkUrl = (type: LinkType, url: string) => {
   return linkHandlers[type](url);
 };
