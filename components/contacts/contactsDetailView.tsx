@@ -33,7 +33,11 @@ export const ContactsDetailView = ({ meetupId, contactsDetail }: Props) => {
   return (
     <div className="">
       <Card className="border-muted bg-card">
-        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"></CardHeader>
+        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <p className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            詳細
+          </p>
+        </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             {infoItems.map((item) => (
@@ -66,6 +70,7 @@ export const ContactsDetailView = ({ meetupId, contactsDetail }: Props) => {
               <Tags className="size-4 text-blue-500" />
               タグ
             </div>
+            {/**TODO コンポーネントわけ  */}
             {tags.length ? (
               <div className="flex flex-wrap gap-2">
                 {tags.map((t) => (
@@ -79,7 +84,7 @@ export const ContactsDetailView = ({ meetupId, contactsDetail }: Props) => {
               </div>
             ) : (
               <p className="text-xs text-muted-foreground">
-                タグが登録されていません。タグを使うと検索がしやすくなります。
+                タグが登録されていません。
               </p>
             )}
           </div>
@@ -88,6 +93,7 @@ export const ContactsDetailView = ({ meetupId, contactsDetail }: Props) => {
               <Link2 className="size-4 text-blue-500" />
               リンク
             </div>
+            {/**TODO コンポーネントわけ  */}
             {links.length ? (
               links.map((l) => {
                 const linkUrl = createLinkUrl(l.type, l.handle, l.url);

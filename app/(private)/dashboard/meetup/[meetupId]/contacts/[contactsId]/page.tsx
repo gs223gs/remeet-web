@@ -31,7 +31,7 @@ export default async function ContactsDetail({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <DashboardHeader
           eyebrow="contact detail"
-          title={`${contactsDetail.name}の詳細`}
+          title={`${contactsDetail.name}`}
           description="Meetupで記録したコンタクトの情報を整理し、次のアクションにつなげましょう。"
         />
         <div className="flex items-center gap-3">
