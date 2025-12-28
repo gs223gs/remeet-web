@@ -2,14 +2,6 @@ import { getContactDetail, getTags } from "../../_server/server";
 
 import { ContactsUpdateForm } from "@/components/contacts/form/contactsUpdateForm";
 
-/**
- * Render the contacts update page for a specific meetup.
- *
- * Fetches contact details and available tags, and renders a ContactsUpdateForm populated with the retrieved data.
- *
- * @param params - A promise that resolves to route parameters containing `meetupId` and `contactsId`.
- * @returns A React element displaying the contacts update form when data is available, or a simple error element if fetching tags or contact details fails.
- */
 export default async function ContactsUpdatePage({
   params,
 }: {

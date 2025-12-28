@@ -115,7 +115,7 @@ const verifyTags = async (tags: string[], userId: string): Promise<boolean> => {
 export const updateContacts = async (
   meetupId: string,
   contactId: string,
-  _: ActionState<ContactsErrors>,
+  _: ActionState<ContactsErrors> | null,
   formData: FormData,
 ): Promise<ActionState<ContactsErrors>> => {
   const user = await getUser();
