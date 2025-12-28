@@ -3,7 +3,6 @@ import { Link2, NotebookPen, Tags, UserRound } from "lucide-react";
 import { DeleteContactForm } from "./form/deleteContactForm";
 
 import type { ContactsDetailDTO } from "@/type/private/contacts/contacts";
-import type { LinkType } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,45 +12,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { outsideUrl } from "@/util/routes";
-
-type ContactsDetailViewProps = {
+import { linkLabels, createLinkUrl } from "@/util/contactLinkFormatter";
+type Props = {
   meetupId: string;
   contactsDetail: ContactsDetailDTO;
 };
 
-const linkLabels: Record<LinkType, string> = {
-  GITHUB: "GitHub",
-  TWITTER: "X (Twitter)",
-  WEBSITE: "Website",
-  OTHER: "Other",
-  PRODUCT: "Product",
-};
-
-const linkHandlers: Record<LinkType, (handle: string, url: string) => string> =
-  {
-    GITHUB: (handle) => outsideUrl.githubUrl(handle),
-    TWITTER: (handle) => outsideUrl.twitterUrl(handle),
-    WEBSITE: (_, siteUrl) => outsideUrl.websiteUrl(siteUrl),
-    OTHER: (_, siteUrl) => outsideUrl.otherUrl(siteUrl),
-    PRODUCT: (_, siteUrl) => outsideUrl.productUrl(siteUrl),
-  };
-
-const createExternalUrl = (
-  type: LinkType,
-  handle: string | undefined,
-  url: string,
-) => {
-  if (!handle) {
-    return linkHandlers[type]("", url);
-  }
-  return linkHandlers[type](handle, url);
-};
-
-export const ContactsDetailView = ({
-  meetupId,
-  contactsDetail,
-}: ContactsDetailViewProps) => {
+export const ContactsDetailView = ({ meetupId, contactsDetail }: Props) => {
   const tags = contactsDetail.tags ?? [];
   const links = contactsDetail.links ?? [];
   const description =
@@ -157,7 +124,7 @@ export const ContactsDetailView = ({
           <CardContent className="space-y-3">
             {links.length ? (
               links.map((l) => {
-                const linkUrl = createExternalUrl(l.type, l.handle, l.url);
+                const linkUrl = createLinkUrl(l.type, l.handle, l.url);
 
                 return (
                   <div
