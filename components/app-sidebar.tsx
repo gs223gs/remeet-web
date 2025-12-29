@@ -35,7 +35,7 @@ export function AppSidebar() {
       <Sidebar collapsible="icon" variant="sidebar">
         {open ? (
           <SidebarHeader>
-            <div className="flex items-center justify-between h-13">
+            <div className="flex items-center justify-between h-12">
               <div className="text-3xl leading-none">ReMeet</div>
               <SidebarTrigger />
             </div>
