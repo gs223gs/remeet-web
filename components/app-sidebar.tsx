@@ -32,16 +32,16 @@ export function AppSidebar() {
   return (
     <>
       {!open && isMobile && <SidebarTrigger />}
-      <Sidebar collapsible="icon">
+      <Sidebar collapsible="icon" variant="sidebar">
         {open ? (
           <SidebarHeader>
-            <div className="flex">
-              <div className="text-3xl ">ReMeet</div>
+            <div className="flex items-center justify-between h-13">
+              <div className="text-3xl leading-none">ReMeet</div>
               <SidebarTrigger />
             </div>
           </SidebarHeader>
         ) : (
-          <div className="">
+          <div className="h-16 flex items-center justify-center">
             <SidebarTrigger />
           </div>
         )}
@@ -50,7 +50,7 @@ export function AppSidebar() {
             return (
               <SidebarGroup key={i.title}>
                 <Link href={i.url}>
-                  <span className=" flex  gap-2">
+                  <span className=" flex  gap-2 ">
                     <i.icon />
                     {(isMobile || open) && i.title}
                   </span>
@@ -61,7 +61,7 @@ export function AppSidebar() {
         </SidebarContent>
         <SidebarFooter>
           {/* <Link href={"/dashboard/profile"}> */}
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center h-10">
             <span className=" flex  gap-2">
               <CircleUserRound />
               {(isMobile || open) && "PROFILE"}
