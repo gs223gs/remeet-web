@@ -1,40 +1,39 @@
 "use client";
 
-import { useState, useActionState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useActionState } from "react";
+import { useForm } from "react-hook-form";
 
 import type { ContactsDetailDTO } from "@/type/private/contacts/contacts";
 import type { Tag } from "@/type/private/tags/tags";
 import type { LinkType } from "@prisma/client";
 
 import { updateContacts } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
-// import { CreateTagForm } from "@/components/tag/form/CreateTagForm";
+import { ContactForm } from "@/components/contacts/form/ContactForm";
+import { ServerErrorCard } from "@/components/util/server-error-card";
+import {
+  createContactsFrontSchema,
+  type CreateContactsSchema,
+} from "@/validations/private/contactsValidation";
 
-type ContactsUpdateFormProps = {
+type Props = {
   meetupId: string;
   tags: Tag[];
   contactsDetail: ContactsDetailDTO;
 };
 
-export function ContactsUpdateForm({
+export const ContactsUpdateForm = ({
   contactsDetail,
   tags,
   meetupId,
-}: ContactsUpdateFormProps) {
+}: Props) => {
   const updateContactsWithMeetupId = updateContacts.bind(
     null,
     meetupId,
     contactsDetail.id,
   );
-  const [selectTags, setSelectTags] = useState<Tag[]>(
-    contactsDetail.tags ? [...contactsDetail.tags] : [],
-  );
-  const [contactTags, setContactTags] = useState<Tag[]>(() =>
-    tags.filter(
-      (tag) => !contactsDetail.tags?.some((selected) => selected.id === tag.id),
-    ),
-  );
-  // const [newTag, setNewTag] = useState<string>("");
 
+  //Links を個別に抽出
   const findLinkByType = (type: LinkType) =>
     contactsDetail.links?.find((link) => link.type === type);
 
@@ -44,185 +43,53 @@ export function ContactsUpdateForm({
   const productLink = findLinkByType("PRODUCT");
   const otherLink = findLinkByType("OTHER");
 
+  const form = useForm<CreateContactsSchema>({
+    resolver: zodResolver(createContactsFrontSchema),
+    defaultValues: {
+      name: contactsDetail.name ?? "",
+      company: contactsDetail.company ?? "",
+      role: contactsDetail.role ?? "",
+      description: contactsDetail.description ?? "",
+      tags: contactsDetail.tags?.map((tag) => tag.id) ?? [],
+      githubHandle: githubLink?.handle ?? "",
+      githubId: githubLink?.url ?? "",
+      twitterHandle: twitterLink?.handle ?? "",
+      twitterId: twitterLink?.url ?? "",
+      websiteHandle: websiteLink?.handle ?? "",
+      websiteUrl: websiteLink?.url ?? "",
+      productHandle: productLink?.handle ?? "",
+      productUrl: productLink?.url ?? "",
+      otherHandle: otherLink?.handle ?? "",
+      other: otherLink?.url ?? "",
+    },
+    // Actionとの併用のため focus が外れたらエラーを出す
+    mode: "onChange",
+  });
+
   const [state, action, isPending] = useActionState(
     updateContactsWithMeetupId,
-    {
-      success: false,
-      errors: {},
-    },
+    null,
   );
 
-  if (isPending) return <div>pending</div>;
+  const isDisabled = !form.formState.isValid || isPending;
+  const buttonLabel = isPending
+    ? "更新中"
+    : form.formState.isValid
+      ? "更新する"
+      : "入力してください";
+
+  const shouldShowServerError = state?.errors?.server === "server error";
 
   return (
-    //TODO これ別コンポーネントに分けれそう
-    <form action={action} className="flex flex-col m-4 outline">
-      {state.success ? <p>true</p> : <p>false</p>}
-      name:
-      <input
-        type="text"
-        name="name"
-        placeholder="name"
-        defaultValue={contactsDetail.name}
-      />
-      comp:{" "}
-      <input
-        type="text"
-        name="company"
-        placeholder="company"
-        defaultValue={contactsDetail.company ?? ""}
-      />
-      role:{" "}
-      <input
-        type="text"
-        name="role"
-        placeholder="role"
-        defaultValue={contactsDetail.role ?? ""}
-      />
-      disc:{" "}
-      <textarea
-        name="description"
-        defaultValue={contactsDetail.description ?? ""}
-      />
-      {/* <CreateTagForm
-        tagQuery={newTag}
-        setTagQuery={setNewTag}
-        setSelectTags={setSelectTags}
-        selectTags={selectTags}
+    <div>
+      {shouldShowServerError && <ServerErrorCard />}
+      <ContactForm
+        tags={tags}
         form={form}
-      /> */}
-      <div className="outline m-5">
-        {contactTags.map((t) => {
-          return (
-            <div
-              className="outline"
-              key={t.id}
-              onClick={() => {
-                setSelectTags((prev) =>
-                  prev.some((st) => st.id === t.id) ? prev : [...prev, t],
-                );
-                setContactTags((prev) => prev.filter((c) => c.id !== t.id));
-              }}
-            >
-              {t.name}
-            </div>
-          );
-        })}
-      </div>
-      <div className="outline m-5">
-        {/*TODO あとでセレクトボックスにする */}
-        {selectTags.map((t) => {
-          return (
-            <div key={t.id} className="outline flex">
-              <input defaultValue={t.id} name="tags" type="hidden" />
-              <span>{t.name}</span>
-              <button
-                onClick={() => {
-                  setSelectTags((prev) => prev.filter((st) => st.id !== t.id));
-                  setContactTags((prev) =>
-                    prev.some((ct) => ct.id === t.id) ? prev : [t, ...prev],
-                  );
-                }}
-                className=" outline"
-                type="button"
-              >
-                x
-              </button>
-            </div>
-          );
-        })}
-      </div>
-      <div>
-        <span>
-          handle:
-          <input
-            type="text"
-            name="githubHandle"
-            defaultValue={githubLink?.handle ?? ""}
-          />
-        </span>
-        <span>
-          id:
-          <input
-            type="text"
-            name="githubId"
-            defaultValue={githubLink?.url ?? ""}
-          />
-        </span>
-      </div>
-      <div>
-        <span>
-          handle:
-          <input
-            type="text"
-            name="twitterHandle"
-            defaultValue={twitterLink?.handle ?? ""}
-          />
-        </span>
-        <span>
-          id:
-          <input
-            type="text"
-            name="twitterId"
-            defaultValue={twitterLink?.url ?? ""}
-          />
-        </span>
-      </div>
-      <div>
-        <span>
-          handle:
-          <input
-            type="text"
-            name="websiteHandle"
-            defaultValue={websiteLink?.handle ?? ""}
-          />
-        </span>
-        <span>
-          id:
-          <input
-            type="text"
-            name="websiteUrl"
-            defaultValue={websiteLink?.url ?? ""}
-          />
-        </span>
-      </div>
-      <div>
-        <span>
-          handle:
-          <input
-            type="text"
-            name="productHandle"
-            defaultValue={productLink?.handle ?? ""}
-          />
-        </span>
-        <span>
-          id:
-          <input
-            type="text"
-            name="productUrl"
-            defaultValue={productLink?.url ?? ""}
-          />
-        </span>
-      </div>
-      <div>
-        <span>
-          handle:
-          <input
-            type="text"
-            name="otherHandle"
-            defaultValue={otherLink?.handle ?? ""}
-          />
-          <span>
-            id:
-            <input
-              type="text"
-              name="other"
-              defaultValue={otherLink?.url ?? ""}
-            />
-          </span>
-        </span>
-      </div>
-      <button type="submit">送信</button>
-    </form>
+        action={action}
+        buttonLabel={buttonLabel}
+        isDisabled={isDisabled}
+      />
+    </div>
   );
-}
+};
