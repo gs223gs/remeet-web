@@ -2,6 +2,8 @@
 import { Building, CircleUserRound, Home, Tag, Users } from "lucide-react";
 import Link from "next/link";
 
+import { ModeToggle } from "./ui/color-mode-toggle";
+
 import type { Route } from "next";
 
 import {
@@ -39,7 +41,9 @@ export function AppSidebar() {
             </div>
           </SidebarHeader>
         ) : (
-          <SidebarTrigger />
+          <div className="">
+            <SidebarTrigger />
+          </div>
         )}
         <SidebarContent>
           {item.map((i) => {
@@ -57,11 +61,14 @@ export function AppSidebar() {
         </SidebarContent>
         <SidebarFooter>
           {/* <Link href={"/dashboard/profile"}> */}
-          <span className=" flex  gap-2">
-            <CircleUserRound />
-            {isMobile ? "PROFILE" : open && "PROFILE"}
-          </span>
-          {/* </Link> */}
+          <div className="flex justify-between items-center">
+            <span className=" flex  gap-2">
+              <CircleUserRound />
+              {(isMobile || open) && "PROFILE"}
+            </span>
+            {(isMobile || open) && <ModeToggle />}
+            {/* </Link> */}
+          </div>
         </SidebarFooter>
       </Sidebar>
     </>
