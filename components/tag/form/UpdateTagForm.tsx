@@ -4,9 +4,11 @@ import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 
 import type { Tag } from "@/type/private/tags/tags";
+import type { ActionState } from "@/type/util/action";
 
 import { updateTag } from "@/app/(private)/dashboard/tags/[tagId]/action";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -16,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ServerErrorCard } from "@/components/util/server-error-card";
 import {
   tagSchema,
   type TagSchema,
@@ -24,13 +27,25 @@ import {
 type UpdateTagFormProps = {
   tag: Tag;
 };
+
+type UpdateTagErrors = {
+  id?: string;
+  tag?: string;
+  auth?: "認証に失敗しました";
+  server?: "server error";
+};
+
+const initialState: ActionState<UpdateTagErrors> = {
+  success: false,
+  errors: {},
+};
+
 export const UpdateTagForm = ({ tag }: UpdateTagFormProps) => {
   const updateTagWithId = updateTag.bind(null, tag.id);
-  //TODO state を潰している(action側が未整備のため MVPでのrelease後 refactoring を行ったらupdateする)
-  const [_, action, isPending] = useActionState(updateTagWithId, {
-    success: false,
-    errors: {},
-  });
+  const [state, action, isPending] = useActionState(
+    updateTagWithId,
+    initialState,
+  );
 
   const form = useForm<TagSchema>({
     resolver: zodResolver(tagSchema),
@@ -39,34 +54,55 @@ export const UpdateTagForm = ({ tag }: UpdateTagFormProps) => {
     },
     mode: "onChange",
   });
+
   const isDisabled = !form.formState.isValid || isPending;
   const buttonLabel = isPending
-    ? "送信中"
+    ? "更新中..."
     : form.formState.isValid
-      ? "送信"
+      ? "変更を保存"
       : "入力してください";
-  if (isPending) {
-    return <div>pending</div>;
-  }
+
+  const serverError = state?.errors?.server;
+
   return (
     <Form {...form}>
-      <form action={action}>
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>tag名</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={isDisabled}>
-          {buttonLabel}
-        </Button>
+      <form action={action} className="space-y-4">
+        {serverError && <ServerErrorCard />}
+        <Card className="shadow-sm">
+          <CardContent className="space-y-6 m-10">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2 text-base">
+                    タグ名
+                    <span className="text-xs text-orange-500">必須</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      maxLength={20}
+                      placeholder="例: Product Hunters"
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter className="flex justify-center">
+            <Button
+              type="submit"
+              size="lg"
+              disabled={isDisabled}
+              className="bg-orange-500 text-white shadow-sm hover:bg-orange-500/90"
+            >
+              {buttonLabel}
+            </Button>
+          </CardFooter>
+        </Card>
       </form>
     </Form>
   );
