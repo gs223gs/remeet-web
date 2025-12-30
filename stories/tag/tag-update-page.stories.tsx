@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { getTag } from "../_server/server";
+import type { Meta, StoryObj } from "@storybook/react";
+import { Info, Tag as TagIcon } from "lucide-react";
 
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { DeleteTagForm } from "@/components/tag/form/DeleteTagForm";
@@ -8,23 +9,26 @@ import { UpdateTagForm } from "@/components/tag/form/UpdateTagForm";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { Result } from "@/type/error/error";
+import type { Tag } from "@/type/private/tags/tags";
 import { routes } from "@/util/routes";
 
-export default async function TagUpdatePage({
-  params,
-}: {
-  params: Promise<{ tagId: string }>;
-}) {
-  const { tagId } = await params;
-  const tagRes = await getTag(tagId);
+import { sampleTag } from "./tag-contacts-mocks";
 
-  if (!tagRes.ok) {
-    const errorMessage = tagRes.error?.message?.join(" / ");
+type TagUpdatePagePreviewProps = {
+  tagResult: Result<Tag>;
+};
+
+function TagUpdatePagePreview({ tagResult }: TagUpdatePagePreviewProps) {
+  if (!tagResult.ok) {
+    const errorMessage = tagResult.error?.message?.join(" / ");
+
     return (
       <div className="flex min-h-[70vh] flex-1 items-center justify-center px-6 py-10">
         <Card className="max-w-md text-center">
@@ -47,7 +51,7 @@ export default async function TagUpdatePage({
     );
   }
 
-  const tag = tagRes.data;
+  const tag = tagResult.data;
 
   return (
     <div className="flex min-h-screen flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-10">
@@ -76,7 +80,42 @@ export default async function TagUpdatePage({
           <DeleteTagForm tagId={tag.id} />
         </div>
       </div>
-      <UpdateTagForm tag={tag} />
     </div>
   );
 }
+
+const defaultState: TagUpdatePagePreviewProps = {
+  tagResult: {
+    ok: true,
+    data: sampleTag,
+  },
+};
+
+const fetchErrorState: TagUpdatePagePreviewProps = {
+  tagResult: {
+    ok: false,
+    error: {
+      code: "not_found",
+      message: ["タグ情報を取得できませんでした"],
+    },
+  },
+};
+
+const meta = {
+  title: "Tags/TagUpdatePage",
+  component: TagUpdatePagePreview,
+  parameters: {
+    layout: "fullscreen",
+  },
+  args: defaultState,
+} satisfies Meta<typeof TagUpdatePagePreview>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {};
+
+export const FetchError: Story = {
+  args: fetchErrorState,
+};
