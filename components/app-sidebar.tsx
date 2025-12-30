@@ -13,6 +13,8 @@ import {
   SidebarGroup,
   SidebarHeader,
   SidebarTrigger,
+  SidebarMenuButton,
+  SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -49,12 +51,16 @@ export function AppSidebar() {
           {item.map((i) => {
             return (
               <SidebarGroup key={i.title}>
-                <Link href={i.url}>
-                  <span className=" flex  gap-2 ">
-                    <i.icon />
-                    {(isMobile || open) && i.title}
-                  </span>
-                </Link>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href={i.url}>
+                      <i.icon />
+                      <span className=" flex  gap-2 ">
+                        {(isMobile || open) && i.title}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarGroup>
             );
           })}
