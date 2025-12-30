@@ -80,64 +80,6 @@ function TagUpdatePagePreview({ tagResult }: TagUpdatePagePreviewProps) {
           <DeleteTagForm tagId={tag.id} />
         </div>
       </div>
-
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)]">
-        <UpdateTagForm tag={tag} />
-
-        <aside className="space-y-4">
-          <Card className="h-fit">
-            <CardHeader className="flex flex-row items-start gap-3 pb-4">
-              <div className="flex size-11 items-center justify-center rounded-full bg-orange-500/10 text-orange-600">
-                <TagIcon className="size-5" />
-              </div>
-              <div>
-                <CardTitle className="text-base">タグ概要</CardTitle>
-                <CardDescription>
-                  編集中のタグに関する情報をまとめました。
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="rounded-xl bg-muted/40 px-4 py-3">
-                <p className="text-sm text-muted-foreground">現在のタグ名</p>
-                <p className="text-lg font-semibold">{tag.name}</p>
-              </div>
-              <div className="space-y-2 rounded-lg border border-dashed border-muted-foreground/30 px-4 py-3 text-sm text-muted-foreground">
-                <p>
-                  タグ名は20文字以内で揃えるとリストで見つけやすくなります。
-                </p>
-                <p>
-                  チームで共通ルールを決める場合は、接頭辞やカテゴリ名を含めましょう。
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="h-fit">
-            <CardHeader className="flex flex-row items-start gap-3 pb-4">
-              <div className="flex size-11 items-center justify-center rounded-full bg-blue-500/10 text-blue-600">
-                <Info className="size-5" />
-              </div>
-              <div>
-                <CardTitle className="text-base">活用ヒント</CardTitle>
-                <CardDescription>
-                  タグ更新後に意識したいポイントを確認できます。
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm text-muted-foreground">
-              <div className="flex items-center justify-between rounded-lg border border-dashed border-blue-200/60 px-4 py-3">
-                <p>Meetup記録で同タグを付け直すと分析が滑らかになります。</p>
-              </div>
-              <div className="flex items-center justify-between rounded-lg border border-dashed border-emerald-200/60 px-4 py-3">
-                <p>
-                  タグ変更後は「タグ詳細」で関連コンタクトの偏りをチェックしましょう。
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
-      </section>
     </div>
   );
 }
