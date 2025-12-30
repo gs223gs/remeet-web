@@ -58,7 +58,7 @@ export const UpdateTagForm = ({ tag }: UpdateTagFormProps) => {
             <FormItem>
               <FormLabel>tag名</FormLabel>
               <FormControl>
-                <Input {...field} defaultValue={form.getValues("name")} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
