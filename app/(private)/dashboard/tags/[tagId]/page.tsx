@@ -1,13 +1,13 @@
+import type { TagContact } from "@/type/private/tags/tags";
+
 import {
   getContactsByTag,
   getTag,
 } from "@/app/(private)/dashboard/tags/[tagId]/_server/server";
 import { ContactsErrorCard } from "@/components/contacts/contacts-error-card";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
-
-import { TagContactsHeader } from "./_components/TagContactsHeader";
-import { TagContactsList } from "./_components/TagContactsList";
-import type { TagContact } from "./_types/TagContact";
+import { TagContactsHeader } from "@/components/tag/display/TagContactsHeader";
+import { TagContactsList } from "@/components/tag/display/TagContactsList";
 
 export default async function TagContactsPage({
   params,

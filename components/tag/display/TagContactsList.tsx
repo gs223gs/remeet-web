@@ -1,8 +1,8 @@
-import { ContactCard } from "@/components/contacts/contact-card";
-
 import { TagContactsEmptyState } from "./TagContactsEmptyState";
 
-import type { TagContact } from "../_types/TagContact";
+import type { TagContact } from "@/type/private/tags/tags";
+
+import { ContactCard } from "@/components/contacts/contact-card";
 
 type Props = {
   contacts: TagContact[];
