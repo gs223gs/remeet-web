@@ -26,7 +26,8 @@ type UpdateTagFormProps = {
 };
 export const UpdateTagForm = ({ tag }: UpdateTagFormProps) => {
   const updateTagWithId = updateTag.bind(null, tag.id);
-  const [state, action, isPending] = useActionState(updateTagWithId, {
+  //TODO state を潰している(action側が未整備のため MVPでのrelease後 refactoring を行ったらupdateする)
+  const [_, action, isPending] = useActionState(updateTagWithId, {
     success: false,
     errors: {},
   });
