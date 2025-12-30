@@ -1,8 +1,13 @@
-import Link from "next/link";
-import React from "react";
+import {
+  getContactsByTag,
+  getTag,
+} from "@/app/(private)/dashboard/tags/[tagId]/_server/server";
+import { ContactsErrorCard } from "@/components/contacts/contacts-error-card";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 
-import { getContactsByTag } from "@/app/(private)/dashboard/tags/[tagId]/_server/server";
-import { DeleteTagForm } from "@/components/tag/form/deleteTagForm";
+import { TagContactsHeader } from "./_components/TagContactsHeader";
+import { TagContactsList } from "./_components/TagContactsList";
+import type { TagContact } from "./_types/TagContact";
 
 export default async function TagContactsPage({
   params,
@@ -10,90 +15,42 @@ export default async function TagContactsPage({
   params: Promise<{ tagId: string }>;
 }) {
   const { tagId } = await params;
-  const contactsByTag = await getContactsByTag(tagId);
+  const [tagResult, contactsResult] = await Promise.all([
+    getTag(tagId),
+    getContactsByTag(tagId),
+  ]);
 
-  if (!contactsByTag.ok) return <p>{contactsByTag.error.code}</p>; //TODO 後でなおす
-
-  const contacts = contactsByTag.data ?? [];
-
-  if (contacts.length === 0) {
+  if (!tagResult.ok) {
     return (
-      <div>
-        <Link href={`/dashboard/tags/${tagId}/edit`}>編集する</Link>
-        <DeleteTagForm tagId={tagId} />
-        <p>このタグに紐づくコンタクトはいません。</p>
-      </div>
+      <ContactsErrorCard message={tagResult.error?.message?.join(" / ")} />
     );
   }
 
-  //TODO modalに切り替える
+  if (!contactsResult.ok) {
+    return (
+      <ContactsErrorCard message={contactsResult.error?.message?.join(" / ")} />
+    );
+  }
+
+  const tag = tagResult.data;
+  const contacts: TagContact[] = contactsResult.data ?? [];
 
   return (
-    <div>
-      <Link href={`/dashboard/tags/${tagId}/edit`}>編集する</Link>
-      <DeleteTagForm tagId={tagId} />
-      <div className="space-y-4 grid grid-cols-3 gap-4">
-        {contacts.map((contact) => {
-          const meetup = contact.meetup;
-
-          return (
-            <div key={contact.id} className="border p-4 space-y-3">
-              <div className="space-y-1">
-                <p>ID: {contact.id}</p>
-                <p>名前: {contact.name}</p>
-                <p>会社: {contact.company ?? "なし"}</p>
-                <p>役職: {contact.role ?? "なし"}</p>
-              </div>
-
-              <div className="space-y-1">
-                <p>関連ミートアップ:</p>
-                {meetup ? (
-                  <div className="ml-4 space-y-1">
-                    <p>名前: {meetup.name}</p>
-                    <p>開催日: {meetup.scheduledAt.toISOString()}</p>
-                    <Link
-                      href={`/dashboard/meetup/${meetup.id}/contacts/${contact.id}`}
-                      className="underline"
-                    >
-                      詳細を見る
-                    </Link>
-                  </div>
-                ) : (
-                  <p className="ml-4">紐づくミートアップはありません</p>
-                )}
-              </div>
-
-              <div className="space-y-1">
-                <p>リンク:</p>
-                <div className="ml-4 space-y-1">
-                  {contact.links && contact.links.length > 0 ? (
-                    contact.links.map((link) => (
-                      <div key={link.id} className="space-y-1">
-                        <p>種別: {link.type}</p>
-                        <p>URL: {link.url}</p>
-                        <p>ハンドル: {link.handle ?? "なし"}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p>リンクは登録されていません</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <p>タグ:</p>
-                <div className="ml-4 space-y-1">
-                  {contact.tags && contact.tags.length > 0 ? (
-                    contact.tags.map((tag) => <p key={tag.id}>{tag.name}</p>)
-                  ) : (
-                    <p>タグはありません</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+    <div className="flex min-h-screen flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-10">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <DashboardHeader
+          eyebrow="tag detail"
+          title={`${tag.name} のコンタクト`}
+          description="タグに紐づくコンタクトを確認し、フォローアップに活用しましょう。"
+        />
+        <TagContactsHeader tagId={tag.id} />
       </div>
+
+      <section>
+        <div className="space-y-4">
+          <TagContactsList contacts={contacts} tagName={tag.name} />
+        </div>
+      </section>
     </div>
   );
 }
