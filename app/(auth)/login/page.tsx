@@ -1,6 +1,5 @@
 import { login } from "@/app/(auth)/login/action";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { LoginCard } from "@/components/LoginCard";
 
 const GithubBrandIcon = () => (
   <svg
@@ -43,8 +42,13 @@ const GoogleBrandIcon = () => (
     />
   </svg>
 );
-
-const providerOptions = [
+export type ProviderOptions = {
+  id: string;
+  label: string;
+  icon: () => React.ReactElement;
+  action: () => Promise<void>;
+};
+const providerOptions: ProviderOptions[] = [
   {
     id: "github",
     label: "GitHubでサインイン",
@@ -57,40 +61,8 @@ const providerOptions = [
     icon: GoogleBrandIcon,
     action: login.google,
   },
-] as const;
+];
 
-const SignInPage = () => {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 sm:px-6 lg:px-10">
-      <Card className="w-full max-w-lg border border-border/70 shadow-sm">
-        <CardContent className="space-y-6 px-6 py-8 sm:px-8">
-          <p className="text-xs text-muted-foreground">
-            ログインを続行すると、ReMeetの利用規約とプライバシーポリシーに同意したものとみなします。
-          </p>
-          <div className="space-y-4">
-            {providerOptions.map((p) => (
-              <form
-                key={p.id}
-                action={p.action}
-                className="rounded-xl border border-dashed border-orange-200/70 bg-background/60 p-1"
-              >
-                <Button
-                  type="submit"
-                  variant="ghost"
-                  className="flex w-full items-center justify-center gap-3 rounded-[inherit] border border-transparent bg-orange-500/5 px-6 py-5 text-base font-semibold text-foreground shadow-none transition hover:bg-orange-500/10"
-                >
-                  <span className="rounded-full bg-white/90 p-2 shadow-sm">
-                    <p.icon />
-                  </span>
-                  <span>{p.label}</span>
-                </Button>
-              </form>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </main>
-  );
-};
-
-export default SignInPage;
+export default function SignInPage() {
+  return <LoginCard providerOptions={providerOptions} />;
+}
