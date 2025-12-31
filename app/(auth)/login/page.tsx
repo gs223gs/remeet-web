@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 
-import type { Result } from "@/type/error/error";
+import type { AppError } from "@/type/error/error";
 
 import { loginWithGithub, loginWithGoogle } from "@/app/(auth)/login/action";
 import { LoginCard } from "@/components/LoginCard";
@@ -54,7 +54,10 @@ export type ProviderOptions = {
   icon: () => React.ReactElement;
   action: () => void;
   isPending: boolean;
-  state: Result<void> | null;
+  state: {
+    ok: false;
+    error: AppError;
+  } | void | null;
 };
 
 export default function SignInPage() {
