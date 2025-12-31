@@ -1,4 +1,10 @@
-import { login } from "@/app/(auth)/login/action";
+"use client";
+
+import { useActionState } from "react";
+
+import type { Result } from "@/type/error/error";
+
+import { loginWithGithub, loginWithGoogle } from "@/app/(auth)/login/action";
 import { LoginCard } from "@/components/LoginCard";
 
 const GithubBrandIcon = () => (
@@ -46,23 +52,41 @@ export type ProviderOptions = {
   id: string;
   label: string;
   icon: () => React.ReactElement;
-  action: () => Promise<void>;
+  action: () => void;
+  isPending: boolean;
+  state: Result<void> | null;
 };
-const providerOptions: ProviderOptions[] = [
-  {
-    id: "github",
-    label: "GitHubでサインイン",
-    icon: GithubBrandIcon,
-    action: login.github,
-  },
-  {
-    id: "google",
-    label: "Googleでサインイン",
-    icon: GoogleBrandIcon,
-    action: login.google,
-  },
-];
 
 export default function SignInPage() {
-  return <LoginCard providerOptions={providerOptions} />;
+  const [githubState, githubAction, isGithubPending] = useActionState(
+    loginWithGithub,
+    null,
+  );
+  const [googleState, googleAction, isGooglePending] = useActionState(
+    loginWithGoogle,
+    null,
+  );
+  const providerOptions: ProviderOptions[] = [
+    {
+      id: "github",
+      label: "GitHubでサインイン",
+      icon: GithubBrandIcon,
+      action: githubAction,
+      isPending: isGithubPending,
+      state: githubState,
+    },
+    {
+      id: "google",
+      label: "Googleでサインイン",
+      icon: GoogleBrandIcon,
+      action: googleAction,
+      isPending: isGooglePending,
+      state: googleState,
+    },
+  ];
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 sm:px-6 lg:px-10">
+      <LoginCard providerOptions={providerOptions} />
+    </main>
+  );
 }
