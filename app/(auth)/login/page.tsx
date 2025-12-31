@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import type { ProviderOptions } from "@/type/auth";
 
 import { loginWithGithub, loginWithGoogle } from "@/app/(auth)/login/action";
-import { hasUnauthenticatedError } from "@/app/(auth)/login/error";
+import { hasUnauthenticatedError } from "@/app/(auth)/login/ErrorPredicates";
 import { LoginCard } from "@/components/LoginCard";
 import { UnauthenticatedErrorCard } from "@/components/util/UnauthenticatedErrorCard";
 
@@ -81,11 +81,9 @@ export default function SignInPage() {
   ];
 
   const isUnauthenticated = hasUnauthenticatedError([githubState, googleState]);
-
   return (
     <main className="flex flex-col gap-6 min-h-screen items-center justify-center bg-background px-4 py-10 sm:px-6 lg:px-10">
       {isUnauthenticated && <UnauthenticatedErrorCard />}
-      <UnauthenticatedErrorCard />
       <LoginCard providerOptions={providerOptions} />
     </main>
   );
