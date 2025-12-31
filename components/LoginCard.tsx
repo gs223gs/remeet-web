@@ -16,23 +16,22 @@ export const LoginCard = ({ providerOptions }: Props) => {
         <div className="space-y-4">
           {providerOptions.map((p) => {
             return (
-              <div key={p.id}>
-                <form
-                  action={p.action}
-                  className="rounded-xl border border-dashed border-orange-200/70 bg-background/60 p-1"
+              <form
+                key={p.id}
+                action={p.action}
+                className="rounded-xl border border-dashed border-orange-200/70 bg-background/60 p-1"
+              >
+                <Button
+                  type="submit"
+                  variant="ghost"
+                  className="flex w-full items-center justify-center gap-3 rounded-[inherit] border border-transparent bg-orange-500/5 px-6 py-5 text-base font-semibold text-foreground shadow-none transition hover:bg-orange-500/10"
                 >
-                  <Button
-                    type="submit"
-                    variant="ghost"
-                    className="flex w-full items-center justify-center gap-3 rounded-[inherit] border border-transparent bg-orange-500/5 px-6 py-5 text-base font-semibold text-foreground shadow-none transition hover:bg-orange-500/10"
-                  >
-                    <span className="rounded-full bg-white/90 p-2 shadow-sm">
-                      <p.icon />
-                    </span>
-                    <span>{p.isPending ? "ログイン中" : p.label}</span>
-                  </Button>
-                </form>
-              </div>
+                  <span className="rounded-full bg-white/90 p-2 shadow-sm">
+                    <p.icon />
+                  </span>
+                  <span>{p.isPending ? "ログイン中" : p.label}</span>
+                </Button>
+              </form>
             );
           })}
         </div>
