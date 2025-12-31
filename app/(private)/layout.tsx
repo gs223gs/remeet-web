@@ -8,12 +8,6 @@ import "../globals.css";
 export const metadata: Metadata = {
   title: "ReMeet",
   description: "ミートアップで出会った人をもう忘れない．",
-  icons: [
-    {
-      rel: "icon",
-      url: "/favicon.ico",
-    },
-  ],
 };
 
 export default function RootLayout({
