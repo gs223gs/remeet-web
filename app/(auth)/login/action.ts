@@ -1,14 +1,11 @@
 "use server";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
-import type { AppError } from "@/type/error/error";
+import type { ErrorState } from "@/type/auth";
 
 import { signIn } from "@/auth";
 
-export const loginWithGoogle = async (): Promise<{
-  ok: false;
-  error: AppError;
-} | void> => {
+export const loginWithGoogle = async (): Promise<ErrorState> => {
   try {
     await signIn("google");
   } catch (error) {
@@ -25,10 +22,7 @@ export const loginWithGoogle = async (): Promise<{
   }
 };
 
-export const loginWithGithub = async (): Promise<{
-  ok: false;
-  error: AppError;
-} | void> => {
+export const loginWithGithub = async (): Promise<ErrorState> => {
   try {
     await signIn("github");
   } catch (error) {

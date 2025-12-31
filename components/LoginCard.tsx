@@ -1,4 +1,4 @@
-import type { ProviderOptions } from "@/app/(auth)/login/page";
+import type { ProviderOptions } from "@/type/auth";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
