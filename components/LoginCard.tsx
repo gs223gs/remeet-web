@@ -15,11 +15,8 @@ export const LoginCard = ({ providerOptions }: Props) => {
         </p>
         <div className="space-y-4">
           {providerOptions.map((p) => {
-            const isUnauthenticatedError =
-              p.state?.ok === false && p.state.error.code === "unauthenticated";
             return (
               <div key={p.id}>
-                {isUnauthenticatedError && <div>失敗</div>}
                 <form
                   action={p.action}
                   className="rounded-xl border border-dashed border-orange-200/70 bg-background/60 p-1"
@@ -32,7 +29,7 @@ export const LoginCard = ({ providerOptions }: Props) => {
                     <span className="rounded-full bg-white/90 p-2 shadow-sm">
                       <p.icon />
                     </span>
-                    <span>{p.label}</span>
+                    <span>{p.isPending ? "ログイン中" : p.label}</span>
                   </Button>
                 </form>
               </div>
