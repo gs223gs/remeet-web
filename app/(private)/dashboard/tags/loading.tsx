@@ -1,5 +1,3 @@
-"use client";
-
 import { DashboardPageSkeleton } from "@/components/skeletons/DashboardPageSkeleton";
 import { TagsGridSkeleton } from "@/components/skeletons/TagsGridSkeleton";
 import { TagsOverviewSkeleton } from "@/components/skeletons/TagsOverviewSkeleton";

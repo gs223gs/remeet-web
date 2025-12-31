@@ -1,5 +1,3 @@
-"use client";
-
 import { ContactCardGridSkeleton } from "@/components/skeletons/ContactCardGridSkeleton";
 import { DashboardPageSkeleton } from "@/components/skeletons/DashboardPageSkeleton";
 

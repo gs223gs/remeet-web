@@ -1,5 +1,3 @@
-"use client";
-
 import { DashboardPageSkeleton } from "@/components/skeletons/DashboardPageSkeleton";
 import { DashboardStatsSkeleton } from "@/components/skeletons/DashboardStatsSkeleton";
 import { LatestMeetupCardSkeleton } from "@/components/skeletons/LatestMeetupCardSkeleton";

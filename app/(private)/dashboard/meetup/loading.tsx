@@ -1,5 +1,3 @@
-"use client";
-
 import { DashboardPageSkeleton } from "@/components/skeletons/DashboardPageSkeleton";
 import { MeetupCardGridSkeleton } from "@/components/skeletons/MeetupCardGridSkeleton";
 
