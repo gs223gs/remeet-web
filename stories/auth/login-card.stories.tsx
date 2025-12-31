@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import type { ProviderOptions } from "@/app/(auth)/login/page";
 import { LoginCard } from "@/components/LoginCard";
+import type { ProviderOptions } from "@/type/auth";
 
 const GithubBrandIcon = () => (
   <svg
@@ -45,7 +45,7 @@ const GoogleBrandIcon = () => (
   </svg>
 );
 
-const noopAction = async () => {};
+const noopAction = () => {};
 
 const mockProviderOptions: ProviderOptions[] = [
   {
@@ -53,12 +53,16 @@ const mockProviderOptions: ProviderOptions[] = [
     label: "GitHubでサインイン",
     icon: GithubBrandIcon,
     action: noopAction,
+    isPending: false,
+    state: null,
   },
   {
     id: "google",
     label: "Googleでサインイン",
     icon: GoogleBrandIcon,
     action: noopAction,
+    isPending: false,
+    state: null,
   },
 ];
 
@@ -70,11 +74,6 @@ const meta = {
   },
   args: {
     providerOptions: mockProviderOptions,
-  },
-  argTypes: {
-    providerOptions: {
-      control: "object",
-    },
   },
 } satisfies Meta<typeof LoginCard>;
 
@@ -88,5 +87,17 @@ export const SingleProvider: Story = {
   name: "プロバイダが1つの例",
   args: {
     providerOptions: [mockProviderOptions[0]],
+  },
+};
+
+export const PendingState: Story = {
+  name: "処理中の例",
+  args: {
+    providerOptions: [
+      {
+        ...mockProviderOptions[0],
+        isPending: true,
+      },
+    ],
   },
 };
