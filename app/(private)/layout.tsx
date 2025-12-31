@@ -10,8 +10,12 @@ export const metadata: Metadata = {
   description: "ミートアップで出会った人をもう忘れない．",
   icons: [
     {
-      rel: "favicon",
-      url: "../favicon.ico",
+      rel: "icon",
+      url: "/favicon.ico",
+    },
+    {
+      rel: "icon",
+      url: "@/public/favicon.ico",
     },
   ],
 };
