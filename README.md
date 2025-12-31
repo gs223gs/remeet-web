@@ -16,20 +16,23 @@
 
 ## 技術スタック
 
-- Next.js App Router
-- shadcn, tailwind
-- Prisma
-- Zod 
-- RHF
-- Vitest
-- storybook
-- supabase
+| 領域 | 技術 | version |選定理由 |
+| --- | --- | --- |--- |
+| 言語 | Typescript | v5 | 型安全による開発速度向上 + bugの発生させにくさのため選定 |
+| フルスタックフレームワーク | Next.js <br> App Router | v16 |MVP開発に最適な速度 + UXの高さから選定 |
+| UI / スタイリング | shadcn<br>Tailwind CSS v4 | v4 |shadcn: デザインの一貫性のため<br>Tailwind CSS: コンポーネントとデザインを一元管理できるため |
+| データアクセス | Prisma v6 | v6 | TSによる型安全 + 実装速度,変更容易性のため選定 |
+| バリデーション | Zod  | v4 | RHFとの相性の良さ + schemaの作りやすさ等の学習コストが低いため選定 |
+| フォーム | React Hook Form | v7 | zodの相性の良さ，form validation logic自作による車輪の再発明を防ぐため選定 |
+| テスト | Vitest  | v3 | Unit, Integrationテストのため選定 |
+| コンポーネント開発 | Storybook  | v10 | components単体の確認のため選定 |
+| BaaS | Supabase /postgres | - | 設定の少なさによる開発スピード向上,責務移譲のため選定 |
 
 ## 起動方法
 
 1. プロジェクトのクローン
 ```sh
-git clone ...
+git clone https://github.com/gs223gs/remeet-web.git
 ```
 2. プロジェクトに移動
 ```sh
@@ -48,10 +51,6 @@ http://localhost:3000/
 ## AI について
 基本的な実装はAIではなく私が行っている
 (学習の一環 + 自分の実力を示すため)
-
-## logについて
-logはrepositoryの二つのlayer で出力する
-現場致命的なのはrepository のみのため
 
 ## refactoringについて
 

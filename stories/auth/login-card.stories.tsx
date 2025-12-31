@@ -1,15 +1,8 @@
-"use client";
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { useActionState } from "react";
-
+import { LoginCard } from "@/components/LoginCard";
 import type { ProviderOptions } from "@/type/auth";
 
-import { loginWithGithub, loginWithGoogle } from "@/app/(auth)/login/action";
-import { hasUnauthenticatedError } from "@/app/(auth)/login/errorPredicates";
-import { LoginCard } from "@/components/LoginCard";
-import { UnauthenticatedErrorCard } from "@/components/util/UnauthenticatedErrorCard";
-
-//Iconはここでしか使わないからこのままでOK 今後増えるようならファイル分ける
 const GithubBrandIcon = () => (
   <svg
     aria-hidden
@@ -52,39 +45,59 @@ const GoogleBrandIcon = () => (
   </svg>
 );
 
-export default function SignInPage() {
-  const [githubState, githubAction, isGithubPending] = useActionState(
-    loginWithGithub,
-    null,
-  );
-  const [googleState, googleAction, isGooglePending] = useActionState(
-    loginWithGoogle,
-    null,
-  );
-  const providerOptions: ProviderOptions[] = [
-    {
-      id: "github",
-      label: "GitHubでサインイン",
-      icon: GithubBrandIcon,
-      action: githubAction,
-      isPending: isGithubPending,
-      state: githubState,
-    },
-    {
-      id: "google",
-      label: "Googleでサインイン",
-      icon: GoogleBrandIcon,
-      action: googleAction,
-      isPending: isGooglePending,
-      state: googleState,
-    },
-  ];
+const noopAction = () => {};
 
-  const isUnauthenticated = hasUnauthenticatedError([githubState, googleState]);
-  return (
-    <main className="flex flex-col gap-6 min-h-screen items-center justify-center bg-background px-4 py-10 sm:px-6 lg:px-10">
-      {isUnauthenticated && <UnauthenticatedErrorCard />}
-      <LoginCard providerOptions={providerOptions} />
-    </main>
-  );
-}
+const mockProviderOptions: ProviderOptions[] = [
+  {
+    id: "github",
+    label: "GitHubでサインイン",
+    icon: GithubBrandIcon,
+    action: noopAction,
+    isPending: false,
+    state: null,
+  },
+  {
+    id: "google",
+    label: "Googleでサインイン",
+    icon: GoogleBrandIcon,
+    action: noopAction,
+    isPending: false,
+    state: null,
+  },
+];
+
+const meta = {
+  title: "Auth/LoginCard",
+  component: LoginCard,
+  parameters: {
+    layout: "fullscreen",
+  },
+  args: {
+    providerOptions: mockProviderOptions,
+  },
+} satisfies Meta<typeof LoginCard>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {};
+
+export const SingleProvider: Story = {
+  name: "プロバイダが1つの例",
+  args: {
+    providerOptions: [mockProviderOptions[0]],
+  },
+};
+
+export const PendingState: Story = {
+  name: "処理中の例",
+  args: {
+    providerOptions: [
+      {
+        ...mockProviderOptions[0],
+        isPending: true,
+      },
+    ],
+  },
+};
