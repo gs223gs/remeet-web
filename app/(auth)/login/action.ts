@@ -5,12 +5,15 @@ import type { ErrorState } from "@/type/auth";
 
 import { signIn } from "@/auth";
 
-export const loginWithGoogle = async (): Promise<ErrorState> => {
+type OAuthProvider = "google" | "github";
+
+const loginWithOAuth = async (provider: OAuthProvider): Promise<ErrorState> => {
   try {
-    await signIn("google");
+    await signIn(provider);
+    return undefined;
   } catch (error) {
     if (isRedirectError(error)) throw error;
-    console.error("google OAuth Error", error);
+    console.error(`${provider} OAuth Error`, error);
 
     return {
       ok: false,
@@ -22,18 +25,10 @@ export const loginWithGoogle = async (): Promise<ErrorState> => {
   }
 };
 
+export const loginWithGoogle = async (): Promise<ErrorState> => {
+  return loginWithOAuth("google");
+};
+
 export const loginWithGithub = async (): Promise<ErrorState> => {
-  try {
-    await signIn("github");
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    console.error("github OAuth Error", error);
-    return {
-      ok: false,
-      error: {
-        code: "unauthenticated",
-        message: [],
-      },
-    };
-  }
+  return loginWithOAuth("github");
 };
