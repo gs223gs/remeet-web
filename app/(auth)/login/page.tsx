@@ -1,16 +1,6 @@
-import { signIn } from "@/auth";
+import { login } from "@/app/(auth)/login/action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
-const handleGithubLogin = async () => {
-  "use server";
-  await signIn("github");
-};
-
-const handleGoogleLogin = async () => {
-  "use server";
-  await signIn("google");
-};
 
 const GithubBrandIcon = () => (
   <svg
@@ -59,13 +49,13 @@ const providerOptions = [
     id: "github",
     label: "GitHubでサインイン",
     icon: GithubBrandIcon,
-    action: handleGithubLogin,
+    action: login.github,
   },
   {
     id: "google",
     label: "Googleでサインイン",
     icon: GoogleBrandIcon,
-    action: handleGoogleLogin,
+    action: login.google,
   },
 ] as const;
 
