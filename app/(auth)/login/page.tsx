@@ -2,11 +2,14 @@
 
 import { useActionState } from "react";
 
-import type { AppError } from "@/type/error/error";
+import type { ProviderOptions } from "@/type/auth";
 
 import { loginWithGithub, loginWithGoogle } from "@/app/(auth)/login/action";
+import { hasUnauthenticatedError } from "@/app/(auth)/login/error";
 import { LoginCard } from "@/components/LoginCard";
+import { UnauthenticatedErrorCard } from "@/components/util/UnauthenticatedErrorCard";
 
+//Iconはここでしか使わないからこのままでOK 今後増えるようならファイル分ける
 const GithubBrandIcon = () => (
   <svg
     aria-hidden
@@ -48,17 +51,6 @@ const GoogleBrandIcon = () => (
     />
   </svg>
 );
-export type ProviderOptions = {
-  id: string;
-  label: string;
-  icon: () => React.ReactElement;
-  action: () => void;
-  isPending: boolean;
-  state: {
-    ok: false;
-    error: AppError;
-  } | void | null;
-};
 
 export default function SignInPage() {
   const [githubState, githubAction, isGithubPending] = useActionState(
@@ -87,8 +79,13 @@ export default function SignInPage() {
       state: googleState,
     },
   ];
+
+  const isUnauthenticated = hasUnauthenticatedError([githubState, googleState]);
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 sm:px-6 lg:px-10">
+    <main className="flex flex-col gap-6 min-h-screen items-center justify-center bg-background px-4 py-10 sm:px-6 lg:px-10">
+      {isUnauthenticated && <UnauthenticatedErrorCard />}
+      <UnauthenticatedErrorCard />
       <LoginCard providerOptions={providerOptions} />
     </main>
   );
