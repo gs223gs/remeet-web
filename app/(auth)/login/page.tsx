@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import type { ProviderOptions } from "@/type/auth";
 
 import { loginWithGithub, loginWithGoogle } from "@/app/(auth)/login/action";
-import { hasUnauthenticatedError } from "@/app/(auth)/login/ErrorPredicates";
+import { hasUnauthenticatedError } from "@/app/(auth)/login/errorPredicates";
 import { LoginCard } from "@/components/LoginCard";
 import { UnauthenticatedErrorCard } from "@/components/util/UnauthenticatedErrorCard";
 
