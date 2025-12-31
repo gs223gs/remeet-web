@@ -1,14 +1,19 @@
 import { signIn } from "@/auth";
+import { Button } from "@/components/ui/button";
 
 export default function SignIn() {
+  const handleGithubLogin = async () => {
+    "use server";
+    await signIn("github");
+  };
+  const handleGoogleLogin = async () => {
+    "use server";
+    await signIn("google");
+  };
   return (
-    <form
-      action={async () => {
-        "use server";
-        await signIn("github");
-      }}
-    >
-      <button type="submit">Signin with GitHub</button>
-    </form>
+    <>
+      <Button onClick={handleGithubLogin}>GithubLogin</Button>
+      <Button onClick={handleGoogleLogin}>GoogleLogin</Button>
+    </>
   );
 }
