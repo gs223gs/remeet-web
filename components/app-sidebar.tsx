@@ -23,6 +23,7 @@ import {
   SidebarMenuItem,
   useSidebar,
   SidebarMenu,
+  SidebarMenuAction,
 } from "@/components/ui/sidebar";
 
 const item: {
@@ -36,13 +37,15 @@ const item: {
   { title: "TAGS", url: "/dashboard/tags", icon: Tag },
 ];
 export function AppSidebar() {
-  const { open, isMobile } = useSidebar();
-
+  const { open, isMobile, setOpenMobile } = useSidebar();
+  const handleNavClick = () => {
+    if (isMobile) setOpenMobile(false);
+  };
   return (
     <>
       {!open && isMobile && <SidebarTrigger />}
       <Sidebar collapsible="icon" variant="sidebar">
-        {open ? (
+        {/* {open ? (
           <SidebarHeader>
             <div className="flex items-center justify-between h-12">
               <div className="text-3xl leading-none">ReMeet</div>
@@ -53,13 +56,21 @@ export function AppSidebar() {
           <div className="h-16 flex items-center justify-center">
             <SidebarTrigger />
           </div>
-        )}
+        )} */}
+        <SidebarHeader>
+          <SidebarMenuItem>
+            {!open && <SidebarTrigger />}
+            <SidebarMenuAction>
+              <SidebarTrigger />
+            </SidebarMenuAction>
+          </SidebarMenuItem>
+        </SidebarHeader>
         <SidebarContent>
           {item.map((i) => {
             return (
               <SidebarGroup key={i.title}>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild onClick={handleNavClick}>
                     <Link href={i.url}>
                       <i.icon />
                       {(isMobile || open) && i.title}
