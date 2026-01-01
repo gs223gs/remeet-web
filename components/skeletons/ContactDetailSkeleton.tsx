@@ -8,7 +8,7 @@ export function ContactDetailSkeleton() {
       </div>
       <div className="space-y-6 px-6 py-6">
         <div className="grid gap-4 sm:grid-cols-2">
-          {[0, 1].map((index) => (
+          {Array.from({ length: 1 }).map((_, index) => (
             <div
               key={index}
               className="rounded-xl bg-muted/40 px-4 py-3 space-y-2"

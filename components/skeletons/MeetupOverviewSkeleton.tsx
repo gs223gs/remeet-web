@@ -10,7 +10,7 @@ export function MeetupOverviewSkeleton() {
       </div>
       <div className="space-y-4 px-6 py-6">
         <div className="grid gap-4 sm:grid-cols-2">
-          {[0, 1].map((index) => (
+          {Array.from({ length: 3 }).map((_, index) => (
             <div
               key={index}
               className="rounded-xl bg-muted/40 px-4 py-3 space-y-2"
@@ -24,8 +24,8 @@ export function MeetupOverviewSkeleton() {
         <div className="rounded-xl border border-dashed border-muted-foreground/40 px-4 py-4 space-y-3">
           <Skeleton className="h-5 w-40" />
           <div className="flex flex-wrap gap-2">
-            {Array.from({ length: 3 }).map((_, actionIndex) => (
-              <Skeleton key={actionIndex} className="h-9 w-32 rounded-full" />
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Skeleton key={index} className="h-9 w-32 rounded-full" />
             ))}
           </div>
         </div>
