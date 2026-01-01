@@ -7,6 +7,12 @@ import { ModeToggle } from "./ui/color-mode-toggle";
 import type { Route } from "next";
 
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -16,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
+  SidebarMenu,
 } from "@/components/ui/sidebar";
 
 const item: {
@@ -55,9 +62,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <Link href={i.url}>
                       <i.icon />
-                      <span className=" flex  gap-2 ">
-                        {(isMobile || open) && i.title}
-                      </span>
+                      {(isMobile || open) && i.title}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -66,15 +71,21 @@ export function AppSidebar() {
           })}
         </SidebarContent>
         <SidebarFooter>
-          {/* <Link href={"/dashboard/profile"}> */}
-          <div className="flex justify-between items-center h-10">
-            <span className=" flex  gap-2">
-              <CircleUserRound />
-              {(isMobile || open) && "PROFILE"}
-            </span>
-            {(isMobile || open) && <ModeToggle />}
-            {/* </Link> */}
-          </div>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton>
+                    <CircleUserRound /> {(isMobile || open) && "PROFILE"}
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="start" side="top">
+                  <ModeToggle />
+                  <DropdownMenuItem>Log out</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
     </>
