@@ -9,6 +9,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { useState } from "react";
 
 import { ModeToggle } from "./ui/color-mode-toggle";
@@ -19,6 +20,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -34,8 +37,7 @@ import {
   SidebarMenu,
   SidebarMenuAction,
 } from "@/components/ui/sidebar";
-
-import { Remeet } from "./util/Remeet";
+import { Remeet } from "@/components/util/Remeet";
 
 const item: {
   title: string;
@@ -66,6 +68,9 @@ export function AppSidebar() {
   const handleSidebarToggle = () => {
     toggleSidebar();
     setMouseOver(false);
+  };
+  const handleLogout = async () => {
+    await signOut();
   };
   return (
     <>
@@ -120,8 +125,14 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="start" side="top">
+                  <DropdownMenuLabel>設定</DropdownMenuLabel>
                   <ModeToggle />
-                  <DropdownMenuItem>Log out</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <SidebarMenuButton onClick={handleLogout}>
+                      ログアウト
+                    </SidebarMenuButton>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>
