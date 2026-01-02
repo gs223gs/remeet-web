@@ -3,10 +3,14 @@
 import { CircleUserRound } from "lucide-react";
 import { useSession } from "next-auth/react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { SidebarUserProfileSkeleton } from "@/components/skeletons/SidebarUserProfileSkeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const SidebarUserProfile = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  if (status === "loading") return <SidebarUserProfileSkeleton />;
+
   const userProfile = {
     image: session?.user?.image ?? null,
     name: session?.user?.name ?? null,
