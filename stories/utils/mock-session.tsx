@@ -36,9 +36,9 @@ export function MockSessionProvider({
   const value: SessionContextValue =
     status === "authenticated"
       ? {
-          data: resolvedSession,
+          data: session ?? defaultSession,
           status,
-          update: async () => resolvedSession,
+          update: async () => session ?? defaultSession,
         }
       : {
           data: null,
