@@ -17,7 +17,7 @@ export function ModeToggle() {
   return (
     <DropdownMenuSub>
       <DropdownMenuSubTrigger>
-        <span>Toggle theme</span>
+        <span>テーマ</span>
       </DropdownMenuSubTrigger>
       <DropdownMenuSubContent>
         <DropdownMenuItem onClick={() => setTheme("light")}>
