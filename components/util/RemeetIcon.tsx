@@ -6,10 +6,8 @@ export const RemeetIcon = React.forwardRef<SVGSVGElement, LucideProps>(
   ({ size = 24, className, ...props }, ref) => {
     const uid = React.useId();
 
-    // light
     const lightBg = `${uid}-paint0-light`;
 
-    // dark (3 gradients)
     const darkG0 = `${uid}-paint0-dark`;
     const darkG1 = `${uid}-paint1-dark`;
     const darkG2 = `${uid}-paint2-dark`;
@@ -26,7 +24,6 @@ export const RemeetIcon = React.forwardRef<SVGSVGElement, LucideProps>(
         aria-hidden="true"
         {...props}
       >
-        {/* Light mode */}
         <g className="dark:hidden">
           <circle cx="512" cy="512" r="512" fill={`url(#${lightBg})`} />
           <path
@@ -40,7 +37,6 @@ export const RemeetIcon = React.forwardRef<SVGSVGElement, LucideProps>(
           />
         </g>
 
-        {/* Dark mode */}
         <g className="hidden dark:block">
           <circle cx="512" cy="512" r="512" fill="white" />
           <path
@@ -58,7 +54,6 @@ export const RemeetIcon = React.forwardRef<SVGSVGElement, LucideProps>(
         </g>
 
         <defs>
-          {/* Light gradient (background) */}
           <linearGradient
             id={lightBg}
             x1="512"
@@ -71,7 +66,6 @@ export const RemeetIcon = React.forwardRef<SVGSVGElement, LucideProps>(
             <stop offset="1" stopColor="#F97316" />
           </linearGradient>
 
-          {/* Dark gradients (paths) */}
           <linearGradient
             id={darkG0}
             x1="360.804"
