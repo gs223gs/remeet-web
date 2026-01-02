@@ -1,0 +1,110 @@
+import * as React from "react";
+
+import type { LucideProps } from "lucide-react";
+
+export const RemeetIcon = React.forwardRef<SVGSVGElement, LucideProps>(
+  ({ size = 24, className, ...props }, ref) => {
+    const uid = React.useId();
+
+    const lightBg = `${uid}-paint0-light`;
+
+    const darkG0 = `${uid}-paint0-dark`;
+    const darkG1 = `${uid}-paint1-dark`;
+    const darkG2 = `${uid}-paint2-dark`;
+
+    return (
+      <svg
+        ref={ref}
+        width={size}
+        height={size}
+        viewBox="0 0 1024 1024"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        aria-hidden="true"
+        {...props}
+      >
+        <g className="dark:hidden">
+          <circle cx="512" cy="512" r="512" fill={`url(#${lightBg})`} />
+          <path
+            d="M127.098 374.944V286H340.125C480.679 310.158 508.131 485.85 398.324 567.108C444.443 665.935 511.426 673.622 593.781 586.874C597.571 669.578 587.193 702.172 547.662 721.937C465.306 754.88 389.539 743.899 308.281 592.364H255.573V502.321H319.262C386.245 491.341 398.324 392.514 319.262 374.944H127.098Z"
+            fill="white"
+          />
+          <path d="M214.944 503.42H126V732.918H214.944V503.42Z" fill="white" />
+          <path
+            d="M550.956 323.34H497.15L498.248 601.154C524.602 601.154 536.54 588.237 590.487 527.582V505.621C651.979 581.382 667.353 628.606 698.099 628.606C740.924 628.606 735.433 592.363 809.005 505.621V734.021H897.949V323.34H846.339C811.201 323.34 763.462 414.18 698.099 505.621C617.621 387.933 587.193 323.34 550.956 323.34Z"
+            fill="white"
+          />
+        </g>
+
+        <g className="hidden dark:block">
+          <circle cx="512" cy="512" r="512" fill="white" />
+          <path
+            d="M127.098 374.944V286H340.125C480.679 310.158 508.131 485.85 398.324 567.108C444.443 665.935 511.426 673.622 593.781 586.874C597.571 669.578 587.193 702.172 547.662 721.937C465.306 754.88 389.539 743.899 308.281 592.364H255.573V502.321H319.262C386.245 491.341 398.324 392.514 319.262 374.944H127.098Z"
+            fill={`url(#${darkG0})`}
+          />
+          <path
+            d="M214.944 503.42H126V732.918H214.944V503.42Z"
+            fill={`url(#${darkG1})`}
+          />
+          <path
+            d="M550.956 323.34H497.15L498.248 601.154C524.602 601.154 536.54 588.237 590.487 527.582V505.621C651.979 581.382 667.353 628.606 698.099 628.606C740.924 628.606 735.433 592.363 809.005 505.621V734.021H897.949V323.34H846.339C811.201 323.34 763.462 414.18 698.099 505.621C617.621 387.933 587.193 323.34 550.956 323.34Z"
+            fill={`url(#${darkG2})`}
+          />
+        </g>
+
+        <defs>
+          <linearGradient
+            id={lightBg}
+            x1="512"
+            y1="0"
+            x2="512"
+            y2="1024"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#F9B516" />
+            <stop offset="1" stopColor="#F97316" />
+          </linearGradient>
+
+          <linearGradient
+            id={darkG0}
+            x1="360.804"
+            y1="286"
+            x2="360.804"
+            y2="737.163"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#F9B516" />
+            <stop offset="1" stopColor="#F97316" />
+          </linearGradient>
+
+          <linearGradient
+            id={darkG1}
+            x1="170.472"
+            y1="503.42"
+            x2="170.472"
+            y2="732.918"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#F9B516" />
+            <stop offset="1" stopColor="#F97316" />
+          </linearGradient>
+
+          <linearGradient
+            id={darkG2}
+            x1="697.55"
+            y1="323.34"
+            x2="697.55"
+            y2="734.021"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#F9B516" />
+            <stop offset="1" stopColor="#F97316" />
+          </linearGradient>
+        </defs>
+      </svg>
+    );
+  },
+);
+
+RemeetIcon.displayName = "RemeetIcon";
