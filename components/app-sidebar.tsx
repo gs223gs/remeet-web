@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Building,
-  CircleUserRound,
-  Home,
-  PanelLeftIcon,
-  Tag,
-  Users,
-} from "lucide-react";
+import { Building, Home, PanelLeftIcon, Tag, Users } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
@@ -16,6 +9,7 @@ import { ModeToggle } from "./ui/color-mode-toggle";
 
 import type { Route } from "next";
 
+import { SidebarUserProfile } from "@/components/SidebarUserProfile";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -121,7 +115,7 @@ export function AppSidebar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton>
-                    <CircleUserRound /> {(isMobile || open) && "PROFILE"}
+                    <SidebarUserProfile />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="start" side="top">

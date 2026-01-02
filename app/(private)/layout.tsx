@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { SessionProvider } from "@/components/SessionProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import "../globals.css";
@@ -25,10 +26,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex min-h-screen">
-            <SidebarProvider defaultOpen={false}>
-              <AppSidebar />
-              <main className="flex-1 min-w-0">{children}</main>
-            </SidebarProvider>
+            <SessionProvider>
+              <SidebarProvider defaultOpen={false}>
+                <AppSidebar />
+                <main className="flex-1 min-w-0">{children}</main>
+              </SidebarProvider>
+            </SessionProvider>
           </div>
         </ThemeProvider>
       </body>

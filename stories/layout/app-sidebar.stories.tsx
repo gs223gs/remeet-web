@@ -1,23 +1,35 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import type { Session } from "next-auth";
 import { useEffect } from "react";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
+import {
+  MockSessionProvider,
+  defaultSession,
+  type SessionStatus,
+} from "@/stories/utils/mock-session";
 
 type SidebarStoryContainerProps = {
   defaultOpen?: boolean;
   openMobile?: boolean;
+  session?: Session | null;
+  sessionStatus?: SessionStatus;
 };
 
 function SidebarStoryContainer({
   defaultOpen = false,
   openMobile = false,
+  session = defaultSession,
+  sessionStatus = "authenticated",
 }: SidebarStoryContainerProps) {
   return (
     <div className="min-h-[480px] w-full bg-muted/20 p-6">
-      <SidebarProvider defaultOpen={defaultOpen}>
-        <SidebarStoryContent openMobile={openMobile} />
-      </SidebarProvider>
+      <MockSessionProvider session={session} status={sessionStatus}>
+        <SidebarProvider defaultOpen={defaultOpen}>
+          <SidebarStoryContent openMobile={openMobile} />
+        </SidebarProvider>
+      </MockSessionProvider>
     </div>
   );
 }
@@ -74,4 +86,22 @@ export const MobileDrawer: Story = {
       defaultViewport: "mobile1",
     },
   },
+};
+
+export const Guest: Story = {
+  name: "Desktop (Guest Fallback)",
+  render: () => (
+    <SidebarStoryContainer
+      defaultOpen
+      session={null}
+      sessionStatus="unauthenticated"
+    />
+  ),
+};
+
+export const Loading: Story = {
+  name: "Desktop (Loading Skeleton)",
+  render: () => (
+    <SidebarStoryContainer defaultOpen sessionStatus="loading" session={null} />
+  ),
 };
