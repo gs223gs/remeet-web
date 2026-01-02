@@ -35,6 +35,8 @@ import {
   SidebarMenuAction,
 } from "@/components/ui/sidebar";
 
+import { Remeet } from "./util/Remeet";
+
 const item: {
   title: string;
   url: Route;
@@ -80,7 +82,7 @@ export function AppSidebar() {
                 />
               )}
               {!mouseOver && (
-                <CircleUserRound
+                <Remeet
                   onClick={handleSidebarToggle}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
