@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import type { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
 import { useEffect } from "react";
 
 import { AppSidebar } from "@/components/app-sidebar";
@@ -9,15 +11,26 @@ type SidebarStoryContainerProps = {
   openMobile?: boolean;
 };
 
+const storySession: Session = {
+  user: {
+    name: "山田 太郎",
+    email: "taro@example.com",
+    image: "https://i.pravatar.cc/120?img=56",
+  },
+  expires: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+};
+
 function SidebarStoryContainer({
   defaultOpen = false,
   openMobile = false,
 }: SidebarStoryContainerProps) {
   return (
     <div className="min-h-[480px] w-full bg-muted/20 p-6">
-      <SidebarProvider defaultOpen={defaultOpen}>
-        <SidebarStoryContent openMobile={openMobile} />
-      </SidebarProvider>
+      <SessionProvider session={storySession}>
+        <SidebarProvider defaultOpen={defaultOpen}>
+          <SidebarStoryContent openMobile={openMobile} />
+        </SidebarProvider>
+      </SessionProvider>
     </div>
   );
 }
