@@ -3,6 +3,8 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
+import type { Result } from "@/type/error/error";
+
 import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -29,4 +31,43 @@ export const getUser = async () => {
   if (!user) return null;
 
   return user;
+};
+
+export const getSessionUserProfile = async (): Promise<
+  Result<{
+    image: string | null;
+    name: string | null;
+  }>
+> => {
+  try {
+    const session = await auth();
+
+    if (!session)
+      return {
+        ok: false,
+        error: {
+          code: "unauthenticated",
+          message: [],
+        },
+      };
+
+    const userProfile = {
+      image: session?.user?.image ?? null,
+      name: session?.user?.name ?? null,
+    };
+
+    return {
+      ok: true,
+      data: userProfile,
+    };
+  } catch (error) {
+    console.error("sidebar での userData 取得エラー: ", error);
+    return {
+      ok: false,
+      error: {
+        code: "unknown",
+        message: [],
+      },
+    };
+  }
 };
