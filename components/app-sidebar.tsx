@@ -4,6 +4,7 @@ import { Building, Home, PanelLeftIcon, Tag, Users } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { ModeToggle } from "./ui/color-mode-toggle";
 
@@ -64,7 +65,13 @@ export function AppSidebar() {
     setMouseOver(false);
   };
   const handleLogout = async () => {
-    await signOut();
+    try {
+      await signOut();
+    } catch {
+      toast.error("ログアウトに失敗しました．", {
+        description: "しばらく経ってからもう一度お試したください",
+      });
+    }
   };
   return (
     <>
