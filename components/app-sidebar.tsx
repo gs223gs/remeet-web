@@ -95,7 +95,7 @@ export function AppSidebar() {
               )}
             </SidebarMenuButton>
             <SidebarMenuAction>
-              <PanelLeftIcon onClick={() => toggleSidebar()} />
+              {!isMobile && <PanelLeftIcon onClick={() => toggleSidebar()} />}
             </SidebarMenuAction>
           </SidebarMenuItem>
         </SidebarHeader>
