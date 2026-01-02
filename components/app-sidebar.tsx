@@ -69,7 +69,7 @@ export function AppSidebar() {
       await signOut();
     } catch {
       toast.error("ログアウトに失敗しました．", {
-        description: "しばらく経ってからもう一度お試したください",
+        description: "しばらく経ってからもう一度お試しください",
       });
     }
   };
