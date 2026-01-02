@@ -1,6 +1,15 @@
 "use client";
-import { Building, CircleUserRound, Home, Tag, Users } from "lucide-react";
+
+import {
+  Building,
+  CircleUserRound,
+  Home,
+  PanelLeftIcon,
+  Tag,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { ModeToggle } from "./ui/color-mode-toggle";
 
@@ -37,31 +46,49 @@ const item: {
   { title: "TAGS", url: "/dashboard/tags", icon: Tag },
 ];
 export function AppSidebar() {
-  const { open, isMobile, setOpenMobile } = useSidebar();
+  const [mouseOver, setMouseOver] = useState<boolean>(false);
+  const { open, isMobile, setOpenMobile, toggleSidebar } = useSidebar();
   const handleNavClick = () => {
     if (isMobile) setOpenMobile(false);
+  };
+
+  const handleMouseEnter = () => {
+    if (open) return;
+    setMouseOver(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (open) return;
+    setMouseOver(false);
+  };
+  const handleSidebarToggle = () => {
+    toggleSidebar();
+    setMouseOver(false);
   };
   return (
     <>
       {!open && isMobile && <SidebarTrigger />}
       <Sidebar collapsible="icon" variant="sidebar">
-        {/* {open ? (
-          <SidebarHeader>
-            <div className="flex items-center justify-between h-12">
-              <div className="text-3xl leading-none">ReMeet</div>
-              <SidebarTrigger />
-            </div>
-          </SidebarHeader>
-        ) : (
-          <div className="h-16 flex items-center justify-center">
-            <SidebarTrigger />
-          </div>
-        )} */}
         <SidebarHeader>
           <SidebarMenuItem>
-            {!open && <SidebarTrigger />}
+            <SidebarMenuButton>
+              {mouseOver && (
+                <PanelLeftIcon
+                  onClick={handleSidebarToggle}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                />
+              )}
+              {!mouseOver && (
+                <CircleUserRound
+                  onClick={handleSidebarToggle}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                />
+              )}
+            </SidebarMenuButton>
             <SidebarMenuAction>
-              <SidebarTrigger />
+              <PanelLeftIcon onClick={() => toggleSidebar()} />
             </SidebarMenuAction>
           </SidebarMenuItem>
         </SidebarHeader>
