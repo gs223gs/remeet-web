@@ -37,7 +37,7 @@ import {
   SidebarMenu,
   SidebarMenuAction,
 } from "@/components/ui/sidebar";
-import { Remeet } from "@/components/util/Remeet";
+import { RemeetIcon } from "@/components/util/RemeetIcon";
 
 const item: {
   title: string;
@@ -87,7 +87,7 @@ export function AppSidebar() {
                 />
               )}
               {!mouseOver && (
-                <Remeet
+                <RemeetIcon
                   onClick={handleSidebarToggle}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
