@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import type { Session } from "next-auth";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
@@ -15,6 +15,7 @@ type SidebarStoryContainerProps = {
   openMobile?: boolean;
   session?: Session | null;
   sessionStatus?: SessionStatus;
+  mockSignOutError?: boolean;
 };
 
 function SidebarStoryContainer({
@@ -22,13 +23,16 @@ function SidebarStoryContainer({
   openMobile = false,
   session = defaultSession,
   sessionStatus = "authenticated",
+  mockSignOutError = false,
 }: SidebarStoryContainerProps) {
   return (
     <div className="min-h-[480px] w-full bg-muted/20 p-6">
       <MockSessionProvider session={session} status={sessionStatus}>
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <SidebarStoryContent openMobile={openMobile} />
-        </SidebarProvider>
+        <SignOutMockBoundary enabled={mockSignOutError}>
+          <SidebarProvider defaultOpen={defaultOpen}>
+            <SidebarStoryContent openMobile={openMobile} />
+          </SidebarProvider>
+        </SignOutMockBoundary>
       </MockSessionProvider>
     </div>
   );
@@ -105,3 +109,62 @@ export const Loading: Story = {
     <SidebarStoryContainer defaultOpen sessionStatus="loading" session={null} />
   ),
 };
+
+export const LogoutError: Story = {
+  name: "Desktop (Logout Error Toast)",
+  render: () => (
+    <SidebarStoryContainer
+      defaultOpen
+      mockSignOutError
+      session={defaultSession}
+    />
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "プロフィールメニューを開き「ログアウト」を押すと、サインアウト失敗時のトーストが表示されます。",
+      },
+    },
+  },
+};
+
+function SignOutMockBoundary({
+  enabled,
+  children,
+}: {
+  enabled?: boolean;
+  children: ReactNode;
+}) {
+  useEffect(() => {
+    if (!enabled) return;
+    if (typeof window === "undefined" || typeof window.fetch !== "function") {
+      return;
+    }
+
+    const originalFetch = window.fetch;
+    const boundOriginalFetch = originalFetch.bind(window);
+    const failingFetch: typeof window.fetch = async (input, init) => {
+      const target =
+        typeof input === "string"
+          ? input
+          : input instanceof URL
+            ? input.toString()
+            : input.url;
+
+      if (target.includes("/api/auth/signout")) {
+        return Promise.reject(new Error("ログアウトに失敗しました (mock)"));
+      }
+
+      return boundOriginalFetch(input as RequestInfo, init as RequestInit);
+    };
+
+    window.fetch = failingFetch;
+
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, [enabled]);
+
+  return <>{children}</>;
+}

@@ -5,6 +5,7 @@ import { SessionProvider } from "@/components/SessionProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import "../globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "ReMeet",
@@ -30,6 +31,7 @@ export default function RootLayout({
               <SidebarProvider defaultOpen={false}>
                 <AppSidebar />
                 <main className="flex-1 min-w-0">{children}</main>
+                <Toaster />
               </SidebarProvider>
             </SessionProvider>
           </div>

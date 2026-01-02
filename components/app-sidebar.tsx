@@ -4,6 +4,7 @@ import { Building, Home, PanelLeftIcon, Tag, Users } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { ModeToggle } from "./ui/color-mode-toggle";
 
@@ -44,7 +45,7 @@ const item: {
   { title: "TAGS", url: "/dashboard/tags", icon: Tag },
 ];
 export function AppSidebar() {
-  const [mouseOver, setMouseOver] = useState<boolean>(false);
+  const [mouseOver, setMouseOver] = useState(false);
   const { open, isMobile, setOpenMobile, toggleSidebar } = useSidebar();
   const handleNavClick = () => {
     if (isMobile) setOpenMobile(false);
@@ -64,7 +65,13 @@ export function AppSidebar() {
     setMouseOver(false);
   };
   const handleLogout = async () => {
-    await signOut();
+    try {
+      await signOut();
+    } catch {
+      toast.error("ログアウトに失敗しました．", {
+        description: "しばらく経ってからもう一度お試しください",
+      });
+    }
   };
   return (
     <>
@@ -73,14 +80,13 @@ export function AppSidebar() {
         <SidebarHeader>
           <SidebarMenuItem>
             <SidebarMenuButton>
-              {mouseOver && (
+              {mouseOver ? (
                 <PanelLeftIcon
                   onClick={handleSidebarToggle}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 />
-              )}
-              {!mouseOver && (
+              ) : (
                 <RemeetIcon
                   onClick={handleSidebarToggle}
                   onMouseEnter={handleMouseEnter}
@@ -101,7 +107,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild onClick={handleNavClick}>
                     <Link href={i.url}>
                       <i.icon />
-                      {(isMobile || open) && i.title}
+                      {i.title}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
