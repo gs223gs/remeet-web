@@ -32,7 +32,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: true,
   logger: {
     error(code, ...message) {
-      console.error("[nextauth][error]", code, ...message);
+      console.error(
+        "[nextauth][error]",
+        code,
+        JSON.stringify(message, null, 2),
+      );
     },
   },
 });
