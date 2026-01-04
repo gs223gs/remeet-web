@@ -1,102 +1,180 @@
 import Image from "next/image";
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { RemeetFullLogo } from "@/components/util/RemeetFullLogo";
+import { RemeetIcon } from "@/components/util/RemeetIcon";
+import { routes } from "@/util/routes";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-white">
+      <main>
+        <section className="pt-20 pb-32 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto text-center">
+            <div className="inline-block mb-4 px-4 py-2 bg-orange-50 rounded-full">
+              <p className="text-orange-600 text-sm font-medium">
+                〜ミートアップに参加する全ての人へ〜
+              </p>
+            </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+              もう忘れない
+            </h1>
+
+            <p className="text-2xl sm:text-3xl text-gray-600 mb-8 font-medium">
+              出会った人を記録
+            </p>
+
+            <p className="text-lg text-gray-500 mb-12 max-w-2xl mx-auto leading-relaxed">
+              ミートアップで出会った人の情報を簡単に記録・管理。名前、仕事、会話内容、SNSリンクまで一元管理できます。
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button
+                className="bg-orange-500 text-white hover:bg-orange-500/90"
+                asChild
+              >
+                <Link href={routes.login()}>今すぐ始める</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        <section id="vision" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-12">
+              Vision
+            </h2>
+
+            <div className="space-y-8 text-left bg-white rounded-2xl p-8 sm:p-12 shadow-sm">
+              <p className="text-xl sm:text-2xl text-gray-700 leading-relaxed">
+                ミートアップで仲良くなったあの人の得意なことはなんだったっけ...
+              </p>
+
+              <p className="text-xl sm:text-2xl text-gray-700 leading-relaxed">
+                そういう経験はありませんか？
+              </p>
+
+              <p className="text-xl sm:text-2xl text-orange-600 font-semibold leading-relaxed">
+                ReMeetを使えばもう2度とそんな思いをすることはありません
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="features" className="py-24 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+                機能紹介
+              </h2>
+              <p className="text-lg text-gray-600">
+                ReMeetの主要な機能をご紹介します
+              </p>
+            </div>
+
+            <div className="space-y-32">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+                <div className="lg:w-1/2 space-y-6">
+                  <div className="inline-block px-4 py-2 bg-orange-100 rounded-full">
+                    <span className="text-orange-600 font-semibold text-sm">
+                      機能 01
+                    </span>
+                  </div>
+                  <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                    出会った人を記録
+                  </h3>
+                  <p className="text-lg text-gray-600 leading-relaxed">
+                    名前は？どんな仕事をしている？ミートアップで出会った人の基本情報を素早く記録できます。会社名や役職も一緒に保存して、後から簡単に思い出せます。
+                  </p>
+                </div>
+                <div className="">
+                  <div className="aspect-video bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Image
+                      src="/rootpage/contactsViewSmall.png"
+                      width={1000}
+                      height={1000}
+                      alt="Picture of the author"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col lg:flex-row-reverse items-center justify-between gap-12">
+                <div className="lg:w-1/2 space-y-6">
+                  <div className="inline-block px-4 py-2 bg-gray-100 rounded-full">
+                    <span className="text-orange-600 font-semibold text-sm">
+                      機能 02
+                    </span>
+                  </div>
+                  <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                    特徴やリンクを記録
+                  </h3>
+                  <p className="text-lg text-gray-600 leading-relaxed">
+                    タグをつけたり、各種リンクを一元管理。Twitter、GitHub、個人サイトなど、複数のSNSリンクをまとめて保存できます。その人の特徴も自由にタグ付けできます。
+                  </p>
+                </div>
+
+                <div className="">
+                  <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Image
+                      src="/rootpage/contactsForm.png"
+                      width={1000}
+                      height={1000}
+                      alt="Picture of the author"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+                <div className="lg:w-1/2 space-y-6">
+                  <div className="inline-block px-4 py-2 bg-gray-100 rounded-full">
+                    <span className="text-orange-600 font-semibold text-sm">
+                      機能 03
+                    </span>
+                  </div>
+                  <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                    細かい会話内容まで記録
+                  </h3>
+                  <p className="text-lg text-gray-600 leading-relaxed">
+                    今後のアップデートで、Markdown に対応します
+                  </p>
+                </div>
+
+                <div className="">
+                  <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Image
+                      src="/rootpage/contactsForm2.png"
+                      width={1000}
+                      height={1000}
+                      alt="Picture of the author"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="bg-gray-900 text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col">
+          <div className="flex justify-between text-center lg:items-center">
+            <div className="hidden lg:flex items-center space-x-2 mb-4">
+              <RemeetIcon size={50} />
+              <RemeetFullLogo className="text-orange-500" fill="#fff" />
+            </div>
+            <div>
+              <Link href={"/"}>利用規約</Link>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+            <p>&copy; 2026 ReMeet. All rights reserved.</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
