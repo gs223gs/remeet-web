@@ -1,9 +1,10 @@
-import Link from "next/link";
-import { Menu, Users, Tag, MessageSquare } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { RemeetIcon } from "@/components/util/RemeetIcon";
-import { RemeetFullLogo } from "@/components/util/RemeetFullLogo";
 import Image from "next/image";
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { RemeetFullLogo } from "@/components/util/RemeetFullLogo";
+import { RemeetIcon } from "@/components/util/RemeetIcon";
+import { routes } from "@/util/routes";
 
 export default function Home() {
   return (
@@ -17,8 +18,11 @@ export default function Home() {
             </div>
 
             <nav className="flex items-center space-x-8">
-              <Button className="bg-orange-500 text-white hover:bg-orange-500/90">
-                始める
+              <Button
+                className="bg-orange-500 text-white hover:bg-orange-500/90"
+                asChild
+              >
+                <Link href={routes.login()}>ログイン</Link>
               </Button>
             </nav>
           </div>
@@ -47,8 +51,11 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button className="bg-orange-500 text-white hover:bg-orange-500/90 px-8 py-6 text-lg">
-                今すぐ始める
+              <Button
+                className="bg-orange-500 text-white hover:bg-orange-500/90"
+                asChild
+              >
+                <Link href={routes.login()}>今すぐ始める</Link>
               </Button>
             </div>
           </div>
@@ -102,12 +109,12 @@ export default function Home() {
                     名前は？どんな仕事をしている？ミートアップで出会った人の基本情報を素早く記録できます。会社名や役職も一緒に保存して、後から簡単に思い出せます。
                   </p>
                 </div>
-                <div className="lg:w-1/2">
+                <div className="">
                   <div className="aspect-video bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center shadow-lg">
                     <Image
-                      src="/rootpage/contactsView.png"
-                      width={500}
-                      height={500}
+                      src="/rootpage/contactsViewSmall.png"
+                      width={1000}
+                      height={1000}
                       alt="Picture of the author"
                     />
                   </div>
@@ -129,12 +136,12 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="lg:w-1/2">
+                <div className="">
                   <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center shadow-lg">
                     <Image
                       src="/rootpage/contactsForm.png"
-                      width={500}
-                      height={500}
+                      width={1000}
+                      height={1000}
                       alt="Picture of the author"
                     />
                   </div>
@@ -156,12 +163,12 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="lg:w-1/2">
+                <div className="">
                   <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center shadow-lg">
                     <Image
                       src="/rootpage/contactsForm2.png"
-                      width={500}
-                      height={500}
+                      width={1000}
+                      height={1000}
                       alt="Picture of the author"
                     />
                   </div>
@@ -170,27 +177,18 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-orange-50 to-orange-100">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-              今すぐ始めましょう
-            </h2>
-            <p className="text-lg text-gray-600 mb-12">
-              ReMeetで、出会った人との関係をもっと深めましょう
-            </p>
-            <Button className="bg-orange-500 text-white hover:bg-orange-500/90 px-12 py-6 text-lg shadow-lg">
-              無料で始める
-            </Button>
-          </div>
-        </section>
       </main>
 
       <footer className="bg-gray-900 text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center space-x-2 mb-4">
-            <RemeetIcon size={50} />
-            <RemeetFullLogo className="text-orange-500" fill="#fff" />
+        <div className="max-w-7xl mx-auto flex flex-col">
+          <div className="flex justify-between text-center lg:items-center">
+            <div className="hidden lg:flex items-center space-x-2 mb-4">
+              <RemeetIcon size={50} />
+              <RemeetFullLogo className="text-orange-500" fill="#fff" />
+            </div>
+            <div>
+              <Link href={"/"}>利用規約</Link>
+            </div>
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
