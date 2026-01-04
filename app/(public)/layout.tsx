@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import type { Metadata } from "next";
@@ -31,6 +32,7 @@ export default function RootLayout({
       >
         <HomePageHeader />
         {children}
+        <Analytics />
       </body>
     </html>
   );
