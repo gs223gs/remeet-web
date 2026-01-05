@@ -76,7 +76,7 @@ export function AppSidebar() {
   return (
     <>
       {!open && isMobile && (
-        <div className="fixed">
+        <div className="fixed left-4 top-4 z-50">
           <SidebarTrigger />
         </div>
       )}
