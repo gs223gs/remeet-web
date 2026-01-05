@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getMeetup } from "@/app/(private)/dashboard/meetup/_server/server";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { MeetupList } from "@/components/meetup/display/meetup-list";
+import { MeetupHeader } from "@/components/meetup/display/MeetupHeader";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -43,11 +44,14 @@ export default async function Meetup() {
 
   return (
     <div className="flex min-h-screen flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-10">
-      <DashboardHeader
-        eyebrow="registered meetups"
-        title="登録済みMeetup"
-        description="登録済みのMeetupから、出会った人の記録へアクセスできます。"
-      />
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+        <DashboardHeader
+          eyebrow="registered meetups"
+          title="登録済みMeetup"
+          description="登録済みのMeetupから、出会った人の記録へアクセスできます。"
+        />
+        <MeetupHeader />
+      </div>
       <MeetupList meetups={meetups} />
     </div>
   );
