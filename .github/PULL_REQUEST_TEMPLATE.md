@@ -8,4 +8,4 @@ Close #
 
 ## テスト
 
-## 関連Issue
+## review除外について
