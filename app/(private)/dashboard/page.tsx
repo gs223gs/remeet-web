@@ -7,6 +7,7 @@ import {
   LatestMeetupCard,
   type LatestMeetupData,
 } from "@/components/dashboard/latest-meetup-card";
+import { MeetupHeader } from "@/components/meetup/display/MeetupHeader";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -66,11 +67,14 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex min-h-screen flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-10">
-      <DashboardHeader
-        eyebrow="meetup overview"
-        title="ダッシュボード"
-        description="直近のMeetupとコンタクト状況をここで素早く確認しましょう。"
-      />
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+        <DashboardHeader
+          eyebrow="registered meetups"
+          title="登録済みMeetup"
+          description="登録済みのMeetupから、出会った人の記録へアクセスできます。"
+        />
+        <MeetupHeader />
+      </div>
       <section className="flex flex-col gap-6">
         <DashboardStats
           meetupCount={meetupCount}

@@ -75,7 +75,11 @@ export function AppSidebar() {
   };
   return (
     <>
-      {!open && isMobile && <SidebarTrigger />}
+      {!open && isMobile && (
+        <div className="fixed left-4 top-4 z-50">
+          <SidebarTrigger />
+        </div>
+      )}
       <Sidebar collapsible="icon" variant="sidebar">
         <SidebarHeader>
           <SidebarMenuItem>
