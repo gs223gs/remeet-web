@@ -119,7 +119,7 @@ export default function Home() {
                 <div className="">
                   <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center shadow-lg">
                     <Image
-                      src="/rootpage/contactsForm.png"
+                      src="/rootpage/contactsForm2.png"
                       width={1000}
                       height={1000}
                       alt="Picture of the author"
@@ -128,29 +128,10 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-                <div className="lg:w-1/2 space-y-6">
-                  <div className="inline-block px-4 py-2 bg-gray-100 rounded-full">
-                    <span className="text-orange-600 font-semibold text-sm">
-                      機能 03
-                    </span>
-                  </div>
-                  <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                    細かい会話内容まで記録
-                  </h3>
-                  <p className="text-lg text-gray-600 leading-relaxed">
-                    今後のアップデートで、Markdown に対応します
-                  </p>
-                </div>
-
+              <div className=" items-center justify-between gap-12">
                 <div className="">
                   <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Image
-                      src="/rootpage/contactsForm2.png"
-                      width={1000}
-                      height={1000}
-                      alt="Picture of the author"
-                    />
+                    <p className="text-5xl lg:text-9xl">coming soon</p>
                   </div>
                 </div>
               </div>
