@@ -53,7 +53,7 @@ export const ContactForm = ({
   const [userTags, setUserTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
   const [tagQuery, setTagQuery] = useState<string>("");
-  const [isUseLinkFIelds, setIsUseLinkFIelds] = useState(false);
+  const [isUseLinkFields, setIsUseLinkFields] = useState(false);
 
   const onTagSelect = (t: Tag) => {
     if (selectTags.length === TAG_LIMIT) {
@@ -218,13 +218,13 @@ export const ContactForm = ({
           <CardContent>
             <div>
               <Checkbox
-                onCheckedChange={() => setIsUseLinkFIelds((prev) => !prev)}
+                onCheckedChange={() => setIsUseLinkFields((prev) => !prev)}
               />
               <span>リンク・SNS を入力する</span>
             </div>
           </CardContent>
 
-          {isUseLinkFIelds && (
+          {isUseLinkFields && (
             <>
               <CardHeader className="pb-4">
                 <CardTitle>リンク・SNS</CardTitle>
