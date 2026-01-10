@@ -21,6 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -52,6 +53,7 @@ export const ContactForm = ({
   const [userTags, setUserTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
   const [tagQuery, setTagQuery] = useState<string>("");
+  const [isUseLinkFields, setIsUseLinkFields] = useState(false);
 
   const onTagSelect = (t: Tag) => {
     if (selectTags.length === TAG_LIMIT) {
@@ -212,25 +214,39 @@ export const ContactForm = ({
               onTagSelect={onTagSelect}
             />
           </CardContent>
-          <CardHeader className="pb-4">
-            <CardTitle>リンク・SNS</CardTitle>
-            <CardDescription>
-              交換したSNSやプロダクトの情報があれば入力してください。スキップ可能です。
-              名前を入れた場合はIDも入れてください
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4 md:grid-cols-2">
-            <GithubLinkFields formControl={form.control} />
-            <TwitterLinkFields formControl={form.control} />
-            <WebsiteLinkFields formControl={form.control} />
-            <ProductLinkFields formControl={form.control} />
-            <OtherLinkFields formControl={form.control} />
+
+          <CardContent>
+            <div>
+              <Checkbox
+                onCheckedChange={() => setIsUseLinkFields((prev) => !prev)}
+              />
+              <span>リンク・SNS を入力する</span>
+            </div>
           </CardContent>
+
+          {isUseLinkFields && (
+            <>
+              <CardHeader className="pb-4">
+                <CardTitle>リンク・SNS</CardTitle>
+                <CardDescription>
+                  交換したSNSやプロダクトの情報があれば入力してください。スキップ可能です。
+                  名前を入れた場合はIDも入れてください
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4 md:grid-cols-2">
+                <GithubLinkFields formControl={form.control} />
+                <TwitterLinkFields formControl={form.control} />
+                <WebsiteLinkFields formControl={form.control} />
+                <ProductLinkFields formControl={form.control} />
+                <OtherLinkFields formControl={form.control} />
+              </CardContent>
+            </>
+          )}
         </Card>
         <Button
           type="submit"
           disabled={isDisabled}
-          className="w-full bg-orange-500 text-white shadow-sm hover:bg-orange-500/90 sm:w-auto"
+          className="w-full bg-orange-500 text-white shadow-sm hover:bg-orange-500/90 "
         >
           {buttonLabel}
         </Button>
