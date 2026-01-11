@@ -40,6 +40,7 @@ type Props = {
   action: (payload: FormData) => void;
   buttonLabel: string;
   isDisabled: boolean;
+  isOpenLinkFields?: boolean;
 };
 const TAG_LIMIT = 5;
 
@@ -49,11 +50,12 @@ export const ContactForm = ({
   action,
   isDisabled,
   buttonLabel,
+  isOpenLinkFields = false,
 }: Props) => {
   const [userTags, setUserTags] = useState<Tag[]>([...tags]);
   const [selectTags, setSelectTags] = useState<Tag[]>([]);
   const [tagQuery, setTagQuery] = useState<string>("");
-  const [isUseLinkFields, setIsUseLinkFields] = useState(false);
+  const [isUseLinkFields, setIsUseLinkFields] = useState(isOpenLinkFields);
 
   const onTagSelect = (t: Tag) => {
     if (selectTags.length === TAG_LIMIT) {
