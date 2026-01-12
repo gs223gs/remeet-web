@@ -219,11 +219,13 @@ export const ContactForm = ({
 
           <CardContent>
             <div>
-              <Checkbox
-                checked={isUseLinkFields}
-                onCheckedChange={() => setIsUseLinkFields((prev) => !prev)}
-              />
-              <span>リンク・SNS を入力する</span>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox
+                  checked={isUseLinkFields}
+                  onCheckedChange={() => setIsUseLinkFields((prev) => !prev)}
+                />
+                リンク・SNS を入力する
+              </label>
             </div>
           </CardContent>
 
