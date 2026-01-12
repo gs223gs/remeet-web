@@ -26,7 +26,12 @@ export function DeleteDialog({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">{trigger}</Button>
+        <Button
+          variant="outline"
+          className="border border-red-200 bg-red-50 text-red-600 hover:bg-red-100"
+        >
+          {trigger}
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
