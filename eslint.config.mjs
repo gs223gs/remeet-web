@@ -25,6 +25,9 @@ export default [
       "build/**",
       "lib/generated/**",
       "next-env.d.ts",
+      'stories/**',
+      '.storybook/**',
+      'components/ui/**',
     ],
   },
   {
