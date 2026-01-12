@@ -220,6 +220,7 @@ export const ContactForm = ({
           <CardContent>
             <div>
               <Checkbox
+                checked={isUseLinkFields}
                 onCheckedChange={() => setIsUseLinkFields((prev) => !prev)}
               />
               <span>リンク・SNS を入力する</span>
