@@ -1,18 +1,15 @@
 import { Link2, NotebookPen, Tags } from "lucide-react";
 
-import { DeleteContactForm } from "./form/deleteContactForm";
-
 import type { ContactsDetailDTO } from "@/type/private/contacts/contacts";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { linkLabels, createLinkUrl } from "@/util/contactLinkFormatter";
 type Props = {
-  meetupId: string;
   contactsDetail: ContactsDetailDTO;
 };
 
-export const ContactsDetailView = ({ meetupId, contactsDetail }: Props) => {
+export const ContactsDetailView = ({ contactsDetail }: Props) => {
   const tags = contactsDetail.tags ?? [];
   const links = contactsDetail.links ?? [];
   const description =
@@ -136,10 +133,6 @@ export const ContactsDetailView = ({ meetupId, contactsDetail }: Props) => {
               </div>
             )}
           </div>
-          <DeleteContactForm
-            contactId={contactsDetail.id}
-            meetupId={meetupId}
-          />
         </CardContent>
       </Card>
     </div>

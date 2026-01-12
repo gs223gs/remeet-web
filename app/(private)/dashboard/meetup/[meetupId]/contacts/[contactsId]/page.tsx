@@ -4,8 +4,10 @@ import { getContactDetail } from "../_server/server";
 
 import { ContactsErrorCard } from "@/components/contacts/contacts-error-card";
 import { ContactsDetailView } from "@/components/contacts/contactsDetailView";
+import { DeleteContactForm } from "@/components/contacts/form/deleteContactForm";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { Button } from "@/components/ui/button";
+import { DeleteDialog } from "@/components/util/DeleteDialog";
 import { routes } from "@/util/routes";
 
 export default async function ContactsDetail({
@@ -59,10 +61,16 @@ export default async function ContactsDetail({
               コンタクトを編集
             </Link>
           </Button>
+          <DeleteDialog trigger="コンタクトを削除">
+            <DeleteContactForm
+              contactId={contactsDetail.id}
+              meetupId={meetupId}
+            />
+          </DeleteDialog>
         </div>
       </div>
 
-      <ContactsDetailView contactsDetail={contactsDetail} meetupId={meetupId} />
+      <ContactsDetailView contactsDetail={contactsDetail} />
     </div>
   );
 }

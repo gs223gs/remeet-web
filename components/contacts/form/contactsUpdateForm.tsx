@@ -89,6 +89,7 @@ export const ContactsUpdateForm = ({
         action={action}
         buttonLabel={buttonLabel}
         isDisabled={isDisabled}
+        isOpenLinkFields={true}
       />
     </div>
   );

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { DeleteTagForm } from "@/components/tag/form/DeleteTagForm";
 import { Button } from "@/components/ui/button";
+import { DeleteDialog } from "@/components/util/DeleteDialog";
 import { routes } from "@/util/routes";
 
 type Props = {
@@ -26,7 +27,9 @@ export const TagContactsHeader = ({ tagId }: Props) => {
       >
         <Link href={routes.dashboardTagEdit(tagId)}>タグを編集</Link>
       </Button>
-      <DeleteTagForm tagId={tagId} />
+      <DeleteDialog trigger="タグを削除">
+        <DeleteTagForm tagId={tagId} />
+      </DeleteDialog>
     </div>
   );
 };
