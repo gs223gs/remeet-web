@@ -27,7 +27,7 @@ export const TagContactsHeader = ({ tagId }: Props) => {
       >
         <Link href={routes.dashboardTagEdit(tagId)}>タグを編集</Link>
       </Button>
-      <DeleteDialog trigger="tagを削除">
+      <DeleteDialog trigger="タグを削除">
         <DeleteTagForm tagId={tagId} />
       </DeleteDialog>
     </div>
