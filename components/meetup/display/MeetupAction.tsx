@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { DeleteMeetupForm } from "@/components/meetup/form/deleteMeetupForm";
 import { Button } from "@/components/ui/button";
+import { DeleteDialog } from "@/components/util/DeleteDialog";
 import { routes } from "@/util/routes";
 
 type MeetupAction = {
@@ -28,8 +29,9 @@ export const MeetupAction = ({ meetupId }: MeetupAction) => {
           新しいコンタクトを追加
         </Link>
       </Button>
-
-      <DeleteMeetupForm meetupId={meetupId} />
+      <DeleteDialog trigger="Meetupを削除">
+        <DeleteMeetupForm meetupId={meetupId} />
+      </DeleteDialog>
     </div>
   );
 };
