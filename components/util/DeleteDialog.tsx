@@ -13,11 +13,16 @@ import { Button } from "@/components/ui/button";
 
 type Props = {
   trigger: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   children: React.ReactNode;
 };
-export function DeleteDialog({ trigger, title, description, children }: Props) {
+export function DeleteDialog({
+  trigger,
+  title = "本当に削除しますか?",
+  description = "削除された場合元に戻すことはできません",
+  children,
+}: Props) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
