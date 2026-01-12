@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { DeleteDialog } from "@/components/util/DeleteDialog";
 import { routes } from "@/util/routes";
 
-type MeetupAction = {
+type Props = {
   meetupId: string;
 };
 
-export const MeetupAction = ({ meetupId }: MeetupAction) => {
+export const MeetupAction = ({ meetupId }: Props) => {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
       <Button
