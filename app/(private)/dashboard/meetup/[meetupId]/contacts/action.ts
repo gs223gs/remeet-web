@@ -2,12 +2,11 @@
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
-import type { ErrorCode, Result } from "@/type/error/error";
+import type { ErrorCode } from "@/type/error/error";
 import type {
   ContactsErrors,
   CreateContactLink,
 } from "@/type/private/contacts/contacts";
-import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
@@ -45,42 +44,6 @@ export const createContacts = async (
     return {
       success: false,
       errors: "unknown",
-    };
-  }
-};
-
-//TODO validation
-export const createTag = async (newTag: string): Promise<Result<Tag>> => {
-  try {
-    const user = await getUser();
-    if (!user)
-      return {
-        ok: false,
-        error: {
-          code: "unauthenticated",
-          message: ["情報取得に失敗しました"],
-        },
-      };
-
-    const createdTag = await prisma.tag.create({
-      data: {
-        userId: user.id,
-        name: newTag,
-      },
-    });
-
-    return {
-      ok: true,
-      data: createdTag,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      ok: false,
-      error: {
-        code: "db_error",
-        message: ["タグの作成に失敗しました"],
-      },
     };
   }
 };
