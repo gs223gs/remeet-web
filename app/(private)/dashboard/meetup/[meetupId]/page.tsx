@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { routes } from "@/util/routes";
+import { MeetupActionsCard } from "@/components/meetup/display/meetup-actions-card";
 
 export default async function MeetupDetail({
   params,
@@ -56,11 +57,14 @@ export default async function MeetupDetail({
 
   return (
     <div className="flex flex-1 flex-col min-h-screen gap-6 px-4 py-6 sm:px-6 lg:px-10">
-      <DashboardHeader
-        eyebrow="meetup detail"
-        title={`${meetupDetail.name}の詳細`}
-        description="Meetupの概要と登録済みのコンタクトを確認できます。"
-      />
+      <div className="flex flex-col gap-4 pb-2 lg:flex-row lg:items-center lg:justify-between">
+        <DashboardHeader
+          eyebrow="meetup detail"
+          title={`${meetupDetail.name}の詳細`}
+          description="Meetupの概要と登録済みのコンタクトを確認できます。"
+        />
+        <MeetupActionsCard meetupId={meetupId} />
+      </div>
 
       <div className="">
         <MeetupOverview
@@ -79,7 +83,6 @@ export default async function MeetupDetail({
               このMeetupで記録したつながりは{contactCount}件です。
             </p>
           </div>
-          {/*TODO これアンチパターンじゃない？  asChildだからいいのか?*/}
           <Button
             asChild
             size="sm"

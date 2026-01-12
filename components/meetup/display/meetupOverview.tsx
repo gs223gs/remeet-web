@@ -2,7 +2,6 @@ import { CalendarDays, UsersRound } from "lucide-react";
 
 import type { MeetupDetail } from "@/type/private/meetup/meetup";
 
-import { MeetupActionsCard } from "@/components/meetup/display/meetup-actions-card";
 import {
   Card,
   CardContent,
@@ -59,7 +58,6 @@ export const MeetupOverview = ({
             <p className="text-xs text-muted-foreground">Contacts</p>
           </div>
         </div>
-        <MeetupActionsCard meetupId={meetupDetail.id} />
       </CardContent>
     </Card>
   );
