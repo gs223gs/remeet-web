@@ -4,7 +4,8 @@ import { getMeetupDetailSummary } from "../_server/server";
 
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { MeetupContactCard } from "@/components/meetup/display/meetup-contact-card";
-import { MeetupOverview } from "@/components/meetup/display/meetupOverview";
+import { MeetupAction } from "@/components/meetup/display/MeetupAction";
+import { MeetupOverview } from "@/components/meetup/display/MeetupOverview";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +16,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { routes } from "@/util/routes";
-import { MeetupActionsCard } from "@/components/meetup/display/meetup-actions-card";
 
 export default async function MeetupDetail({
   params,
@@ -63,7 +63,7 @@ export default async function MeetupDetail({
           title={`${meetupDetail.name}の詳細`}
           description="Meetupの概要と登録済みのコンタクトを確認できます。"
         />
-        <MeetupActionsCard meetupId={meetupId} />
+        <MeetupAction meetupId={meetupId} />
       </div>
 
       <div className="">

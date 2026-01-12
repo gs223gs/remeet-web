@@ -4,11 +4,11 @@ import { DeleteMeetupForm } from "@/components/meetup/form/deleteMeetupForm";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/util/routes";
 
-type MeetupActionsCardProps = {
+type MeetupAction = {
   meetupId: string;
 };
 
-export const MeetupActionsCard = ({ meetupId }: MeetupActionsCardProps) => {
+export const MeetupAction = ({ meetupId }: MeetupAction) => {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
       <Button
