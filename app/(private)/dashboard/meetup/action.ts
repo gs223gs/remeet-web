@@ -4,6 +4,8 @@
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
+import { createMeetupService } from "./createMeetupService";
+
 import type { MeetupErrors } from "@/type/private/meetup/meetup";
 import type { ActionState } from "@/type/util/action";
 
@@ -14,23 +16,11 @@ import { prisma } from "@/lib/prisma";
 import { routes } from "@/util/routes";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
 
+//TODO v1.2.1 で refactoring 対象
 export const createMeetup = async (
   _: ActionState<MeetupErrors>,
   formData: FormData,
 ): Promise<ActionState<MeetupErrors>> => {
-  const rawFormData = {
-    name: formData.get("name")?.toString() ?? "",
-    scheduledAt: formData.get("scheduledAt")?.toString() ?? "",
-  };
-
-  const validatedFields = createMeetupSchema.safeParse(rawFormData);
-  if (!validatedFields.success) {
-    return {
-      success: false,
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-
   try {
     const user = await getUser();
     if (!user)
@@ -41,22 +31,14 @@ export const createMeetup = async (
         },
       };
 
-    const createMeetupData = {
-      userId: user.id,
-      name: validatedFields.data.name,
-      scheduledAt: validatedFields.data.scheduledAt,
-    };
-
-    const createdMeetupResult = await meetupRepository.create(createMeetupData);
-    if (!createdMeetupResult.ok) {
+    const createdMeetupResult = await createMeetupService(formData);
+    if (!createdMeetupResult.ok)
       return {
         success: false,
-        errors: {
-          server: "server error",
-        },
+        errors: {},
       };
-    }
-    redirect(routes.dashboardMeetupDetail(createdMeetupResult.data.id));
+
+    redirect(routes.dashboardMeetupDetail(createdMeetupResult.data.meetupId));
   } catch (error) {
     if (isRedirectError(error)) throw error;
     console.error(error);
@@ -69,7 +51,7 @@ export const createMeetup = async (
   }
 };
 
-//update
+//TODO v1.2.1 で refactoring 対象
 export const updateMeetup = async (
   meetupId: string,
   _: ActionState<MeetupErrors>,
@@ -121,21 +103,6 @@ export const updateMeetup = async (
       },
     });
 
-    /**
-     *!本当はredirectにしたくない
-     *?meetupページにredirectしたらcontactsが再renderされてしまうからパフォーマンスが落ちる
-     ただ，一つのmeetupに参加するのはせいぜい50人，そこから話したとしても10~20だろう
-     (楽観的UIの実装, 学習, 可読性低下) によるコストを考えたら再renderの方がいいと考えた
-     
-     ** 11/15 追記
-    そもそもの話，contactsを取得しているのは何か？
-    getMeetupDetailSummary()で取得している
-    meetupのデータとcontactsのデータを同時に取得して返している
-    この時点でcontactsは再renderされるのは確定．
-    そして，redirectの仕様はページ全体の再取得RSCの再度実行
-
-    GPT的に言わせればこのままでいいらしいけど研究対象とします
-     */
     redirect(`/dashboard/meetup/${meetup.id}`);
   } catch (error) {
     if (isRedirectError(error)) throw error;
@@ -149,9 +116,8 @@ export const updateMeetup = async (
     };
   }
 };
-//read
 
-//delete
+//TODO v1.2.1 で refactoring 対象
 export const deleteMeetup = async (
   meetupId: string,
   _: ActionState<MeetupErrors>,
