@@ -5,6 +5,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 import { createMeetupService } from "./createMeetupService";
+import { updateMeetupService } from "./updateMeetupService";
 
 import type { MeetupErrors } from "@/type/private/meetup/meetup";
 import type { ActionState } from "@/type/util/action";
@@ -12,11 +13,10 @@ import type { ActionState } from "@/type/util/action";
 import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
 import { getOwnedMeetup } from "@/app/(private)/dashboard/meetup/_logic/service/checkMeetupOwner";
 import { getUser } from "@/auth";
-import { prisma } from "@/lib/prisma";
 import { routes } from "@/util/routes";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
 
-//TODO v1.2.1 で refactoring 対象
+//TODO v1.2.2 で refactoring 対象 error message
 export const createMeetup = async (
   _: ActionState<MeetupErrors>,
   formData: FormData,
@@ -51,7 +51,7 @@ export const createMeetup = async (
   }
 };
 
-//TODO v1.2.1 で refactoring 対象
+//TODO v1.2.2 で refactoring 対象 error message
 export const updateMeetup = async (
   meetupId: string,
   _: ActionState<MeetupErrors>,
@@ -63,12 +63,11 @@ export const updateMeetup = async (
   };
 
   const validatedFields = createMeetupSchema.safeParse(rawFormData);
-  if (!validatedFields.success) {
+  if (!validatedFields.success)
     return {
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
     };
-  }
 
   try {
     const user = await getUser();
@@ -80,30 +79,20 @@ export const updateMeetup = async (
         },
       };
 
-    const meetup = await prisma.meetup.findFirst({
-      where: { id: meetupId, userId: user.id },
+    const updateServiceResult = await updateMeetupService(meetupId, {
+      name: validatedFields.data.name,
+      scheduledAt: validatedFields.data.scheduledAt,
     });
 
-    if (!meetup) {
+    if (!updateServiceResult)
       return {
         success: false,
         errors: {
           server: "server error",
         },
       };
-    }
 
-    await prisma.meetup.update({
-      where: {
-        id: meetup.id,
-      },
-      data: {
-        name: validatedFields.data.name,
-        scheduledAt: validatedFields.data.scheduledAt,
-      },
-    });
-
-    redirect(`/dashboard/meetup/${meetup.id}`);
+    redirect(`/dashboard/meetup/${meetupId}`);
   } catch (error) {
     if (isRedirectError(error)) throw error;
     console.error(error);
