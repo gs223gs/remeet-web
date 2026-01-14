@@ -11,7 +11,6 @@ import type { MeetupErrors } from "@/type/private/meetup/meetup";
 import type { ActionState } from "@/type/util/action";
 
 import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
-import { getOwnedMeetup } from "@/app/(private)/dashboard/meetup/_logic/service/checkMeetupOwner";
 import { getUser } from "@/auth";
 import { routes } from "@/util/routes";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
@@ -105,8 +104,11 @@ export const updateMeetup = async (
     };
   }
 };
-
-//TODO v1.2.1 で refactoring 対象
+//TODO v1.2.2 で refactoring 対象 error message
+/**
+ *
+ * @description あえて service を作らない repository を二つ呼び出すためだけに service を作るよりこのままのほうが可読性が上がると考えた
+ */
 export const deleteMeetup = async (
   meetupId: string,
   _: ActionState<MeetupErrors>,
@@ -120,13 +122,11 @@ export const deleteMeetup = async (
           auth: "認証に失敗しました",
         },
       };
-    //Meetup OwnershipCheck
-    /**
-     * TODO リファクタリング
-     * return が何を表しているのかわからない
-     * getOwnedMeetup内で直接prismaを呼び出しているので責務が崩れている
-     */
-    const meetupOwnershipResult = await getOwnedMeetup(meetupId, user.id);
+
+    const meetupOwnershipResult = await meetupRepository.verifyUserOwnedMeetup(
+      user.id,
+      meetupId,
+    );
     if (!meetupOwnershipResult.ok) {
       return {
         success: false,
@@ -136,7 +136,6 @@ export const deleteMeetup = async (
       };
     }
 
-    //deleteMeetup
     const deletedMeetupResult = await meetupRepository.delete(
       meetupId,
       user.id,
