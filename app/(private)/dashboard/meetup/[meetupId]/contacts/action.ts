@@ -3,10 +3,12 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 import type { ErrorCode } from "@/type/error/error";
+import type { Result } from "@/type/error/error";
 import type {
   ContactsErrors,
   CreateContactLink,
 } from "@/type/private/contacts/contacts";
+import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 import type { LinkType } from "@prisma/client";
 
@@ -75,6 +77,7 @@ const verifyTags = async (tags: string[], userId: string): Promise<boolean> => {
   }
 };
 
+//TODO v1.2.1 で refactoring 対象
 export const updateContacts = async (
   meetupId: string,
   contactId: string,
@@ -199,7 +202,42 @@ export const updateContacts = async (
     };
   }
 };
+//TODO validation
+export const createTag = async (newTag: string): Promise<Result<Tag>> => {
+  try {
+    const user = await getUser();
+    if (!user)
+      return {
+        ok: false,
+        error: {
+          code: "unauthenticated",
+          message: ["情報取得に失敗しました"],
+        },
+      };
 
+    const createdTag = await prisma.tag.create({
+      data: {
+        userId: user.id,
+        name: newTag,
+      },
+    });
+
+    return {
+      ok: true,
+      data: createdTag,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      ok: false,
+      error: {
+        code: "db_error",
+        message: ["タグの作成に失敗しました"],
+      },
+    };
+  }
+};
+//TODO v1.2.1 で refactoring 対象
 export const deleteContact = async (
   contactId: string,
   meetupId: string,
