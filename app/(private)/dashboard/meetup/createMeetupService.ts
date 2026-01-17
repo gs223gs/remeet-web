@@ -9,35 +9,24 @@ export const createMeetupService = async (
     scheduledAt: Date;
   },
 ): Promise<Result<{ meetupId: string }>> => {
-  try {
-    const createMeetupData = {
-      userId: userId,
-      name: validatedFields.meetupName,
-      scheduledAt: validatedFields.scheduledAt,
-    };
+  const createMeetupData = {
+    userId: userId,
+    name: validatedFields.meetupName,
+    scheduledAt: validatedFields.scheduledAt,
+  };
 
-    const createdMeetupResult = await meetupRepository.create(createMeetupData);
-    if (!createdMeetupResult.ok)
-      return {
-        ok: false,
-        error: {
-          code: "validation",
-          message: [],
-        },
-      };
-
-    return {
-      ok: true,
-      data: { meetupId: createdMeetupResult.data.id },
-    };
-  } catch (error) {
-    console.error(error);
+  const createdMeetupResult = await meetupRepository.create(createMeetupData);
+  if (!createdMeetupResult.ok)
     return {
       ok: false,
       error: {
-        code: "unknown",
-        message: [""],
+        code: "validation",
+        message: [],
       },
     };
-  }
+
+  return {
+    ok: true,
+    data: { meetupId: createdMeetupResult.data.id },
+  };
 };

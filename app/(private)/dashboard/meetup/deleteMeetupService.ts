@@ -6,42 +6,31 @@ export const deleteMeetupService = async (
   userId: string,
   meetupId: string,
 ): Promise<Result<void>> => {
-  try {
-    const verifyUserOwnedMeetup = await meetupRepository.verifyUserOwnedMeetup(
-      userId,
-      meetupId,
-    );
-    if (!verifyUserOwnedMeetup.ok)
-      return {
-        ok: false,
-        error: {
-          code: "authorization",
-          message: [],
-        },
-      };
-
-    const deleteMeetupResult = await meetupRepository.delete(meetupId, userId);
-    if (!deleteMeetupResult.ok)
-      return {
-        ok: false,
-        error: {
-          code: "db_error",
-          message: [],
-        },
-      };
-
-    return {
-      ok: true,
-      data: undefined,
-    };
-  } catch (error) {
-    console.error(error);
+  const verifyUserOwnedMeetup = await meetupRepository.verifyUserOwnedMeetup(
+    userId,
+    meetupId,
+  );
+  if (!verifyUserOwnedMeetup.ok)
     return {
       ok: false,
       error: {
-        code: "unknown",
+        code: "authorization",
         message: [],
       },
     };
-  }
+
+  const deleteMeetupResult = await meetupRepository.delete(meetupId, userId);
+  if (!deleteMeetupResult.ok)
+    return {
+      ok: false,
+      error: {
+        code: "db_error",
+        message: [],
+      },
+    };
+
+  return {
+    ok: true,
+    data: undefined,
+  };
 };
