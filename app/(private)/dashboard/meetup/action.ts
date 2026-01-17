@@ -20,34 +20,38 @@ export const createMeetup = async (
   _: ActionState<MeetupErrors>,
   formData: FormData,
 ): Promise<ActionState<MeetupErrors>> => {
-  try {
-    const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
+  const rawFormData = {
+    name: formData.get("name")?.toString() ?? "",
+    scheduledAt: formData.get("scheduledAt")?.toString() ?? "",
+  };
 
-    const createdMeetupResult = await createMeetupService(formData);
-    if (!createdMeetupResult.ok)
-      return {
-        success: false,
-        errors: {},
-      };
+  const validatedFields = createMeetupSchema.safeParse(rawFormData);
+  if (!validatedFields.success)
+    return {
+      success: false,
+      errors: {},
+    };
 
-    redirect(routes.dashboardMeetupDetail(createdMeetupResult.data.meetupId));
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    console.error(error);
+  const user = await getUser();
+  if (!user)
     return {
       success: false,
       errors: {
-        server: "server error",
+        auth: "認証に失敗しました",
       },
     };
-  }
+
+  const createdMeetupResult = await createMeetupService(user.id, {
+    meetupName: validatedFields.data.name,
+    scheduledAt: validatedFields.data.scheduledAt,
+  });
+  if (!createdMeetupResult.ok)
+    return {
+      success: false,
+      errors: {},
+    };
+
+  redirect(routes.dashboardMeetupDetail(createdMeetupResult.data.meetupId));
 };
 
 //TODO v1.2.2 で refactoring 対象 error message
@@ -68,41 +72,29 @@ export const updateMeetup = async (
       errors: validatedFields.error.flatten().fieldErrors,
     };
 
-  try {
-    const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
+  const user = await getUser();
+  if (!user)
+    return {
+      success: false,
+      errors: {
+        auth: "認証に失敗しました",
+      },
+    };
 
-    const updateServiceResult = await updateMeetupService(meetupId, {
-      name: validatedFields.data.name,
-      scheduledAt: validatedFields.data.scheduledAt,
-    });
+  const updateServiceResult = await updateMeetupService(meetupId, {
+    name: validatedFields.data.name,
+    scheduledAt: validatedFields.data.scheduledAt,
+  });
 
-    if (!updateServiceResult)
-      return {
-        success: false,
-        errors: {
-          server: "server error",
-        },
-      };
-
-    redirect(`/dashboard/meetup/${meetupId}`);
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    console.error(error);
-
+  if (!updateServiceResult)
     return {
       success: false,
       errors: {
         server: "server error",
       },
     };
-  }
+
+  redirect(`/dashboard/meetup/${meetupId}`);
 };
 //TODO v1.2.2 で refactoring 対象 error message
 /**
