@@ -4,6 +4,53 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export const tagRepository = {
+  async updateTag(
+    tagId: string,
+    userId: string,
+    name: string,
+  ): Promise<Result<number>> {
+    try {
+      const result = await prisma.tag.updateMany({
+        where: { id: tagId, userId },
+        data: { name },
+      });
+      return {
+        ok: true,
+        data: result.count,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+          message: ["prismaでerror発生"],
+        },
+      };
+    }
+  },
+
+  async deleteTag(tagId: string, userId: string): Promise<Result<number>> {
+    try {
+      const result = await prisma.tag.deleteMany({
+        where: { id: tagId, userId },
+      });
+      return {
+        ok: true,
+        data: result.count,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+          message: ["prismaでerror発生"],
+        },
+      };
+    }
+  },
+
   async createContactTag(
     tx: Prisma.TransactionClient,
     contactId: string,
