@@ -5,12 +5,12 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 import { createMeetupService } from "./createMeetupService";
+import { deleteMeetupService } from "./deleteMeetupService";
 import { updateMeetupService } from "./updateMeetupService";
 
 import type { MeetupErrors } from "@/type/private/meetup/meetup";
 import type { ActionState } from "@/type/util/action";
 
-import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
 import { getUser } from "@/auth";
 import { routes } from "@/util/routes";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
@@ -97,10 +97,6 @@ export const updateMeetup = async (
   redirect(`/dashboard/meetup/${meetupId}`);
 };
 //TODO v1.2.2 で refactoring 対象 error message
-/**
- *
- * @description あえて service を作らない repository を二つ呼び出すためだけに service を作るよりこのままのほうが可読性が上がると考えた
- */
 export const deleteMeetup = async (
   meetupId: string,
   _: ActionState<MeetupErrors>,
@@ -115,23 +111,7 @@ export const deleteMeetup = async (
         },
       };
 
-    const meetupOwnershipResult = await meetupRepository.verifyUserOwnedMeetup(
-      user.id,
-      meetupId,
-    );
-    if (!meetupOwnershipResult.ok) {
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
-    }
-
-    const deletedMeetupResult = await meetupRepository.delete(
-      meetupId,
-      user.id,
-    );
+    const deletedMeetupResult = await deleteMeetupService(user.id, meetupId);
     if (!deletedMeetupResult.ok) {
       return {
         success: false,
