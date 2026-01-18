@@ -43,7 +43,7 @@ export const CreateTagForm = ({
       const createdTags = await createTag(tagQuery);
 
       if (!createdTags.ok) {
-        setFunctionMessage(createdTags.error.message);
+        setFunctionMessage(["タグの作成に失敗しました"]);
         return;
       }
 

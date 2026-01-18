@@ -16,6 +16,7 @@ type CreateContactLink = Omit<ContactLink, "id"> & {
 
 //TODO これも削除対象
 type ContactsDetailDTO = {
+  id: string;
   name: string;
   company?: string;
   role?: string;
