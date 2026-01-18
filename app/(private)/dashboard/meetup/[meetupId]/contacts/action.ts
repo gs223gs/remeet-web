@@ -62,24 +62,20 @@ export const updateContacts = async (
   contactId: string,
   _: ActionState<ContactsErrors> | null,
   formData: FormData,
-): Promise<ActionState<ContactsErrors>> => {
+): Promise<ActionState<ErrorCode>> => {
   const validatedFields = contactValidation(formData);
   if (!validatedFields.success)
     //TODO return の値を変更しろ
     return {
       success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
+      errors: "validation",
     };
 
   const user = await getUser();
   if (!user)
     return {
       success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
+      errors: "unauthenticated",
     };
 
   const updateServiceResult = await updateContactsService(
@@ -88,10 +84,10 @@ export const updateContacts = async (
     user.id,
     validatedFields.data,
   );
-  if (!updateServiceResult)
+  if (!updateServiceResult.ok)
     return {
       success: false,
-      errors: {},
+      errors: updateServiceResult.error.code,
     };
 
   redirect(`/dashboard/meetup/${meetupId}/contacts/${contactId}`);
