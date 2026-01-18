@@ -1,5 +1,4 @@
-import type { MigrationResult, Result } from "@/type/error/error";
-import type { ContactsErrors } from "@/type/private/contacts/contacts";
+import type { Result } from "@/type/error/error";
 import type { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
@@ -64,10 +63,7 @@ export const contactRepository = {
       };
     }
   },
-  async delete(
-    contactId: string,
-    userId: string,
-  ): Promise<MigrationResult<null, ContactsErrors>> {
+  async delete(contactId: string, userId: string): Promise<Result<void>> {
     try {
       const isDeleted = await prisma.contact.deleteMany({
         where: { id: contactId, userId: userId },
@@ -77,21 +73,21 @@ export const contactRepository = {
         return {
           ok: false,
           error: {
-            server: "server error",
+            code: "not_found",
           },
         };
       }
 
       return {
         ok: true,
-        data: null,
+        data: undefined,
       };
     } catch (error) {
       console.error(error);
       return {
         ok: false,
         error: {
-          server: "server error",
+          code: "db_error",
         },
       };
     }
