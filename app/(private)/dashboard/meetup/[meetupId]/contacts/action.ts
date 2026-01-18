@@ -127,7 +127,7 @@ export const createTag = async (newTag: string): Promise<Result<Tag>> => {
 export const deleteContact = async (
   contactId: string,
   meetupId: string,
-  _: ActionState<ErrorCode>,
+  _: ActionState<ErrorCode> | null,
 ): Promise<ActionState<ErrorCode>> => {
   const user = await getUser();
   if (!user)
