@@ -60,7 +60,7 @@ export const createContacts = async (
 export const updateContacts = async (
   meetupId: string,
   contactId: string,
-  _: ActionState<ContactsErrors> | null,
+  _: ActionState<ErrorCode> | null,
   formData: FormData,
 ): Promise<ActionState<ErrorCode>> => {
   const validatedFields = contactValidation(formData);
