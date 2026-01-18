@@ -54,7 +54,6 @@ export const createContacts = async (
   }
 };
 
-//TODO v1.2.1 で refactoring 対象
 export const updateContacts = async (
   meetupId: string,
   contactId: string,
@@ -125,7 +124,6 @@ export const createTag = async (newTag: string): Promise<Result<Tag>> => {
     };
   }
 };
-//TODO v1.2.1 で refactoring 対象
 export const deleteContact = async (
   contactId: string,
   meetupId: string,
