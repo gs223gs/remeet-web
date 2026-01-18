@@ -49,8 +49,8 @@ export const createContactService = async (
     const insertableLinks = convertInsertableLinks(validatedFields);
 
     const addContactsData = {
-      meetupId: meetupId,
-      userId: userId,
+      meetupId,
+      userId,
       name: validatedFields.name,
       company: validatedFields.company,
       role: validatedFields.role,
