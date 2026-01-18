@@ -1,6 +1,7 @@
+import { convertInsertableLinks } from "./convertInsertableLinks";
+
 import type { Result } from "@/type/error/error";
 import type { ContactsFormData } from "@/type/private/contacts/contacts";
-import type { LinkType } from "@prisma/client";
 
 import { linkRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/linkRepository";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
@@ -45,46 +46,7 @@ export const createContactService = async (
       }
     }
 
-    //今後linkが増えたらfunctionにする
-    const linkFields = [
-      {
-        type: "GITHUB" as LinkType,
-        url: validatedFields.githubId,
-        handle: validatedFields.githubHandle,
-      },
-      {
-        type: "TWITTER" as LinkType,
-        url: validatedFields.twitterId,
-        handle: validatedFields.twitterHandle,
-      },
-      {
-        type: "WEBSITE" as LinkType,
-        url: validatedFields.websiteUrl,
-        handle: validatedFields.websiteHandle,
-      },
-      {
-        type: "OTHER" as LinkType,
-        url: validatedFields.other,
-        handle: validatedFields.otherHandle,
-      },
-      {
-        type: "PRODUCT" as LinkType,
-        url: validatedFields.productUrl,
-        handle: validatedFields.productHandle,
-      },
-    ] as const;
-
-    const insertableLinks = linkFields.flatMap((l) =>
-      l.url
-        ? [
-            {
-              type: l.type,
-              url: l.url,
-              ...(l.handle ? { handle: l.handle } : {}),
-            },
-          ]
-        : [],
-    );
+    const insertableLinks = convertInsertableLinks(validatedFields);
 
     const addContactsData = {
       meetupId: meetupId,
