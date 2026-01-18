@@ -2,18 +2,16 @@
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
+import { deleteContactService } from "./_logic/deleteContactService";
 import { updateContactsService } from "./_logic/updateContactsService";
 
 import type { ErrorCode } from "@/type/error/error";
 import type { Result } from "@/type/error/error";
-import type { ContactsErrors } from "@/type/private/contacts/contacts";
 import type { Tag } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 
 import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
 import { createContactService } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/createContactsService";
-import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
-import { getOwnedContact } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/service/checkContactOwner";
 import { getUser } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { routes } from "@/util/routes";
@@ -131,37 +129,21 @@ export const createTag = async (newTag: string): Promise<Result<Tag>> => {
 export const deleteContact = async (
   contactId: string,
   meetupId: string,
-  _: ActionState<ContactsErrors>,
-): Promise<ActionState<ContactsErrors>> => {
+  _: ActionState<ErrorCode>,
+): Promise<ActionState<ErrorCode>> => {
   const user = await getUser();
   if (!user)
     return {
       success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
+      errors: "unauthenticated",
     };
 
-  const contactOwnershipResult = await getOwnedContact(contactId, user.id);
-  if (!contactOwnershipResult.ok) {
+  const deleteServiceResult = await deleteContactService(contactId, user.id);
+  if (!deleteServiceResult.ok)
     return {
       success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
+      errors: deleteServiceResult.error.code,
     };
-  }
-
-  const isDeleted = await contactRepository.delete(
-    contactOwnershipResult.data.contactId,
-    contactOwnershipResult.data.userId,
-  );
-  if (!isDeleted.ok) {
-    return {
-      success: false,
-      errors: isDeleted.error,
-    };
-  }
 
   redirect(`/dashboard/meetup/${meetupId}`);
 };
