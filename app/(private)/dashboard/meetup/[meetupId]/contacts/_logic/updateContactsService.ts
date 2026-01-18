@@ -9,8 +9,9 @@ import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/reposi
 import { tagRepository } from "@/app/(private)/dashboard/tags/_server/tagRepository";
 import { prisma } from "@/lib/prisma";
 
-export const createContactService = async (
+export const updateContactsService = async (
   meetupId: string,
+  contactId: string,
   userId: string,
   validatedFields: ContactsFormData,
 ): Promise<Result<void>> => {
@@ -28,8 +29,7 @@ export const createContactService = async (
           code: "authorization",
         },
       };
-    //TODO リファクタリング対象
-    //ちょっと不愉快
+
     const validatedTagId = validatedFields.tags;
     if (validatedTagId?.length) {
       const verifiedTag = await tagRepository.validateOwnedTagsExistence(
@@ -48,7 +48,7 @@ export const createContactService = async (
 
     const insertableLinks = convertInsertableLinks(validatedFields);
 
-    const addContactsData = {
+    const updateContactsData = {
       meetupId,
       userId,
       name: validatedFields.name,
@@ -58,13 +58,19 @@ export const createContactService = async (
     };
 
     await prisma.$transaction(async (tx) => {
-      const createdContact = await contactRepository.create(
+      const createdContact = await contactRepository.update(
         tx,
-        addContactsData,
+        contactId,
+        updateContactsData,
       );
       if (!createdContact.ok) {
         throw new Error("abort transaction");
       }
+
+      //ここrepository にした方がいいかも
+      await tx.contactLink.deleteMany({
+        where: { contactId: contactId },
+      });
 
       if (insertableLinks.length) {
         const createdLinks = await linkRepository.create(
@@ -73,10 +79,14 @@ export const createContactService = async (
           insertableLinks,
         );
 
-        if (!createdLinks.ok) {
-          throw new Error("abort transaction");
-        }
+        if (!createdLinks.ok) throw new Error("abort transaction");
       }
+
+      //ここrepository にした方がいいかも
+      await tx.contactTag.deleteMany({
+        where: { contactId: contactId },
+      });
+
       if (validatedTagId?.length) {
         const createdContactTags = await tagRepository.createContactTag(
           tx,

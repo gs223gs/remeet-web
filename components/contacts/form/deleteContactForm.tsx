@@ -15,27 +15,13 @@ export const DeleteContactForm = ({ contactId, meetupId }: Props) => {
     contactId,
     meetupId,
   );
-  const [state, action, isPending] = useActionState(
+  const [_, action, isPending] = useActionState(
     deleteContactWithMeetupIdAndContactId,
-    {
-      success: false,
-      errors: {},
-    },
+    null,
   );
-
-  const errorMessage =
-    state?.errors?.auth ??
-    (state?.errors?.server
-      ? "削除に失敗しました。時間をおいて再度お試しください。"
-      : undefined);
 
   return (
     <form action={action} className="space-y-3">
-      {errorMessage ? (
-        <p className="text-sm text-red-500" role="alert">
-          {errorMessage}
-        </p>
-      ) : null}
       <Button
         type="submit"
         size="sm"

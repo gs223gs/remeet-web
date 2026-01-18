@@ -1,5 +1,4 @@
-import type { MigrationResult, Result } from "@/type/error/error";
-import type { ContactsErrors } from "@/type/private/contacts/contacts";
+import type { Result } from "@/type/error/error";
 import type { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
@@ -37,10 +36,34 @@ export const contactRepository = {
       };
     }
   },
-  async delete(
+
+  async update(
+    tx: Prisma.TransactionClient,
     contactId: string,
-    userId: string,
-  ): Promise<MigrationResult<null, ContactsErrors>> {
+    data: ContactsInput,
+  ): Promise<Result<string>> {
+    try {
+      const updatedContact = await tx.contact.update({
+        where: { id: contactId, userId: data.userId },
+        data,
+      });
+
+      return {
+        ok: true,
+        data: updatedContact.id, //transaction内でidを使うためidだけreturn
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+          message: ["prismaでerror発生"],
+        },
+      };
+    }
+  },
+  async delete(contactId: string, userId: string): Promise<Result<void>> {
     try {
       const isDeleted = await prisma.contact.deleteMany({
         where: { id: contactId, userId: userId },
@@ -50,21 +73,21 @@ export const contactRepository = {
         return {
           ok: false,
           error: {
-            server: "server error",
+            code: "not_found",
           },
         };
       }
 
       return {
         ok: true,
-        data: null,
+        data: undefined,
       };
     } catch (error) {
       console.error(error);
       return {
         ok: false,
         error: {
-          server: "server error",
+          code: "db_error",
         },
       };
     }

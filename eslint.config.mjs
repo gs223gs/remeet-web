@@ -1,6 +1,6 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
 import storybook from "eslint-plugin-storybook";
-
+import unusedImports from "eslint-plugin-unused-imports";
 // eslint.config.mjs
 import { FlatCompat } from "@eslint/eslintrc";
 import path from "node:path";
@@ -25,6 +25,9 @@ export default [
       "build/**",
       "lib/generated/**",
       "next-env.d.ts",
+      "stories/**",
+      ".storybook/**",
+      "components/ui/**",
     ],
   },
   {
@@ -38,9 +41,11 @@ export default [
     },
     plugins: {
       "@typescript-eslint": tseslint,
+      "unused-imports": unusedImports,
     },
     rules: {
       "no-unused-vars": "off",
+      "unused-imports/no-unused-imports": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {

@@ -3,6 +3,7 @@ import type {
   CreateMeetupInput,
   MeetupErrors,
 } from "@/type/private/meetup/meetup";
+import type { MeetupClientSchema } from "@/validations/private/meetupValidation";
 
 import { prisma } from "@/lib/prisma";
 
@@ -98,6 +99,35 @@ export const meetupRepository = {
         error: {
           code: "db_error",
           message: ["prismaでerror発生"],
+        },
+      };
+    }
+  },
+  async update(
+    meetupId: string,
+    formData: MeetupClientSchema,
+  ): Promise<Result<void>> {
+    try {
+      await prisma.meetup.update({
+        where: {
+          id: meetupId,
+        },
+        data: {
+          name: formData.name,
+          scheduledAt: formData.scheduledAt,
+        },
+      });
+      return {
+        ok: true,
+        data: undefined,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+          message: [],
         },
       };
     }

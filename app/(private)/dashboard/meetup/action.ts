@@ -4,16 +4,18 @@
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
+import { createMeetupService } from "./createMeetupService";
+import { deleteMeetupService } from "./deleteMeetupService";
+import { updateMeetupService } from "./updateMeetupService";
+
 import type { MeetupErrors } from "@/type/private/meetup/meetup";
 import type { ActionState } from "@/type/util/action";
 
-import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
-import { getOwnedMeetup } from "@/app/(private)/dashboard/meetup/_logic/service/checkMeetupOwner";
 import { getUser } from "@/auth";
-import { prisma } from "@/lib/prisma";
 import { routes } from "@/util/routes";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
 
+//TODO v1.2.2 で refactoring 対象 error message
 export const createMeetup = async (
   _: ActionState<MeetupErrors>,
   formData: FormData,
@@ -24,52 +26,35 @@ export const createMeetup = async (
   };
 
   const validatedFields = createMeetupSchema.safeParse(rawFormData);
-  if (!validatedFields.success) {
+  if (!validatedFields.success)
     return {
       success: false,
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-
-  try {
-    const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
-
-    const createMeetupData = {
-      userId: user.id,
-      name: validatedFields.data.name,
-      scheduledAt: validatedFields.data.scheduledAt,
+      errors: {},
     };
 
-    const createdMeetupResult = await meetupRepository.create(createMeetupData);
-    if (!createdMeetupResult.ok) {
-      return {
-        success: false,
-        errors: {
-          server: "server error",
-        },
-      };
-    }
-    redirect(routes.dashboardMeetupDetail(createdMeetupResult.data.id));
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    console.error(error);
+  const user = await getUser();
+  if (!user)
     return {
       success: false,
       errors: {
-        server: "server error",
+        auth: "認証に失敗しました",
       },
     };
-  }
+
+  const createdMeetupResult = await createMeetupService(user.id, {
+    meetupName: validatedFields.data.name,
+    scheduledAt: validatedFields.data.scheduledAt,
+  });
+  if (!createdMeetupResult.ok)
+    return {
+      success: false,
+      errors: {},
+    };
+
+  redirect(routes.dashboardMeetupDetail(createdMeetupResult.data.meetupId));
 };
 
-//update
+//TODO v1.2.2 で refactoring 対象 error message
 export const updateMeetup = async (
   meetupId: string,
   _: ActionState<MeetupErrors>,
@@ -81,77 +66,37 @@ export const updateMeetup = async (
   };
 
   const validatedFields = createMeetupSchema.safeParse(rawFormData);
-  if (!validatedFields.success) {
+  if (!validatedFields.success)
     return {
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
     };
-  }
 
-  try {
-    const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
-
-    const meetup = await prisma.meetup.findFirst({
-      where: { id: meetupId, userId: user.id },
-    });
-
-    if (!meetup) {
-      return {
-        success: false,
-        errors: {
-          server: "server error",
-        },
-      };
-    }
-
-    await prisma.meetup.update({
-      where: {
-        id: meetup.id,
+  const user = await getUser();
+  if (!user)
+    return {
+      success: false,
+      errors: {
+        auth: "認証に失敗しました",
       },
-      data: {
-        name: validatedFields.data.name,
-        scheduledAt: validatedFields.data.scheduledAt,
-      },
-    });
+    };
 
-    /**
-     *!本当はredirectにしたくない
-     *?meetupページにredirectしたらcontactsが再renderされてしまうからパフォーマンスが落ちる
-     ただ，一つのmeetupに参加するのはせいぜい50人，そこから話したとしても10~20だろう
-     (楽観的UIの実装, 学習, 可読性低下) によるコストを考えたら再renderの方がいいと考えた
-     
-     ** 11/15 追記
-    そもそもの話，contactsを取得しているのは何か？
-    getMeetupDetailSummary()で取得している
-    meetupのデータとcontactsのデータを同時に取得して返している
-    この時点でcontactsは再renderされるのは確定．
-    そして，redirectの仕様はページ全体の再取得RSCの再度実行
+  const updateServiceResult = await updateMeetupService(meetupId, {
+    name: validatedFields.data.name,
+    scheduledAt: validatedFields.data.scheduledAt,
+  });
 
-    GPT的に言わせればこのままでいいらしいけど研究対象とします
-     */
-    redirect(`/dashboard/meetup/${meetup.id}`);
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    console.error(error);
-
+  if (!updateServiceResult)
     return {
       success: false,
       errors: {
         server: "server error",
       },
     };
-  }
-};
-//read
 
-//delete
+  redirect(`/dashboard/meetup/${meetupId}`);
+};
+//TODO v1.2.2 で refactoring 対象 error message
 export const deleteMeetup = async (
   meetupId: string,
   _: ActionState<MeetupErrors>,
@@ -165,27 +110,8 @@ export const deleteMeetup = async (
           auth: "認証に失敗しました",
         },
       };
-    //Meetup OwnershipCheck
-    /**
-     * TODO リファクタリング
-     * return が何を表しているのかわからない
-     * getOwnedMeetup内で直接prismaを呼び出しているので責務が崩れている
-     */
-    const meetupOwnershipResult = await getOwnedMeetup(meetupId, user.id);
-    if (!meetupOwnershipResult.ok) {
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
-    }
 
-    //deleteMeetup
-    const deletedMeetupResult = await meetupRepository.delete(
-      meetupId,
-      user.id,
-    );
+    const deletedMeetupResult = await deleteMeetupService(user.id, meetupId);
     if (!deletedMeetupResult.ok) {
       return {
         success: false,

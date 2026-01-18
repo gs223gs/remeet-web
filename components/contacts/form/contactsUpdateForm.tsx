@@ -10,7 +10,6 @@ import type { LinkType } from "@prisma/client";
 
 import { updateContacts } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
 import { ContactForm } from "@/components/contacts/form/ContactForm";
-import { ServerErrorCard } from "@/components/util/server-error-card";
 import {
   createContactsFrontSchema,
   type CreateContactsSchema,
@@ -66,7 +65,7 @@ export const ContactsUpdateForm = ({
     mode: "onChange",
   });
 
-  const [state, action, isPending] = useActionState(
+  const [_, action, isPending] = useActionState(
     updateContactsWithMeetupId,
     null,
   );
@@ -78,11 +77,8 @@ export const ContactsUpdateForm = ({
       ? "更新する"
       : "入力してください";
 
-  const shouldShowServerError = state?.errors?.server === "server error";
-
   return (
     <div>
-      {shouldShowServerError && <ServerErrorCard />}
       <ContactForm
         tags={tags}
         form={form}

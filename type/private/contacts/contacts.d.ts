@@ -24,6 +24,24 @@ type ContactsDetailDTO = {
   tags?: Tag[];
 };
 
+export type ContactsFormData = {
+  name: string;
+  company?: string;
+  role?: string;
+  description?: string;
+  tags?: string[];
+  githubHandle?: string;
+  githubId?: string;
+  twitterHandle?: string;
+  twitterId?: string;
+  websiteHandle?: string;
+  websiteUrl?: string;
+  productHandle?: string;
+  productUrl?: string;
+  otherHandle?: string;
+  other?: string;
+};
+
 //TODO これそもそもschemaと合ってないから治す
 export type ContactsErrors = {
   name?: string[];

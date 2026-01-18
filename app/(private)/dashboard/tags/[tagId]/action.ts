@@ -5,10 +5,12 @@ import { redirect } from "next/navigation";
 import type { TagErrors } from "@/type/private/tags/tags";
 import type { ActionState } from "@/type/util/action";
 
+import { deleteTagService } from "@/app/(private)/dashboard/tags/[tagId]/deleteTagService";
+import { updateTagService } from "@/app/(private)/dashboard/tags/[tagId]/updateTagService";
 import { getUser } from "@/auth";
-import { prisma } from "@/lib/prisma";
 import { tagSchema } from "@/validations/private/tagValidations";
 
+//TODO v1.2.2 で refactor error message
 const tagValidation = (formData: FormData) => {
   const rawFormData = {
     name: formData.get("name"),
@@ -31,55 +33,48 @@ export const updateTag = async (
       },
     };
   }
-  try {
-    const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
 
-    await prisma.tag.update({
-      where: { id: tagId, userId: user.id },
-      data: { name: validatedFields.data.name },
-    });
-  } catch (error) {
-    console.error(error);
+  const user = await getUser();
+  if (!user)
     return {
       success: false,
       errors: {
-        server: "server error",
+        auth: "認証に失敗しました",
       },
     };
-  }
+
+  const updateResult = await updateTagService(
+    tagId,
+    user.id,
+    validatedFields.data.name,
+  );
+  if (!updateResult.ok)
+    return {
+      success: false,
+      errors: {},
+    };
   redirect(`/dashboard/tags/${tagId}`);
 };
 
+//TODO v1.2.2 で refactor error message
 export const deleteTag = async (
   tagId: string,
 ): Promise<ActionState<TagErrors>> => {
-  try {
-    const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
-    await prisma.tag.delete({
-      where: { id: tagId, userId: user.id },
-    });
-  } catch (error) {
-    console.error(error);
+  const user = await getUser();
+  if (!user)
     return {
       success: false,
       errors: {
-        server: "server error",
+        auth: "認証に失敗しました",
       },
     };
+  const deleteResult = await deleteTagService(tagId, user.id);
+  if (!deleteResult.ok) {
+    return {
+      success: false,
+      errors: {},
+    };
   }
+
   redirect("/dashboard/tags");
 };
