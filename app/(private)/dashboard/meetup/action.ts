@@ -86,7 +86,7 @@ export const updateMeetup = async (
     scheduledAt: validatedFields.data.scheduledAt,
   });
 
-  if (!updateServiceResult)
+  if (!updateServiceResult.ok)
     return {
       success: false,
       errors: {
