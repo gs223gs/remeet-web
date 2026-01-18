@@ -49,7 +49,6 @@ export const updateContactsService = async (
     const insertableLinks = convertInsertableLinks(validatedFields);
 
     const updateContactsData = {
-      contactId,
       meetupId,
       userId,
       name: validatedFields.name,
@@ -61,6 +60,7 @@ export const updateContactsService = async (
     await prisma.$transaction(async (tx) => {
       const createdContact = await contactRepository.update(
         tx,
+        contactId,
         updateContactsData,
       );
       if (!createdContact.ok) {

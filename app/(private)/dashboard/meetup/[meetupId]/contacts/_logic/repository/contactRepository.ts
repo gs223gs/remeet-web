@@ -40,11 +40,12 @@ export const contactRepository = {
 
   async update(
     tx: Prisma.TransactionClient,
-    data: ContactsInput & { contactId: string },
+    contactId: string,
+    data: ContactsInput,
   ): Promise<Result<string>> {
     try {
       const updatedContact = await tx.contact.update({
-        where: { id: data.contactId, userId: data.userId },
+        where: { id: contactId, userId: data.userId },
         data,
       });
 
