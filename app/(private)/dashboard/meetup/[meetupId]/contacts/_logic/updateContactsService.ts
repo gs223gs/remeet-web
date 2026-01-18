@@ -1,5 +1,6 @@
 import { convertInsertableLinks } from "./convertInsertableLinks";
 
+import type { Result } from "@/type/error/error";
 import type { ContactsFormData } from "@/type/private/contacts/contacts";
 
 import { linkRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/linkRepository";
@@ -13,87 +14,102 @@ export const updateContactsService = async (
   contactId: string,
   userId: string,
   validatedFields: ContactsFormData,
-) => {
-  const verifyOwnedMeetup = await meetupRepository.verifyUserOwnedMeetup(
-    userId,
-    meetupId,
-  );
-
-  //TODO ここあとで整える
-  if (!verifyOwnedMeetup.ok)
-    return {
-      ok: false,
-      error: {
-        code: "authorization",
-      },
-    };
-
-  const validatedTagId = validatedFields.tags;
-  if (validatedTagId?.length) {
-    const verifiedTag = await tagRepository.validateOwnedTagsExistence(
+): Promise<Result<void>> => {
+  try {
+    const verifyOwnedMeetup = await meetupRepository.verifyUserOwnedMeetup(
       userId,
-      validatedTagId,
+      meetupId,
     );
-    if (!verifiedTag.ok) {
+
+    //TODO ここあとで整える
+    if (!verifyOwnedMeetup.ok)
       return {
         ok: false,
         error: {
           code: "authorization",
         },
       };
-    }
-  }
 
-  const insertableLinks = convertInsertableLinks(validatedFields);
-
-  const updateContactsData = {
-    contactId,
-    meetupId,
-    userId,
-    name: validatedFields.name,
-    company: validatedFields.company,
-    role: validatedFields.role,
-    description: validatedFields.description,
-  };
-
-  await prisma.$transaction(async (tx) => {
-    const createdContact = await contactRepository.update(
-      tx,
-      updateContactsData,
-    );
-    if (!createdContact.ok) {
-      throw new Error("abort transaction");
-    }
-
-    //ここrepository にした方がいいかも
-    await tx.contactLink.deleteMany({
-      where: { contactId: contactId },
-    });
-
-    if (insertableLinks.length) {
-      const createdLinks = await linkRepository.create(
-        tx,
-        createdContact.data,
-        insertableLinks,
-      );
-
-      if (!createdLinks.ok) throw new Error("abort transaction");
-    }
-
-    //ここrepository にした方がいいかも
-    await tx.contactTag.deleteMany({
-      where: { contactId: contactId },
-    });
-
+    const validatedTagId = validatedFields.tags;
     if (validatedTagId?.length) {
-      const createdContactTags = await tagRepository.createContactTag(
-        tx,
-        createdContact.data,
+      const verifiedTag = await tagRepository.validateOwnedTagsExistence(
+        userId,
         validatedTagId,
       );
-      if (!createdContactTags.ok) {
-        throw new Error("abort transaction");
+      if (!verifiedTag.ok) {
+        return {
+          ok: false,
+          error: {
+            code: "authorization",
+          },
+        };
       }
     }
-  });
+
+    const insertableLinks = convertInsertableLinks(validatedFields);
+
+    const updateContactsData = {
+      contactId,
+      meetupId,
+      userId,
+      name: validatedFields.name,
+      company: validatedFields.company,
+      role: validatedFields.role,
+      description: validatedFields.description,
+    };
+
+    await prisma.$transaction(async (tx) => {
+      const createdContact = await contactRepository.update(
+        tx,
+        updateContactsData,
+      );
+      if (!createdContact.ok) {
+        throw new Error("abort transaction");
+      }
+
+      //ここrepository にした方がいいかも
+      await tx.contactLink.deleteMany({
+        where: { contactId: contactId },
+      });
+
+      if (insertableLinks.length) {
+        const createdLinks = await linkRepository.create(
+          tx,
+          createdContact.data,
+          insertableLinks,
+        );
+
+        if (!createdLinks.ok) throw new Error("abort transaction");
+      }
+
+      //ここrepository にした方がいいかも
+      await tx.contactTag.deleteMany({
+        where: { contactId: contactId },
+      });
+
+      if (validatedTagId?.length) {
+        const createdContactTags = await tagRepository.createContactTag(
+          tx,
+          createdContact.data,
+          validatedTagId,
+        );
+        if (!createdContactTags.ok) {
+          throw new Error("abort transaction");
+        }
+      }
+    });
+
+    return {
+      ok: true,
+      data: undefined,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      ok: false,
+      error: {
+        code: "db_error",
+      },
+    };
+  }
 };
