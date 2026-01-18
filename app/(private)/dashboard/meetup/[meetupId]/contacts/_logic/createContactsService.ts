@@ -25,7 +25,6 @@ export const createContactService = async (
         ok: false,
         error: {
           code: "authorization",
-          message: ["権限がありません"], //TODO meetupの権限がありません と出してもいいか? => エンドユーザーに必要な情報か？, 脆弱にるだけか？
         },
       };
     //TODO リファクタリング対象
@@ -41,7 +40,6 @@ export const createContactService = async (
           ok: false,
           error: {
             code: "authorization",
-            message: ["タグが不正です"], //TODO meetup と同様の理由
           },
         };
       }
@@ -139,7 +137,6 @@ export const createContactService = async (
       ok: false,
       error: {
         code: "db_error",
-        message: ["contactの作成に失敗しました"],
       },
     };
   }
