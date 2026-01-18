@@ -37,6 +37,32 @@ export const contactRepository = {
       };
     }
   },
+
+  async update(
+    tx: Prisma.TransactionClient,
+    data: ContactsInput & { contactId: string },
+  ): Promise<Result<string>> {
+    try {
+      const updatedContact = await tx.contact.update({
+        where: { id: data.contactId, userId: data.userId },
+        data,
+      });
+
+      return {
+        ok: true,
+        data: updatedContact.id, //transaction内でidを使うためidだけreturn
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+          message: ["prismaでerror発生"],
+        },
+      };
+    }
+  },
   async delete(
     contactId: string,
     userId: string,
