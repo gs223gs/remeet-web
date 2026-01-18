@@ -10,6 +10,7 @@ import { updateTagService } from "@/app/(private)/dashboard/tags/[tagId]/updateT
 import { getUser } from "@/auth";
 import { tagSchema } from "@/validations/private/tagValidations";
 
+//TODO v1.2.2 で refactor error message
 const tagValidation = (formData: FormData) => {
   const rawFormData = {
     name: formData.get("name"),
@@ -55,6 +56,7 @@ export const updateTag = async (
   redirect(`/dashboard/tags/${tagId}`);
 };
 
+//TODO v1.2.2 で refactor error message
 export const deleteTag = async (
   tagId: string,
 ): Promise<ActionState<TagErrors>> => {
