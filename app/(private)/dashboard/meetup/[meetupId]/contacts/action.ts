@@ -24,6 +24,14 @@ export const createContacts = async (
   _: ActionState<ErrorCode> | null,
   formData: FormData,
 ): Promise<ActionState<ErrorCode>> => {
+  const validatedFields = contactValidation(formData);
+
+  if (!validatedFields.success)
+    return {
+      success: false,
+      errors: "validation",
+    };
+
   try {
     const user = await getUser();
     if (!user) redirect(routes.login());
@@ -31,7 +39,7 @@ export const createContacts = async (
     const createdContactResult = await createContactService(
       meetupId,
       user.id,
-      formData,
+      validatedFields.data,
     );
     if (!createdContactResult.ok) {
       return {

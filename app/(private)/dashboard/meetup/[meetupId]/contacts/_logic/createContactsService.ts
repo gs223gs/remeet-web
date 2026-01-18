@@ -1,7 +1,7 @@
 import type { Result } from "@/type/error/error";
+import type { ContactsFormData } from "@/type/private/contacts/contacts";
 import type { LinkType } from "@prisma/client";
 
-import { contactValidation } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/contactsValidation";
 import { linkRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/linkRepository";
 import { contactRepository } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/_logic/repository/contactRepository";
 import { meetupRepository } from "@/app/(private)/dashboard/meetup/_logic/repository/meetupRepository";
@@ -11,20 +11,9 @@ import { prisma } from "@/lib/prisma";
 export const createContactService = async (
   meetupId: string,
   userId: string,
-  formData: FormData,
+  validatedFields: ContactsFormData,
 ): Promise<Result<void>> => {
   try {
-    const validatedFields = contactValidation(formData);
-
-    if (!validatedFields.success)
-      return {
-        ok: false,
-        error: {
-          code: "validation",
-          message: ["validationエラーです"], //一旦これ本当はzodのやつにしたい
-        },
-      };
-
     const verifyOwnedMeetup = await meetupRepository.verifyUserOwnedMeetup(
       userId,
       meetupId,
@@ -41,7 +30,7 @@ export const createContactService = async (
       };
     //TODO リファクタリング対象
     //ちょっと不愉快
-    const validatedTagId = validatedFields.data.tags;
+    const validatedTagId = validatedFields.tags;
     if (validatedTagId?.length) {
       const verifiedTag = await tagRepository.validateOwnedTagsExistence(
         userId,
@@ -62,28 +51,28 @@ export const createContactService = async (
     const linkFields = [
       {
         type: "GITHUB" as LinkType,
-        url: validatedFields.data.githubId,
-        handle: validatedFields.data.githubHandle,
+        url: validatedFields.githubId,
+        handle: validatedFields.githubHandle,
       },
       {
         type: "TWITTER" as LinkType,
-        url: validatedFields.data.twitterId,
-        handle: validatedFields.data.twitterHandle,
+        url: validatedFields.twitterId,
+        handle: validatedFields.twitterHandle,
       },
       {
         type: "WEBSITE" as LinkType,
-        url: validatedFields.data.websiteUrl,
-        handle: validatedFields.data.websiteHandle,
+        url: validatedFields.websiteUrl,
+        handle: validatedFields.websiteHandle,
       },
       {
         type: "OTHER" as LinkType,
-        url: validatedFields.data.other,
-        handle: validatedFields.data.otherHandle,
+        url: validatedFields.other,
+        handle: validatedFields.otherHandle,
       },
       {
         type: "PRODUCT" as LinkType,
-        url: validatedFields.data.productUrl,
-        handle: validatedFields.data.productHandle,
+        url: validatedFields.productUrl,
+        handle: validatedFields.productHandle,
       },
     ] as const;
 
@@ -102,10 +91,10 @@ export const createContactService = async (
     const addContactsData = {
       meetupId: meetupId,
       userId: userId,
-      name: validatedFields.data.name,
-      company: validatedFields.data.company,
-      role: validatedFields.data.role,
-      description: validatedFields.data.description,
+      name: validatedFields.name,
+      company: validatedFields.company,
+      role: validatedFields.role,
+      description: validatedFields.description,
     };
 
     await prisma.$transaction(async (tx) => {
