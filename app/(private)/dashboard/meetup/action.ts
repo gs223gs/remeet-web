@@ -81,12 +81,12 @@ export const updateMeetup = async (
       },
     };
 
-  const updateServiceResult = await updateMeetupService(meetupId, {
+  const updateServiceResult = await updateMeetupService(meetupId, user.id, {
     name: validatedFields.data.name,
     scheduledAt: validatedFields.data.scheduledAt,
   });
 
-  if (!updateServiceResult)
+  if (!updateServiceResult.ok)
     return {
       success: false,
       errors: {

@@ -5,10 +5,11 @@ import type { MeetupClientSchema } from "@/validations/private/meetupValidation"
 
 export const updateMeetupService = async (
   meetupId: string,
+  userId: string,
   formData: MeetupClientSchema,
 ): Promise<Result<void>> => {
   const verifyUserOwnedMeetup = await meetupRepository.verifyUserOwnedMeetup(
-    meetupId,
+    userId,
     meetupId,
   );
   if (!verifyUserOwnedMeetup)
