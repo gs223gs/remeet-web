@@ -14,7 +14,6 @@ export const updateTagService = async (
       ok: false,
       error: {
         code: "validation",
-        message: [],
       },
     };
   }
@@ -25,7 +24,6 @@ export const updateTagService = async (
       ok: false,
       error: {
         code: "db_error",
-        message: [],
       },
     };
   }
@@ -35,7 +33,6 @@ export const updateTagService = async (
       ok: false,
       error: {
         code: "not_found",
-        message: [],
       },
     };
   }

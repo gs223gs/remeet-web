@@ -21,7 +21,6 @@ export const createMeetupService = async (
       ok: false,
       error: {
         code: "validation",
-        message: [],
       },
     };
 

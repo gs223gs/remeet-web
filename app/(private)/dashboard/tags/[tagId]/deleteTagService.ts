@@ -11,7 +11,6 @@ export const deleteTagService = async (
       ok: false,
       error: {
         code: "validation",
-        message: [],
       },
     };
   }
@@ -22,7 +21,6 @@ export const deleteTagService = async (
       ok: false,
       error: {
         code: "db_error",
-        message: [],
       },
     };
   }
@@ -32,7 +30,6 @@ export const deleteTagService = async (
       ok: false,
       error: {
         code: "not_found",
-        message: [],
       },
     };
   }
