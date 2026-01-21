@@ -4,7 +4,6 @@ import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 
 import type { Tag } from "@/type/private/tags/tags";
-import type { ActionState } from "@/type/util/action";
 
 import { updateTag } from "@/app/(private)/dashboard/tags/[tagId]/action";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ServerErrorCard } from "@/components/util/server-error-card";
 import {
   tagSchema,
   type TagSchema,
@@ -28,24 +26,9 @@ type UpdateTagFormProps = {
   tag: Tag;
 };
 
-type UpdateTagErrors = {
-  id?: string;
-  tag?: string;
-  auth?: "認証に失敗しました";
-  server?: "server error";
-};
-
-const initialState: ActionState<UpdateTagErrors> = {
-  success: false,
-  errors: {},
-};
-
 export const UpdateTagForm = ({ tag }: UpdateTagFormProps) => {
   const updateTagWithId = updateTag.bind(null, tag.id);
-  const [state, action, isPending] = useActionState(
-    updateTagWithId,
-    initialState,
-  );
+  const [_, action, isPending] = useActionState(updateTagWithId, null);
 
   const form = useForm<TagSchema>({
     resolver: zodResolver(tagSchema),
@@ -62,12 +45,9 @@ export const UpdateTagForm = ({ tag }: UpdateTagFormProps) => {
       ? "変更を保存"
       : "入力してください";
 
-  const serverError = state?.errors?.server;
-
   return (
     <Form {...form}>
       <form action={action} className="space-y-4">
-        {serverError && <ServerErrorCard />}
         <Card className="shadow-sm">
           <CardContent className="space-y-6 m-10">
             <FormField

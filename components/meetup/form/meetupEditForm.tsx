@@ -11,10 +11,7 @@ type MeetupEditProps = {
 
 export const MeetupEditForm = ({ meetupDetail }: MeetupEditProps) => {
   const updateMeetupWithMeetupId = updateMeetup.bind(null, meetupDetail.id);
-  const [state, action, isPending] = useActionState(updateMeetupWithMeetupId, {
-    success: false,
-    errors: {},
-  });
+  const [_, action, isPending] = useActionState(updateMeetupWithMeetupId, null);
 
   //TODO あとでライブラリにする
   const formatDate = (date: Date) => date.toISOString().split("T")[0];
@@ -30,7 +27,6 @@ export const MeetupEditForm = ({ meetupDetail }: MeetupEditProps) => {
         name="scheduledAt"
         defaultValue={formatDate(meetupDetail.scheduledAt)}
       />
-      {state && <p>{state.errors.server}</p>}
       <button type="submit">送信</button>
     </form>
   );

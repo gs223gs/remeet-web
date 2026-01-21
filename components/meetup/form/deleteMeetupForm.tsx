@@ -9,12 +9,8 @@ type Props = {
 };
 export const DeleteMeetupForm = ({ meetupId }: Props) => {
   const deleteMeetupWithMeetupId = deleteMeetup.bind(null, meetupId);
-  const [state, action, isPending] = useActionState(deleteMeetupWithMeetupId, {
-    success: false,
-    errors: {},
-  });
+  const [_, action, isPending] = useActionState(deleteMeetupWithMeetupId, null);
 
-  const errorMessage = state.errors.server ?? state.errors.auth;
   return (
     <form action={action}>
       <Button
@@ -25,9 +21,6 @@ export const DeleteMeetupForm = ({ meetupId }: Props) => {
       >
         {isPending ? "削除中..." : "Meetupを削除"}
       </Button>
-      {errorMessage ? (
-        <p className="text-xs text-red-500">{errorMessage}</p>
-      ) : null}
     </form>
   );
 };

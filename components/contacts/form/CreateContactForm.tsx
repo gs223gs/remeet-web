@@ -9,7 +9,6 @@ import type { CreateContactsSchema } from "@/validations/private/contactsValidat
 
 import { createContacts } from "@/app/(private)/dashboard/meetup/[meetupId]/contacts/action";
 import { ContactForm } from "@/components/contacts/form/ContactForm";
-import { ServerErrorCard } from "@/components/util/server-error-card";
 import { createContactsFrontSchema } from "@/validations/private/contactsValidation";
 type Props = {
   meetupId: string;
@@ -19,7 +18,7 @@ type Props = {
 export const CreateContactForm = ({ meetupId, tags }: Props) => {
   const createContactsWithMeetupId = createContacts.bind(null, meetupId);
 
-  const [state, action, isPending] = useActionState(
+  const [_, action, isPending] = useActionState(
     createContactsWithMeetupId,
     null,
   );
@@ -56,7 +55,6 @@ export const CreateContactForm = ({ meetupId, tags }: Props) => {
 
   return (
     <div>
-      {state?.errors === "unknown" && <ServerErrorCard />}
       <ContactForm
         tags={tags}
         form={form}
