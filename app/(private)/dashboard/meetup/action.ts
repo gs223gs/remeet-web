@@ -1,7 +1,6 @@
 //作成したらredirect -> dashboard/meetup/[id]/contacts/new
 "use server";
 
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 import { createMeetupService } from "./createMeetupService";
@@ -15,7 +14,6 @@ import { getUser } from "@/auth";
 import { routes } from "@/util/routes";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
 
-//TODO v1.2.2 で refactoring 対象 error message
 export const createMeetup = async (
   _: ActionState<ErrorCode> | null,
   formData: FormData,
@@ -52,7 +50,6 @@ export const createMeetup = async (
   redirect(routes.dashboardMeetupDetail(createdMeetupResult.data.meetupId));
 };
 
-//TODO v1.2.2 で refactoring 対象 error message
 export const updateMeetup = async (
   meetupId: string,
   _: ActionState<ErrorCode> | null,
@@ -90,34 +87,24 @@ export const updateMeetup = async (
 
   redirect(`/dashboard/meetup/${meetupId}`);
 };
-//TODO v1.2.2 で refactoring 対象 error message
 export const deleteMeetup = async (
   meetupId: string,
   _: ActionState<ErrorCode> | null,
 ): Promise<ActionState<ErrorCode>> => {
-  try {
-    const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        error: "unauthenticated",
-      };
-
-    const deletedMeetupResult = await deleteMeetupService(user.id, meetupId);
-    if (!deletedMeetupResult.ok) {
-      return {
-        success: false,
-        error: deletedMeetupResult.error.code,
-      };
-    }
-
-    redirect("/dashboard/meetup");
-  } catch (error) {
-    console.error(error);
-    if (isRedirectError(error)) throw error;
+  const user = await getUser();
+  if (!user)
     return {
       success: false,
-      error: "unknown",
+      error: "unauthenticated",
+    };
+
+  const deletedMeetupResult = await deleteMeetupService(user.id, meetupId);
+  if (!deletedMeetupResult.ok) {
+    return {
+      success: false,
+      error: deletedMeetupResult.error.code,
     };
   }
+
+  redirect("/dashboard/meetup");
 };

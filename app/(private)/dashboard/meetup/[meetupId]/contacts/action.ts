@@ -1,5 +1,4 @@
 "use server";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 import { deleteContactService } from "./_logic/deleteContactService";
@@ -28,30 +27,21 @@ export const createContacts = async (
       error: "validation",
     };
 
-  try {
-    const user = await getUser();
-    if (!user) redirect(routes.login());
+  const user = await getUser();
+  if (!user) redirect(routes.login());
 
-    const createdContactResult = await createContactService(
-      meetupId,
-      user.id,
-      validatedFields.data,
-    );
-    if (!createdContactResult.ok) {
-      return {
-        success: false,
-        error: createdContactResult.error.code,
-      };
-    }
-    redirect(routes.dashboardMeetupDetail(meetupId));
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    console.error(error);
+  const createdContactResult = await createContactService(
+    meetupId,
+    user.id,
+    validatedFields.data,
+  );
+  if (!createdContactResult.ok) {
     return {
       success: false,
-      error: "unknown",
+      error: createdContactResult.error.code,
     };
   }
+  redirect(routes.dashboardMeetupDetail(meetupId));
 };
 
 export const updateContacts = async (
@@ -62,7 +52,6 @@ export const updateContacts = async (
 ): Promise<ActionState<ErrorCode>> => {
   const validatedFields = contactValidation(formData);
   if (!validatedFields.success)
-    //TODO return の値を変更しろ
     return {
       success: false,
       error: "validation",
