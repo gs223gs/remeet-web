@@ -1,17 +1,11 @@
-import type { MigrationResult, Result } from "@/type/error/error";
-import type {
-  CreateMeetupInput,
-  MeetupErrors,
-} from "@/type/private/meetup/meetup";
+import type { Result } from "@/type/error/error";
+import type { CreateMeetupInput } from "@/type/private/meetup/meetup";
 import type { MeetupClientSchema } from "@/validations/private/meetupValidation";
 
 import { prisma } from "@/lib/prisma";
 
 export const meetupRepository = {
-  async delete(
-    meetupId: string,
-    userId: string,
-  ): Promise<MigrationResult<null, MeetupErrors>> {
+  async delete(meetupId: string, userId: string): Promise<Result<null>> {
     try {
       const deletedMeetups = await prisma.meetup.deleteMany({
         where: { id: meetupId, userId: userId },
@@ -21,7 +15,7 @@ export const meetupRepository = {
         return {
           ok: false,
           error: {
-            server: "server error",
+            code: "not_found",
           },
         };
       }
@@ -34,15 +28,13 @@ export const meetupRepository = {
       return {
         ok: false,
         error: {
-          server: "server error",
+          code: "db_error",
         },
       };
     }
   },
 
-  async create(
-    formdata: CreateMeetupInput,
-  ): Promise<MigrationResult<{ id: string }, MeetupErrors>> {
+  async create(formdata: CreateMeetupInput): Promise<Result<{ id: string }>> {
     try {
       const createdMeetup = await prisma.meetup.create({
         data: {
@@ -63,7 +55,7 @@ export const meetupRepository = {
       return {
         ok: false,
         error: {
-          server: "server error",
+          code: "db_error",
         },
       };
     }
@@ -83,7 +75,6 @@ export const meetupRepository = {
           ok: false,
           error: {
             code: "authorization",
-            message: ["meetupの権限不足"],
           },
         };
       }
@@ -98,7 +89,6 @@ export const meetupRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: ["prismaでerror発生"],
         },
       };
     }
@@ -127,7 +117,6 @@ export const meetupRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: [],
         },
       };
     }

@@ -24,7 +24,6 @@ export const tagRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: ["prismaでerror発生"],
         },
       };
     }
@@ -45,7 +44,6 @@ export const tagRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: ["prismaでerror発生"],
         },
       };
     }
@@ -71,7 +69,6 @@ export const tagRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: ["prismaでerror発生"],
         },
       };
     }
@@ -88,7 +85,6 @@ export const tagRepository = {
           ok: false,
           error: {
             code: "validation",
-            message: ["formにtagsが追加されていない"],
           },
         };
       }
@@ -98,7 +94,6 @@ export const tagRepository = {
           ok: false,
           error: {
             code: "unauthenticated",
-            message: ["userIdがない"],
           },
         };
       }
@@ -125,7 +120,6 @@ export const tagRepository = {
           ok: false,
           error: {
             code: "authorization",
-            message: ["tagsの権限不足"],
           },
         };
       }
@@ -139,7 +133,6 @@ export const tagRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: ["prismaでerror発生"],
         },
       };
     }

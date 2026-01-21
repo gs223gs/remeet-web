@@ -31,7 +31,6 @@ export const contactRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: ["prismaでerror発生"],
         },
       };
     }
@@ -58,7 +57,6 @@ export const contactRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: ["prismaでerror発生"],
         },
       };
     }
