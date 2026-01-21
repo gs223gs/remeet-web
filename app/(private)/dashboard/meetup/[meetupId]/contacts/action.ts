@@ -25,7 +25,7 @@ export const createContacts = async (
   if (!validatedFields.success)
     return {
       success: false,
-      errors: "validation",
+      error: "validation",
     };
 
   try {
@@ -40,7 +40,7 @@ export const createContacts = async (
     if (!createdContactResult.ok) {
       return {
         success: false,
-        errors: createdContactResult.error.code,
+        error: createdContactResult.error.code,
       };
     }
     redirect(routes.dashboardMeetupDetail(meetupId));
@@ -49,7 +49,7 @@ export const createContacts = async (
     console.error(error);
     return {
       success: false,
-      errors: "unknown",
+      error: "unknown",
     };
   }
 };
@@ -65,14 +65,14 @@ export const updateContacts = async (
     //TODO return の値を変更しろ
     return {
       success: false,
-      errors: "validation",
+      error: "validation",
     };
 
   const user = await getUser();
   if (!user)
     return {
       success: false,
-      errors: "unauthenticated",
+      error: "unauthenticated",
     };
 
   const updateServiceResult = await updateContactsService(
@@ -84,7 +84,7 @@ export const updateContacts = async (
   if (!updateServiceResult.ok)
     return {
       success: false,
-      errors: updateServiceResult.error.code,
+      error: updateServiceResult.error.code,
     };
 
   redirect(`/dashboard/meetup/${meetupId}/contacts/${contactId}`);
@@ -133,14 +133,14 @@ export const deleteContact = async (
   if (!user)
     return {
       success: false,
-      errors: "unauthenticated",
+      error: "unauthenticated",
     };
 
   const deleteServiceResult = await deleteContactService(contactId, user.id);
   if (!deleteServiceResult.ok)
     return {
       success: false,
-      errors: deleteServiceResult.error.code,
+      error: deleteServiceResult.error.code,
     };
 
   redirect(`/dashboard/meetup/${meetupId}`);
