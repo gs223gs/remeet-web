@@ -1,25 +1,23 @@
 //作成したらredirect -> dashboard/meetup/[id]/contacts/new
 "use server";
 
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 import { createMeetupService } from "./createMeetupService";
 import { deleteMeetupService } from "./deleteMeetupService";
 import { updateMeetupService } from "./updateMeetupService";
 
-import type { MeetupErrors } from "@/type/private/meetup/meetup";
+import type { ErrorCode } from "@/type/error/error";
 import type { ActionState } from "@/type/util/action";
 
 import { getUser } from "@/auth";
 import { routes } from "@/util/routes";
 import { createMeetupSchema } from "@/validations/private/meetupValidation";
 
-//TODO v1.2.2 で refactoring 対象 error message
 export const createMeetup = async (
-  _: ActionState<MeetupErrors>,
+  _: ActionState<ErrorCode> | null,
   formData: FormData,
-): Promise<ActionState<MeetupErrors>> => {
+): Promise<ActionState<ErrorCode>> => {
   const rawFormData = {
     name: formData.get("name")?.toString() ?? "",
     scheduledAt: formData.get("scheduledAt")?.toString() ?? "",
@@ -29,17 +27,11 @@ export const createMeetup = async (
   if (!validatedFields.success)
     return {
       success: false,
-      errors: {},
+      error: "validation",
     };
 
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
-    };
+  if (!user) redirect(routes.login());
 
   const createdMeetupResult = await createMeetupService(user.id, {
     meetupName: validatedFields.data.name,
@@ -48,18 +40,17 @@ export const createMeetup = async (
   if (!createdMeetupResult.ok)
     return {
       success: false,
-      errors: {},
+      error: createdMeetupResult.error.code,
     };
 
   redirect(routes.dashboardMeetupDetail(createdMeetupResult.data.meetupId));
 };
 
-//TODO v1.2.2 で refactoring 対象 error message
 export const updateMeetup = async (
   meetupId: string,
-  _: ActionState<MeetupErrors>,
+  _: ActionState<ErrorCode> | null,
   formData: FormData,
-): Promise<ActionState<MeetupErrors>> => {
+): Promise<ActionState<ErrorCode>> => {
   const rawFormData = {
     name: formData.get("name") as string,
     scheduledAt: formData.get("scheduledAt") as string,
@@ -69,17 +60,11 @@ export const updateMeetup = async (
   if (!validatedFields.success)
     return {
       success: false,
-      errors: validatedFields.error.flatten().fieldErrors,
+      error: "validation",
     };
 
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
-    };
+  if (!user) redirect(routes.login());
 
   const updateServiceResult = await updateMeetupService(meetupId, user.id, {
     name: validatedFields.data.name,
@@ -89,47 +74,25 @@ export const updateMeetup = async (
   if (!updateServiceResult.ok)
     return {
       success: false,
-      errors: {
-        server: "server error",
-      },
+      error: updateServiceResult.error.code,
     };
 
   redirect(`/dashboard/meetup/${meetupId}`);
 };
-//TODO v1.2.2 で refactoring 対象 error message
 export const deleteMeetup = async (
   meetupId: string,
-  _: ActionState<MeetupErrors>,
-): Promise<ActionState<MeetupErrors>> => {
-  try {
-    const user = await getUser();
-    if (!user)
-      return {
-        success: false,
-        errors: {
-          auth: "認証に失敗しました",
-        },
-      };
+  _: ActionState<ErrorCode> | null,
+): Promise<ActionState<ErrorCode>> => {
+  const user = await getUser();
+  if (!user) redirect(routes.login());
 
-    const deletedMeetupResult = await deleteMeetupService(user.id, meetupId);
-    if (!deletedMeetupResult.ok) {
-      return {
-        success: false,
-        errors: {
-          server: "server error",
-        },
-      };
-    }
-
-    redirect("/dashboard/meetup");
-  } catch (error) {
-    console.error(error);
-    if (isRedirectError(error)) throw error;
+  const deletedMeetupResult = await deleteMeetupService(user.id, meetupId);
+  if (!deletedMeetupResult.ok) {
     return {
       success: false,
-      errors: {
-        server: "server error",
-      },
+      error: deletedMeetupResult.error.code,
     };
   }
+
+  redirect(routes.dashboardMeetupList());
 };

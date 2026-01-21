@@ -1,5 +1,4 @@
 "use server";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 import { deleteContactService } from "./_logic/deleteContactService";
@@ -25,33 +24,24 @@ export const createContacts = async (
   if (!validatedFields.success)
     return {
       success: false,
-      errors: "validation",
+      error: "validation",
     };
 
-  try {
-    const user = await getUser();
-    if (!user) redirect(routes.login());
+  const user = await getUser();
+  if (!user) redirect(routes.login());
 
-    const createdContactResult = await createContactService(
-      meetupId,
-      user.id,
-      validatedFields.data,
-    );
-    if (!createdContactResult.ok) {
-      return {
-        success: false,
-        errors: createdContactResult.error.code,
-      };
-    }
-    redirect(routes.dashboardMeetupDetail(meetupId));
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    console.error(error);
+  const createdContactResult = await createContactService(
+    meetupId,
+    user.id,
+    validatedFields.data,
+  );
+  if (!createdContactResult.ok) {
     return {
       success: false,
-      errors: "unknown",
+      error: createdContactResult.error.code,
     };
   }
+  redirect(routes.dashboardMeetupDetail(meetupId));
 };
 
 export const updateContacts = async (
@@ -62,18 +52,13 @@ export const updateContacts = async (
 ): Promise<ActionState<ErrorCode>> => {
   const validatedFields = contactValidation(formData);
   if (!validatedFields.success)
-    //TODO return の値を変更しろ
     return {
       success: false,
-      errors: "validation",
+      error: "validation",
     };
 
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      errors: "unauthenticated",
-    };
+  if (!user) redirect(routes.login());
 
   const updateServiceResult = await updateContactsService(
     meetupId,
@@ -84,23 +69,16 @@ export const updateContacts = async (
   if (!updateServiceResult.ok)
     return {
       success: false,
-      errors: updateServiceResult.error.code,
+      error: updateServiceResult.error.code,
     };
 
-  redirect(`/dashboard/meetup/${meetupId}/contacts/${contactId}`);
+  redirect(routes.dashboardMeetupContactDetail(meetupId, contactId));
 };
 //TODO validation
 export const createTag = async (newTag: string): Promise<Result<Tag>> => {
   try {
     const user = await getUser();
-    if (!user)
-      return {
-        ok: false,
-        error: {
-          code: "unauthenticated",
-          message: ["情報取得に失敗しました"],
-        },
-      };
+    if (!user) redirect(routes.login());
 
     const createdTag = await prisma.tag.create({
       data: {
@@ -130,18 +108,14 @@ export const deleteContact = async (
   _: ActionState<ErrorCode> | null,
 ): Promise<ActionState<ErrorCode>> => {
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      errors: "unauthenticated",
-    };
+  if (!user) redirect(routes.login());
 
   const deleteServiceResult = await deleteContactService(contactId, user.id);
   if (!deleteServiceResult.ok)
     return {
       success: false,
-      errors: deleteServiceResult.error.code,
+      error: deleteServiceResult.error.code,
     };
 
-  redirect(`/dashboard/meetup/${meetupId}`);
+  redirect(routes.dashboardMeetupDetail(meetupId));
 };

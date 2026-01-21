@@ -3,25 +3,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 
-import type { MeetupErrors } from "@/type/private/meetup/meetup";
-import type { ActionState } from "@/type/util/action";
-
 import { createMeetup } from "@/app/(private)/dashboard/meetup/action";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { CreateMeetupForm } from "@/components/meetup/form/create-meetup-form";
-import { ServerErrorCard } from "@/components/util/server-error-card";
 import {
   meetupClientSchema,
   type MeetupClientSchema,
 } from "@/validations/private/meetupValidation";
 
-const initialState: ActionState<MeetupErrors> = {
-  success: false,
-  errors: {},
-};
-
 export default function CreateMeetup() {
-  const [state, action, isPending] = useActionState(createMeetup, initialState);
+  const [_, action, isPending] = useActionState(createMeetup, null);
   const form = useForm<MeetupClientSchema>({
     resolver: zodResolver(meetupClientSchema),
     defaultValues: {
@@ -49,7 +40,6 @@ export default function CreateMeetup() {
         description="参加したMeetupを登録すると、そこで出会った人の記録を整理できます。"
       />
       <section className="flex flex-col">
-        {state.errors.server && <ServerErrorCard />}
         <CreateMeetupForm
           form={form}
           action={action}

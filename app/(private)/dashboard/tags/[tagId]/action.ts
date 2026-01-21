@@ -2,15 +2,15 @@
 
 import { redirect } from "next/navigation";
 
-import type { TagErrors } from "@/type/private/tags/tags";
+import type { ErrorCode } from "@/type/error/error";
 import type { ActionState } from "@/type/util/action";
 
 import { deleteTagService } from "@/app/(private)/dashboard/tags/[tagId]/deleteTagService";
 import { updateTagService } from "@/app/(private)/dashboard/tags/[tagId]/updateTagService";
 import { getUser } from "@/auth";
+import { routes } from "@/util/routes";
 import { tagSchema } from "@/validations/private/tagValidations";
 
-//TODO v1.2.2 で refactor error message
 const tagValidation = (formData: FormData) => {
   const rawFormData = {
     name: formData.get("name"),
@@ -20,28 +20,20 @@ const tagValidation = (formData: FormData) => {
 
 export const updateTag = async (
   tagId: string,
-  _: ActionState<TagErrors>,
+  _: ActionState<ErrorCode> | null,
   formData: FormData,
-): Promise<ActionState<TagErrors>> => {
+): Promise<ActionState<ErrorCode>> => {
   const validatedFields = tagValidation(formData);
 
   if (!validatedFields.success) {
     return {
       success: false,
-      errors: {
-        tag: validatedFields.error.name,
-      },
+      error: "validation",
     };
   }
 
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
-    };
+  if (!user) redirect(routes.login());
 
   const updateResult = await updateTagService(
     tagId,
@@ -51,30 +43,23 @@ export const updateTag = async (
   if (!updateResult.ok)
     return {
       success: false,
-      errors: {},
+      error: updateResult.error.code,
     };
-  redirect(`/dashboard/tags/${tagId}`);
+  redirect(routes.dashboardTagDetail(tagId));
 };
 
-//TODO v1.2.2 で refactor error message
 export const deleteTag = async (
   tagId: string,
-): Promise<ActionState<TagErrors>> => {
+): Promise<ActionState<ErrorCode>> => {
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      errors: {
-        auth: "認証に失敗しました",
-      },
-    };
+  if (!user) redirect(routes.login());
   const deleteResult = await deleteTagService(tagId, user.id);
   if (!deleteResult.ok) {
     return {
       success: false,
-      errors: {},
+      error: deleteResult.error.code,
     };
   }
 
-  redirect("/dashboard/tags");
+  redirect(routes.dashboardTags());
 };

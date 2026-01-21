@@ -28,7 +28,6 @@ export const linkRepository = {
         ok: false,
         error: {
           code: "db_error",
-          message: ["prismaでerror発生"],
         },
       };
     }

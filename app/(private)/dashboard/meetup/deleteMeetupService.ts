@@ -15,7 +15,6 @@ export const deleteMeetupService = async (
       ok: false,
       error: {
         code: "authorization",
-        message: [],
       },
     };
 
@@ -25,7 +24,6 @@ export const deleteMeetupService = async (
       ok: false,
       error: {
         code: "db_error",
-        message: [],
       },
     };
 
