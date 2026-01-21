@@ -58,11 +58,7 @@ export const updateContacts = async (
     };
 
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      error: "unauthenticated",
-    };
+  if (!user) redirect(routes.login());
 
   const updateServiceResult = await updateContactsService(
     meetupId,
@@ -76,20 +72,13 @@ export const updateContacts = async (
       error: updateServiceResult.error.code,
     };
 
-  redirect(`/dashboard/meetup/${meetupId}/contacts/${contactId}`);
+  redirect(routes.dashboardMeetupContactDetail(meetupId, contactId));
 };
 //TODO validation
 export const createTag = async (newTag: string): Promise<Result<Tag>> => {
   try {
     const user = await getUser();
-    if (!user)
-      return {
-        ok: false,
-        error: {
-          code: "unauthenticated",
-          message: ["情報取得に失敗しました"],
-        },
-      };
+    if (!user) redirect(routes.login());
 
     const createdTag = await prisma.tag.create({
       data: {
@@ -119,11 +108,7 @@ export const deleteContact = async (
   _: ActionState<ErrorCode> | null,
 ): Promise<ActionState<ErrorCode>> => {
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      error: "unauthenticated",
-    };
+  if (!user) redirect(routes.login());
 
   const deleteServiceResult = await deleteContactService(contactId, user.id);
   if (!deleteServiceResult.ok)
@@ -132,5 +117,5 @@ export const deleteContact = async (
       error: deleteServiceResult.error.code,
     };
 
-  redirect(`/dashboard/meetup/${meetupId}`);
+  redirect(routes.dashboardMeetupDetail(meetupId));
 };

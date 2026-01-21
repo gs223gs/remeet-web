@@ -8,6 +8,7 @@ import type { ActionState } from "@/type/util/action";
 import { deleteTagService } from "@/app/(private)/dashboard/tags/[tagId]/deleteTagService";
 import { updateTagService } from "@/app/(private)/dashboard/tags/[tagId]/updateTagService";
 import { getUser } from "@/auth";
+import { routes } from "@/util/routes";
 import { tagSchema } from "@/validations/private/tagValidations";
 
 const tagValidation = (formData: FormData) => {
@@ -32,11 +33,7 @@ export const updateTag = async (
   }
 
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      error: "unauthenticated",
-    };
+  if (!user) redirect(routes.login());
 
   const updateResult = await updateTagService(
     tagId,
@@ -48,18 +45,14 @@ export const updateTag = async (
       success: false,
       error: updateResult.error.code,
     };
-  redirect(`/dashboard/tags/${tagId}`);
+  redirect(routes.dashboardTagDetail(tagId));
 };
 
 export const deleteTag = async (
   tagId: string,
 ): Promise<ActionState<ErrorCode>> => {
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      error: "unauthenticated",
-    };
+  if (!user) redirect(routes.login());
   const deleteResult = await deleteTagService(tagId, user.id);
   if (!deleteResult.ok) {
     return {
@@ -68,5 +61,5 @@ export const deleteTag = async (
     };
   }
 
-  redirect("/dashboard/tags");
+  redirect(routes.dashboardTags());
 };

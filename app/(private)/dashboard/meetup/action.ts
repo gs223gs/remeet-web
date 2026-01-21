@@ -31,11 +31,7 @@ export const createMeetup = async (
     };
 
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      error: "unauthenticated",
-    };
+  if (!user) redirect(routes.login());
 
   const createdMeetupResult = await createMeetupService(user.id, {
     meetupName: validatedFields.data.name,
@@ -68,11 +64,7 @@ export const updateMeetup = async (
     };
 
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      error: "unauthenticated",
-    };
+  if (!user) redirect(routes.login());
 
   const updateServiceResult = await updateMeetupService(meetupId, user.id, {
     name: validatedFields.data.name,
@@ -92,11 +84,7 @@ export const deleteMeetup = async (
   _: ActionState<ErrorCode> | null,
 ): Promise<ActionState<ErrorCode>> => {
   const user = await getUser();
-  if (!user)
-    return {
-      success: false,
-      error: "unauthenticated",
-    };
+  if (!user) redirect(routes.login());
 
   const deletedMeetupResult = await deleteMeetupService(user.id, meetupId);
   if (!deletedMeetupResult.ok) {
@@ -106,5 +94,5 @@ export const deleteMeetup = async (
     };
   }
 
-  redirect("/dashboard/meetup");
+  redirect(routes.dashboardMeetupList());
 };
