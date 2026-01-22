@@ -17,7 +17,6 @@ export const updateMeetupService = async (
       ok: false,
       error: {
         code: "authorization",
-        message: [],
       },
     };
 
@@ -26,8 +25,7 @@ export const updateMeetupService = async (
     return {
       ok: false,
       error: {
-        code: "db_error",
-        message: [],
+        code: updateResult.error.code,
       },
     };
   return {
