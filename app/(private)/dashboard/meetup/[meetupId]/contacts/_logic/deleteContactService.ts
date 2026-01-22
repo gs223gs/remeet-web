@@ -7,6 +7,7 @@ export const deleteContactService = async (
   contactId: string,
   userId: string,
 ): Promise<Result<void>> => {
+  //TODO refactor 対象
   const contactOwnershipResult = await getOwnedContact(contactId, userId);
   if (!contactOwnershipResult.ok)
     return {
