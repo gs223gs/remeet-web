@@ -19,7 +19,6 @@ const loginWithOAuth = async (provider: OAuthProvider): Promise<ErrorState> => {
       ok: false,
       error: {
         code: "unauthenticated",
-        message: [],
       },
     };
   }
