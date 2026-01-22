@@ -25,7 +25,7 @@ export const createContactService = async (
       return {
         ok: false,
         error: {
-          code: "authorization",
+          code: verifyOwnedMeetup.error.code,
         },
       };
     //TODO リファクタリング対象
