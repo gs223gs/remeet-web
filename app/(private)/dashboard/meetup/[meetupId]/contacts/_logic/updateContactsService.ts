@@ -21,12 +21,11 @@ export const updateContactsService = async (
       meetupId,
     );
 
-    //TODO ここあとで整える
     if (!verifyOwnedMeetup.ok)
       return {
         ok: false,
         error: {
-          code: "authorization",
+          code: verifyOwnedMeetup.error.code,
         },
       };
 
@@ -36,14 +35,13 @@ export const updateContactsService = async (
         userId,
         validatedTagId,
       );
-      if (!verifiedTag.ok) {
+      if (!verifiedTag.ok)
         return {
           ok: false,
           error: {
-            code: "authorization",
+            code: verifiedTag.error.code,
           },
         };
-      }
     }
 
     const insertableLinks = convertInsertableLinks(validatedFields);
@@ -64,13 +62,16 @@ export const updateContactsService = async (
         updateContactsData,
       );
       if (!createdContact.ok) {
-        throw new Error("abort transaction");
+        throw new Error("contactのupdateに失敗");
       }
 
-      //ここrepository にした方がいいかも
-      await tx.contactLink.deleteMany({
-        where: { contactId: contactId },
-      });
+      const deletedContactLinks = await linkRepository.deleteByContactId(
+        tx,
+        contactId,
+      );
+      if (!deletedContactLinks.ok) {
+        throw new Error("contactLinkの削除に失敗");
+      }
 
       if (insertableLinks.length) {
         const createdLinks = await linkRepository.create(
@@ -79,13 +80,14 @@ export const updateContactsService = async (
           insertableLinks,
         );
 
-        if (!createdLinks.ok) throw new Error("abort transaction");
+        if (!createdLinks.ok) throw new Error("linkの作成に失敗");
       }
 
-      //ここrepository にした方がいいかも
-      await tx.contactTag.deleteMany({
-        where: { contactId: contactId },
-      });
+      const deletedContactTags =
+        await tagRepository.deleteContactTagByContactId(tx, contactId);
+      if (!deletedContactTags.ok) {
+        throw new Error("contactTagの削除に失敗");
+      }
 
       if (validatedTagId?.length) {
         const createdContactTags = await tagRepository.createContactTag(
@@ -94,7 +96,7 @@ export const updateContactsService = async (
           validatedTagId,
         );
         if (!createdContactTags.ok) {
-          throw new Error("abort transaction");
+          throw new Error("contactTagの作成に失敗");
         }
       }
     });

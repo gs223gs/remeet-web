@@ -73,6 +73,28 @@ export const tagRepository = {
       };
     }
   },
+  async deleteContactTagByContactId(
+    tx: Prisma.TransactionClient,
+    contactId: string,
+  ): Promise<Result<void>> {
+    try {
+      await tx.contactTag.deleteMany({
+        where: { contactId },
+      });
+      return {
+        ok: true,
+        data: undefined,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+        },
+      };
+    }
+  },
 
   //TODO validationをやめる => service で行うため
   async validateOwnedTagsExistence(

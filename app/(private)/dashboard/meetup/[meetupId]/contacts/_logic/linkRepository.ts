@@ -8,6 +8,29 @@ import type { Prisma } from "@prisma/client";
 type ContactLinkInput = Omit<ContactLink, "id">;
 
 export const linkRepository = {
+  async deleteByContactId(
+    db: Prisma.TransactionClient,
+    contactId: string,
+  ): Promise<Result<void>> {
+    try {
+      await db.contactLink.deleteMany({
+        where: { contactId },
+      });
+
+      return {
+        ok: true,
+        data: undefined,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: {
+          code: "db_error",
+        },
+      };
+    }
+  },
   async create(
     db: Prisma.TransactionClient,
     contactId: string,
