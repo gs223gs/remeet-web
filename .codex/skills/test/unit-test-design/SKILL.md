@@ -1,5 +1,5 @@
 ---
-name: test-design
+name: unit-test-design
 description: unit test の実装計画時にしよう e2e test, integration test 時には使用しない
 ---
 
