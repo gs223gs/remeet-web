@@ -19,7 +19,8 @@
     "test": "npm run db:test:up && npm run db:test:wait && dotenv -e .env.test -- npx prisma db push && npm run test:vitest; npm run db:test:down",
     "prepare": "husky",
     "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css,html}\"",
-    "prisma:migration:local": "dotenv -e .env.local -- npx prisma migrate dev",
+    "prisma:migration:dev": "dotenv -e .env.local -- npx prisma migrate dev",
+    "prisma:migration:test": "dotenv -e .env.test -- npx prisma migrate dev",
     "prisma:seed": "prisma db seed",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
