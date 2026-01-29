@@ -172,8 +172,12 @@ export const ContactForm = ({
                       </FormControl>
                     </div>
                     <div className="flex-1">
-                      <div className="min-h-[180px] rounded-md border bg-muted/40 p-3 text-sm">
-                        <ReactMarkdown>{field.value}</ReactMarkdown>
+                      <div className="markdown-body min-h-[180px] rounded-md border p-3">
+                        <ReactMarkdown>
+                          {field.value?.trim()
+                            ? field.value
+                            : "プレビューがここに表示されます。"}
+                        </ReactMarkdown>
                       </div>
                     </div>
                   </div>
