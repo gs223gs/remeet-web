@@ -20,7 +20,7 @@ export const createMeetupService = async (
     return {
       ok: false,
       error: {
-        code: "validation",
+        code: createdMeetupResult.error.code,
       },
     };
 

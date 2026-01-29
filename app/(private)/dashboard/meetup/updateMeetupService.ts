@@ -12,12 +12,11 @@ export const updateMeetupService = async (
     userId,
     meetupId,
   );
-  if (!verifyUserOwnedMeetup)
+  if (!verifyUserOwnedMeetup.ok)
     return {
       ok: false,
       error: {
-        code: "authorization",
-        message: [],
+        code: verifyUserOwnedMeetup.error.code,
       },
     };
 
@@ -26,8 +25,7 @@ export const updateMeetupService = async (
     return {
       ok: false,
       error: {
-        code: "db_error",
-        message: [],
+        code: updateResult.error.code,
       },
     };
   return {
