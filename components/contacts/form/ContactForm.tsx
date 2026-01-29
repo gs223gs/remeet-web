@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 import type { Tag } from "@/type/private/tags/tags";
 import type { CreateContactsSchema } from "@/validations/private/contactsValidation";
@@ -160,14 +161,24 @@ export const ContactForm = ({
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
                   <FormLabel>会話メモ</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="どんな話をしたか、相手の興味や課題感などをメモとして残しておきましょう。"
-                      {...field}
-                    />
-                  </FormControl>
+                  <div className="flex flex-col gap-4 md:flex-row">
+                    <div className="flex-1">
+                      <FormControl>
+                        <Textarea
+                          placeholder="どんな話をしたか、相手の興味や課題感などをメモとして残しておきましょう。"
+                          className="min-h-[180px]"
+                          {...field}
+                        />
+                      </FormControl>
+                    </div>
+                    <div className="flex-1">
+                      <div className="min-h-[180px] rounded-md border bg-muted/40 p-3 text-sm">
+                        <ReactMarkdown>{field.value}</ReactMarkdown>
+                      </div>
+                    </div>
+                  </div>
                   <FormDescription>
-                    今後のリリースで markdown に対応します
+                    Markdown で記述できます。左が入力、右がプレビューです。
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
